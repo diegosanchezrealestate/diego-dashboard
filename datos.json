@@ -1,0 +1,61 @@
+{
+  "generado": "2026-03-15",
+  "crm_propietarios": {
+    "total": 25,
+    "por_prioridad": {
+      "Alta": 13,
+      "Media": 8,
+      "Baja": 3,
+      "Sin asignar": 1
+    },
+    "exclusivas_conseguidas": 0,
+    "registros": [
+      { "nombre": "Mónica Ifara", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Susana Talavera", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Yonatan", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Irene", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Luigi", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Ventura", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Pedro Carrillo", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Huberto / Cristi", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Juan Delgado", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Eduardo Guimerá", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Mónica Ático", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Jose Manuel Padilla", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Estíbaliz", "prioridad": "Alta", "exclusiva": false },
+      { "nombre": "Mariano", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Mila", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Francisco", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Piso Camino Valle", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Magali", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Salva", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Piso Puntita", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Marcos Chalet", "prioridad": "Media", "exclusiva": false },
+      { "nombre": "Alex Avda", "prioridad": "Baja", "exclusiva": false },
+      { "nombre": "Sylwia", "prioridad": "Baja", "exclusiva": false },
+      { "nombre": "Patricia", "prioridad": "Baja", "exclusiva": false },
+      { "nombre": "Fernando Padrón", "prioridad": null, "exclusiva": false }
+    ]
+  },
+  "crm_compradores": {
+    "total": 25,
+    "por_estado": {
+      "Nuevo": 25,
+      "Primer contacto": 0,
+      "En seguimiento": 0,
+      "Visita agendada": 0,
+      "Negociación": 0,
+      "Cerrado": 0,
+      "Perdido": 0
+    }
+  },
+  "contenido_reciente": [
+    { "titulo": "CASA 900K", "plataforma": "Instagram", "estado": "Idea", "fecha": "2026-03-09" },
+    { "titulo": "Actitud de ganador", "plataforma": "Instagram", "estado": "Idea", "fecha": "2026-02-28" },
+    { "titulo": "Mejores países para comprar propiedades", "plataforma": "Instagram", "estado": "Idea", "fecha": "2026-02-28" },
+    { "titulo": "Se acabó poder comprar una casa por debajo del precio de mercado", "plataforma": "YouTube", "estado": "Idea", "fecha": "2026-02-26" },
+    { "titulo": "3 tipos de pisos que nunca debes comprar para invertir", "plataforma": "YouTube", "estado": "Idea", "fecha": "2026-02-26" },
+    { "titulo": "HACIENDA te ROBA al COMPRAR Tú CASA - Cómo EVITARLO", "plataforma": "Instagram", "estado": "Idea", "fecha": "2026-02-26" },
+    { "titulo": "Cómo Conseguir la Mejor Hipoteca Posible en 2026", "plataforma": null, "estado": "Idea", "fecha": "2026-02-26" }
+  ]
+}

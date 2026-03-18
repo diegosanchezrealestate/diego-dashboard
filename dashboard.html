@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diego Sánchez — Panel Operativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f2f0;
+    --surface: rgba(255,255,255,0.75);
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.12);
+    --accent: #2563eb;
+    --accent-light: rgba(37,99,235,0.1);
+    --text: #111111;
+    --text-mid: #555555;
+    --muted: #999999;
+    --green: #16a34a;
+    --green-light: rgba(22,163,74,0.1);
+    --red: #dc2626;
+    --red-light: rgba(220,38,38,0.1);
+    --orange: #ea580c;
+    --orange-light: rgba(234,88,12,0.1);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(180,200,240,0.5) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 40% at 80% 100%, rgba(200,220,200,0.3) 0%, transparent 60%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── HEADER ──────────────────────────────────────── */
+  header {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px 12px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-text { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); }
+  .logo-badge { background: var(--text); color: white; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .date-pill { background: rgba(255,255,255,0.8); border: 1px solid var(--border); padding: 6px 14px; border-radius: 100px; font-size: 12px; color: var(--text-mid); font-family: 'DM Mono', monospace; }
+  .objetivo-pill { background: var(--accent); color: white; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 500; }
+  .header-tabs {
+    display: flex;
+    padding: 0 40px;
+  }
+  .nav-tab {
+    padding: 8px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  main { padding: 32px 40px 48px; max-width: 1400px; margin: 0 auto; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .view-flex { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── SHARED CARDS ─────────────────────────────────── */
+  .card { background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .card-inner { padding: 24px; }
+  .card-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  .hero-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .hero-card { background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; transition: all 0.2s; }
+  .hero-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+  .hero-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+  .hero-value { font-family: 'Instrument Serif', serif; font-size: 44px; line-height: 1; color: var(--text); margin-bottom: 10px; outline: none; }
+  .hero-value:focus { color: var(--accent); }
+  .hero-value.good { color: var(--green); }
+  .hero-value.warn { color: var(--orange); }
+  .hero-value.accent { color: var(--accent); }
+  .hero-sub { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 500; }
+  .chip.up { background: var(--green-light); color: var(--green); }
+  .chip.warn { background: var(--orange-light); color: var(--orange); }
+  .alertas { display: flex; flex-direction: column; gap: 8px; }
+  .alerta { background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); }
+  .alerta.danger { border-left: 3px solid var(--red); }
+  .alerta.warn-bar { border-left: 3px solid var(--orange); }
+  .alerta-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .danger .alerta-dot { background: var(--red); }
+  .warn-bar .alerta-dot { background: var(--orange); }
+  .alerta-text { font-size: 13px; color: var(--text-mid); flex: 1; }
+  .alerta-text strong { color: var(--text); font-weight: 600; }
+  .alerta-action { font-size: 12px; color: var(--accent); font-weight: 500; cursor: pointer; white-space: nowrap; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .section-divider { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 8px 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+  .pipeline-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.025); border: 1px solid var(--border); transition: background 0.15s; margin-bottom: 6px; }
+  .pipeline-item:hover { background: rgba(0,0,0,0.04); }
+  .pipeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .pipeline-name { flex: 1; font-size: 13px; font-weight: 500; }
+  .pipeline-bar-track { flex: 2; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .pipeline-bar { height: 100%; border-radius: 2px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+  .pipeline-count { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; min-width: 32px; text-align: right; outline: none; }
+  .pipeline-count:focus { color: var(--accent); }
+  .progress-wrap { margin-bottom: 12px; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .progress-label { font-size: 12px; color: var(--muted); }
+  .progress-nums { font-size: 13px; font-weight: 600; color: var(--text); }
+  .progress-nums span { color: var(--accent); }
+  .progress-track { height: 6px; background: rgba(0,0,0,0.07); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 1.3s cubic-bezier(0.4,0,0.2,1); }
+  .ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .ads-metric { background: rgba(0,0,0,0.025); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
+  .ads-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .ads-value { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; outline: none; }
+  .ads-value:focus { color: var(--accent); }
+  .ads-value.good { color: var(--green); }
+  .ads-value.warn { color: var(--orange); }
+  .ads-target { font-size: 11px; color: var(--muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 14px; }
+  .cal-header { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); text-align: center; padding: 4px 0; }
+  .cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: var(--text-mid); border-radius: 8px; cursor: pointer; transition: all 0.15s; gap: 2px; }
+  .cal-day:hover { background: rgba(0,0,0,0.05); }
+  .cal-day.today { background: var(--accent); color: white; font-weight: 600; }
+  .cal-day.has-content { color: var(--text); font-weight: 500; }
+  .cal-day.past { opacity: 0.35; }
+  .cal-dots { display: flex; gap: 2px; }
+  .cal-dot { width: 4px; height: 4px; border-radius: 50%; }
+  .cal-dot.yt { background: var(--red); }
+  .cal-dot.ig { background: #9333ea; }
+  .cal-dot.white { background: rgba(255,255,255,0.8); }
+  .cal-legend { display: flex; gap: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .metricas-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .metrica-mini { background: rgba(0,0,0,0.025); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; }
+  .metrica-mini-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .metrica-mini-value { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; outline: none; }
+  .metrica-mini-value:focus { color: var(--accent); }
+  .metrica-mini-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .contenido-item { display: grid; grid-template-columns: 28px 1fr 90px 70px; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); transition: background 0.15s; border: 1px solid transparent; }
+  .contenido-item:hover { background: rgba(0,0,0,0.025); border-color: var(--border); }
+  .plat-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .plat-icon.yt { background: var(--red-light); color: var(--red); }
+  .plat-icon.ig { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .contenido-titulo { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .estado-chip { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; text-align: center; }
+  .estado-chip.publicado { background: var(--green-light); color: var(--green); }
+  .estado-chip.programado { background: var(--accent-light); color: var(--accent); }
+  .estado-chip.grabado { background: var(--orange-light); color: var(--orange); }
+  .estado-chip.guionizado { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .estado-chip.idea { background: rgba(0,0,0,0.05); color: var(--muted); }
+  .contenido-fecha { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; }
+
+  /* ── LEADS VIEW ───────────────────────────────────── */
+  .leads-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .filter-chips { display: flex; gap: 6px; }
+  .filter-chip {
+    padding: 7px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--border-strong);
+    background: rgba(255,255,255,0.75);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    backdrop-filter: blur(10px);
+  }
+  .filter-chip.active { background: var(--text); color: white; border-color: var(--text); }
+  .filter-chip:hover:not(.active) { background: rgba(255,255,255,0.95); color: var(--text); }
+  .btn-add {
+    padding: 8px 18px;
+    border-radius: 100px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-add:hover { opacity: 0.88; }
+  .btn-refresh {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: var(--text-mid);
+    transition: all 0.15s;
+    margin-right: 8px;
+  }
+  .btn-refresh:hover { background: rgba(255,255,255,0.95); color: var(--text); }
+  .btn-refresh.spinning { animation: spin 0.8s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .leads-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .lead-stat {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .lead-stat-num { font-family: 'Instrument Serif', serif; font-size: 30px; line-height: 1; color: var(--text); }
+  .lead-stat-num.alta { color: var(--red); }
+  .lead-stat-num.media { color: var(--orange); }
+  .lead-stat-num.baja { color: #3b82f6; }
+  .lead-stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  .leads-list-container { display: flex; flex-direction: column; gap: 6px; }
+
+  .lead-item {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 10px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .lead-item:hover { box-shadow: var(--shadow-md); transform: translateX(3px); border-color: var(--border-strong); }
+  .lead-priority-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .lead-main { min-width: 0; }
+  .lead-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lead-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .lead-meta-item { display: flex; align-items: center; gap: 4px; }
+  .lead-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+  .priority-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 100px;
+  }
+  .priority-badge.Alta { background: var(--red-light); color: var(--red); }
+  .priority-badge.Media { background: var(--orange-light); color: var(--orange); }
+  .priority-badge.Baja { background: rgba(59,130,246,0.1); color: #3b82f6; }
+  .priority-badge.none { background: rgba(0,0,0,0.05); color: var(--muted); }
+  .lead-estado-badge {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    background: rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .leads-empty {
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--muted);
+  }
+  .leads-empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .leads-empty-title { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); margin-bottom: 6px; }
+  .leads-empty-sub { font-size: 13px; line-height: 1.6; }
+  .leads-empty-sub code { font-family: 'DM Mono', monospace; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+  /* ── SIDE PANEL ───────────────────────────────────── */
+  .side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 390px;
+    height: 100vh;
+    background: rgba(248,250,248,0.97);
+    backdrop-filter: blur(30px);
+    border-left: 1px solid var(--border-strong);
+    box-shadow: -6px 0 32px rgba(0,0,0,0.1);
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+  }
+  .side-panel.open { transform: translateX(0); }
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.18);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .panel-overlay.visible { opacity: 1; pointer-events: all; }
+
+  .sp-header {
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .sp-header-info { flex: 1; min-width: 0; }
+  .sp-name { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); line-height: 1.2; }
+  .sp-priority { margin-top: 6px; display: inline-block; }
+  .sp-close {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: rgba(0,0,0,0.04);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-mid);
+    flex-shrink: 0;
+    transition: background 0.15s;
+    line-height: 1;
+  }
+  .sp-close:hover { background: rgba(0,0,0,0.08); }
+
+  .sp-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .sp-section { margin-bottom: 22px; }
+  .sp-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sp-field { margin-bottom: 12px; }
+  .sp-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 3px; }
+  .sp-value { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .sp-value.empty { color: var(--muted); font-style: italic; font-size: 12px; }
+  .sp-value a { color: var(--accent); text-decoration: none; }
+  .sp-value a:hover { text-decoration: underline; }
+  .sp-check { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; }
+  .sp-check-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .sp-footer {
+    padding: 14px 24px 18px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+  }
+  .sp-notion-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    background: var(--text);
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: opacity 0.15s;
+  }
+  .sp-notion-btn:hover { opacity: 0.82; }
+
+  /* ── ADD LEAD MODAL ───────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.28);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal {
+    background: rgba(255,255,255,0.97);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 48px rgba(0,0,0,0.15);
+    width: 480px;
+    max-width: 90vw;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-title { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); }
+  .modal-close {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: rgba(0,0,0,0.04);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-mid);
+    line-height: 1;
+  }
+  .modal-body { padding: 20px 24px; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-mid); margin-bottom: 6px; }
+  .form-required { color: var(--red); }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.8);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .form-textarea { resize: vertical; min-height: 72px; }
+  .form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .modal-footer {
+    padding: 14px 24px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .btn-cancel {
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: none;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-mid);
+    cursor: pointer;
+  }
+  .btn-save {
+    padding: 9px 22px;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-save:hover { opacity: 0.9; }
+  .btn-save:disabled { opacity: 0.45; cursor: not-allowed; }
+  .save-spinner { display: none; }
+  .btn-save.loading .save-text { display: none; }
+  .btn-save.loading .save-spinner { display: inline; }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  footer { padding: 20px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); }
+  .footer-text { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* ── ANIMATIONS ───────────────────────────────────── */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .hero-card { animation: fadeUp 0.4s ease both; }
+  .hero-card:nth-child(1) { animation-delay: 0.05s; }
+  .hero-card:nth-child(2) { animation-delay: 0.10s; }
+  .hero-card:nth-child(3) { animation-delay: 0.15s; }
+  .hero-card:nth-child(4) { animation-delay: 0.20s; }
+  .card { animation: fadeUp 0.5s ease both; animation-delay: 0.25s; }
+  @keyframes leadIn { from { opacity:0; transform:translateX(8px); } to { opacity:1; transform:translateX(0); } }
+  .lead-item { animation: leadIn 0.25s ease both; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+
+  /* ── CONTENIDO VIEW ───────────────────────────────── */
+  .cont-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .cont-filters { display: flex; flex-direction: column; gap: 6px; }
+  .filter-row { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  .cont-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 16px; }
+
+  .cont-item {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 38px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+    animation: leadIn 0.25s ease both;
+  }
+  .cont-item:hover { box-shadow: var(--shadow-md); transform: translateX(3px); border-color: var(--border-strong); }
+
+  .cont-plat-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+  }
+  .cont-plat-icon.yt  { background: var(--red-light); color: var(--red); }
+  .cont-plat-icon.ig  { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .cont-plat-icon.tk  { background: rgba(0,0,0,0.06); color: var(--text-mid); }
+  .cont-plat-icon.none { background: rgba(0,0,0,0.04); color: var(--muted); font-size: 18px; }
+
+  .cont-main { min-width: 0; }
+  .cont-titulo { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cont-meta { display: flex; gap: 12px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+
+  .cont-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+  .cont-estado-chip {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 100px;
+  }
+  .cont-estado-chip.Idea        { background: rgba(0,0,0,0.05); color: var(--muted); }
+  .cont-estado-chip.Guionizado  { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .cont-estado-chip.En\ creación { background: var(--orange-light); color: var(--orange); }
+  .cont-estado-chip.Programado  { background: var(--accent-light); color: var(--accent); }
+  .cont-estado-chip.Publicado   { background: var(--green-light); color: var(--green); }
+  .cont-estado-chip.Cancelado   { background: rgba(220,38,38,0.08); color: var(--red); }
+
+  .cont-views { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+
+  /* Content side panel extras */
+  .csp-panel {
+    position: fixed; top: 0; right: 0;
+    width: 420px; height: 100vh;
+    background: rgba(248,250,248,0.97);
+    backdrop-filter: blur(30px);
+    border-left: 1px solid var(--border-strong);
+    box-shadow: -6px 0 32px rgba(0,0,0,0.1);
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column;
+  }
+  .csp-panel.open { transform: translateX(0); }
+
+  .estado-flow {
+    display: flex; align-items: center; gap: 4px;
+    flex-wrap: wrap; margin-bottom: 12px;
+  }
+  .ef-step {
+    font-size: 11px; font-weight: 600; padding: 4px 10px;
+    border-radius: 100px; border: 1px solid var(--border-strong);
+    background: rgba(0,0,0,0.03); color: var(--muted);
+    white-space: nowrap;
+  }
+  .ef-step.done { background: rgba(0,0,0,0.06); color: var(--text-mid); border-color: transparent; }
+  .ef-step.current { background: var(--accent); color: white; border-color: var(--accent); }
+  .ef-arrow { font-size: 11px; color: var(--muted); }
+
+  .btn-advance {
+    width: 100%; padding: 9px; border-radius: var(--radius-sm);
+    background: var(--accent-light); color: var(--accent);
+    border: 1px solid rgba(37,99,235,0.2);
+    font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .btn-advance:hover { background: var(--accent); color: white; }
+  .btn-advance:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .metric-block { display: flex; flex-direction: column; gap: 4px; }
+  .metric-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+  .metric-input {
+    padding: 8px 10px; border: 1px solid var(--border-strong);
+    border-radius: 8px; background: rgba(255,255,255,0.8);
+    font-family: 'DM Mono', monospace; font-size: 14px; color: var(--text);
+    outline: none; width: 100%; transition: border-color 0.15s;
+  }
+  .metric-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+  .link-input {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    background: rgba(255,255,255,0.8); font-family: 'Inter', sans-serif;
+    font-size: 12px; color: var(--accent); outline: none;
+    transition: border-color 0.15s;
+  }
+  .link-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+  .btn-save-metrics {
+    width: 100%; padding: 9px; border-radius: var(--radius-sm);
+    background: var(--green); color: white; border: none;
+    font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-save-metrics:hover { opacity: 0.88; }
+  .btn-save-metrics:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ── CONTENT SECTIONS ─────────────────────────────── */
+  .cont-toolbar-v2 {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; gap: 12px;
+  }
+  .cont-section { margin-bottom: 28px; }
+  .cont-section-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 18px; border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+  }
+  .yt-header {
+    background: rgba(255,0,0,0.05);
+    border: 1px solid rgba(255,0,0,0.14);
+    border-left: 3px solid #FF0000;
+  }
+  .ig-header {
+    background: linear-gradient(135deg, rgba(147,51,234,0.05) 0%, rgba(236,72,153,0.05) 100%);
+    border: 1px solid rgba(147,51,234,0.15);
+    border-left: 3px solid #9333ea;
+  }
+  .section-plat-icon { font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .yt-header  .section-plat-icon { color: #CC0000; }
+  .ig-header  .section-plat-icon { background: linear-gradient(135deg,#9333ea,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .section-title-text { font-size: 15px; font-weight: 700; }
+  .yt-header  .section-title-text { color: #CC0000; }
+  .ig-header  .section-title-text { background: linear-gradient(135deg,#9333ea,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .section-count-badge {
+    font-size: 11px; font-weight: 600; padding: 2px 9px;
+    border-radius: 100px; flex-shrink: 0;
+  }
+  .yt-header  .section-count-badge { background: rgba(255,0,0,0.1); color: #CC0000; }
+  .ig-header  .section-count-badge { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .section-spacer { flex: 1; }
+
+  /* View toggle (list / gallery) */
+  .view-toggle {
+    display: flex; gap: 2px; background: rgba(0,0,0,0.06);
+    padding: 3px; border-radius: 8px; flex-shrink: 0;
+  }
+  .toggle-btn {
+    padding: 5px 11px; border-radius: 6px; border: none;
+    background: none; font-size: 12px; font-weight: 500;
+    color: var(--text-mid); cursor: pointer;
+    transition: all 0.15s; font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+  }
+  .toggle-btn.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  /* Section empty state */
+  .section-empty {
+    padding: 28px 18px; text-align: center;
+    color: var(--muted); font-size: 13px;
+    background: rgba(0,0,0,0.02); border-radius: var(--radius-sm);
+    border: 1px dashed var(--border-strong);
+  }
+
+  /* Instagram item — left gradient accent */
+  .ig-cont-item {
+    border-left: 3px solid;
+    border-image: linear-gradient(to bottom, #9333ea, #ec4899) 1;
+    padding-left: 15px;
+  }
+
+  /* ── GALLERY GRID ─────────────────────────────────── */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .gallery-card {
+    background: var(--surface); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    overflow: hidden; cursor: pointer;
+    transition: all 0.2s; box-shadow: var(--shadow);
+    animation: fadeUp 0.3s ease both;
+  }
+  .gallery-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+  .gallery-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    background: rgba(0,0,0,0.07); overflow: hidden; position: relative;
+  }
+  .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-thumb img.error { display: none; }
+  .gallery-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(220,38,38,0.07), rgba(220,38,38,0.02));
+    padding: 14px; gap: 8px;
+  }
+  .gallery-placeholder-icon { font-size: 28px; opacity: 0.35; }
+  .gallery-placeholder-text {
+    font-size: 11px; color: var(--text-mid); text-align: center;
+    font-weight: 500; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .gallery-info { padding: 11px 13px 13px; }
+  .gallery-title {
+    font-size: 12px; font-weight: 600; color: var(--text);
+    margin-bottom: 8px; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .gallery-meta { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .gallery-stats { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* ── INGRESOS VIEW ─────────────────────────────────── */
+  .ing-top { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .ing-resumen {
+    background: var(--surface); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 28px;
+  }
+  .ing-resumen-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+  .ing-amounts { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+  .ing-amount-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .ing-amount-label { font-size: 13px; color: var(--text-mid); }
+  .ing-amount-value { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; }
+  .ing-amount-value.diego { color: var(--accent); }
+  .ing-amount-value.kdf   { color: #9333ea; }
+  .ing-amount-value.total { color: var(--text); font-size: 36px; }
+  .ing-sep { height: 1px; background: var(--border); margin: 4px 0; }
+  .ing-goal-section { }
+  .ing-goal-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .ing-goal-label { font-size: 12px; color: var(--muted); }
+  .ing-goal-pct { font-size: 14px; font-weight: 700; color: var(--accent); font-family: 'DM Mono', monospace; }
+  .ing-goal-track { height: 10px; background: rgba(0,0,0,0.07); border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+  .ing-goal-fill { height: 100%; border-radius: 5px; transition: width 1.3s cubic-bezier(0.4,0,0.2,1); background: linear-gradient(90deg, var(--accent), #7c3aed); }
+  .ing-projection { margin-top: 14px; padding: 12px 16px; background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.15); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+  .ing-projection strong { color: var(--text); }
+
+  /* Bar chart */
+  .ing-chart-card {
+    background: var(--surface); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 28px;
+  }
+  .ing-chart-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+  .ing-bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 140px; }
+  .ing-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end; }
+  .ing-bar-wrap { width: 100%; display: flex; align-items: flex-end; gap: 3px; flex: 1; justify-content: center; }
+  .ing-bar {
+    flex: 1; border-radius: 4px 4px 0 0;
+    transition: height 1.2s cubic-bezier(0.4,0,0.2,1);
+    min-height: 3px; cursor: pointer; position: relative;
+  }
+  .ing-bar.diego { background: var(--accent); opacity: 0.85; }
+  .ing-bar.kdf   { background: #9333ea; opacity: 0.75; }
+  .ing-bar:hover { opacity: 1; }
+  .ing-bar-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; text-align: center; white-space: nowrap; }
+  .ing-bar-val { font-size: 10px; color: var(--text-mid); font-weight: 600; text-align: center; white-space: nowrap; }
+  .ing-chart-legend { display: flex; gap: 16px; margin-top: 12px; justify-content: center; }
+  .ing-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* Ops list */
+  .ing-list-card {
+    background: var(--surface); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 28px;
+  }
+  .ing-list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .ing-list-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .op-item {
+    display: grid;
+    grid-template-columns: 12px 1fr 100px 110px 90px;
+    gap: 12px; align-items: center;
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+    transition: all 0.15s;
+  }
+  .op-item:hover { background: rgba(255,255,255,0.8); border-color: var(--border-strong); box-shadow: var(--shadow); }
+  .op-estado-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .op-main { min-width: 0; }
+  .op-nombre { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .op-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .op-comision { font-family: 'Instrument Serif', serif; font-size: 18px; color: var(--green); text-align: right; }
+  .op-fecha { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; }
+  .op-estado-chip {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 100px; text-align: center;
+    white-space: nowrap;
+  }
+  .op-estado-chip.negociacion { background: rgba(234,179,8,0.1); color: #a16207; }
+  .op-estado-chip.arras       { background: var(--orange-light); color: var(--orange); }
+  .op-estado-chip.escritura   { background: var(--accent-light); color: var(--accent); }
+  .op-estado-chip.cobrado     { background: var(--green-light); color: var(--green); }
+  .ops-empty { text-align: center; padding: 40px 24px; color: var(--muted); }
+  .ops-empty-icon { font-size: 32px; margin-bottom: 10px; }
+  .ops-empty-title { font-family: 'Instrument Serif', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-text">Diego Sánchez</div>
+      <div class="logo-badge">Operativo</div>
+    </div>
+    <div class="header-right">
+      <div class="date-pill" id="fecha-actual"></div>
+      <div class="objetivo-pill">Objetivo 100K€/mes</div>
+    </div>
+  </div>
+  <div class="header-tabs">
+    <button class="nav-tab active" data-view="resumen" onclick="showView('resumen')">Resumen</button>
+    <button class="nav-tab" data-view="leads" onclick="showView('leads')">Leads</button>
+    <button class="nav-tab" data-view="contenido" onclick="showView('contenido')">Contenido</button>
+    <button class="nav-tab" data-view="ingresos" onclick="showView('ingresos')">Ingresos</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ══════════════ VISTA RESUMEN ══════════════ -->
+  <div id="view-resumen" class="view active">
+    <div class="view-flex">
+
+      <div class="hero-row">
+        <div class="hero-card">
+          <div class="hero-label">Ingresos este mes</div>
+          <div class="hero-value accent" contenteditable="true" spellcheck="false">37.500€</div>
+          <div class="hero-sub"><span class="chip up">+2 excl.</span><span>3 × 12.500€</span></div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Leads generados</div>
+          <div class="hero-value good" contenteditable="true" spellcheck="false">24</div>
+          <div class="hero-sub"><span class="chip up">+18%</span><span>vs mes anterior</span></div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Coste por lead</div>
+          <div class="hero-value warn" contenteditable="true" spellcheck="false">18€</div>
+          <div class="hero-sub"><span class="chip warn">Objetivo &lt;15€</span></div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Seguidores Instagram</div>
+          <div class="hero-value" contenteditable="true" spellcheck="false">4.820</div>
+          <div class="hero-sub"><span class="chip up">+340</span><span>este mes</span></div>
+        </div>
+      </div>
+
+      <div class="alertas">
+        <div class="alerta danger">
+          <div class="alerta-dot"></div>
+          <div class="alerta-text"><strong>3 leads calientes</strong> sin contactar en las últimas 2 horas — revisar CRM ahora</div>
+          <div class="alerta-action" onclick="showView('leads')">Ver leads →</div>
+        </div>
+        <div class="alerta warn-bar">
+          <div class="alerta-dot"></div>
+          <div class="alerta-text"><strong>CPL en 18€</strong> — por encima del objetivo de 15€. Revisar copy del anuncio de audiencia fría</div>
+          <div class="alerta-action">Ver ads →</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title">Pipeline de Leads</div>
+
+            <div class="section-divider">Propietarios</div>
+            <div class="pipeline-item">
+              <div class="pipeline-dot" style="background:var(--red)"></div>
+              <div class="pipeline-name">Caliente</div>
+              <div class="pipeline-bar-track"><div class="pipeline-bar" id="bar-caliente" style="width:0%;background:var(--red)"></div></div>
+              <div class="pipeline-count" id="count-caliente" contenteditable="true">—</div>
+            </div>
+            <div class="pipeline-item">
+              <div class="pipeline-dot" style="background:var(--orange)"></div>
+              <div class="pipeline-name">Templado</div>
+              <div class="pipeline-bar-track"><div class="pipeline-bar" id="bar-templado" style="width:0%;background:var(--orange)"></div></div>
+              <div class="pipeline-count" id="count-templado" contenteditable="true">—</div>
+            </div>
+            <div class="pipeline-item">
+              <div class="pipeline-dot" style="background:#60a5fa"></div>
+              <div class="pipeline-name">Frío</div>
+              <div class="pipeline-bar-track"><div class="pipeline-bar" id="bar-frio" style="width:0%;background:#60a5fa"></div></div>
+              <div class="pipeline-count" id="count-frio" contenteditable="true">—</div>
+            </div>
+            <div class="pipeline-item" style="margin-bottom:16px">
+              <div class="pipeline-dot" style="background:var(--green)"></div>
+              <div class="pipeline-name">Exclusivas firmadas</div>
+              <div class="pipeline-bar-track"><div class="pipeline-bar" id="bar-exclusivas-prop" style="width:0%;background:var(--green)"></div></div>
+              <div class="pipeline-count" id="count-exclusivas" contenteditable="true">—</div>
+            </div>
+
+            <div class="section-divider">Compradores</div>
+            <div class="pipeline-item">
+              <div class="pipeline-dot" style="background:var(--accent)"></div>
+              <div class="pipeline-name">Cualificados</div>
+              <div class="pipeline-bar-track"><div class="pipeline-bar" id="bar-cualificados" style="width:0%;background:var(--accent)"></div></div>
+              <div class="pipeline-count" id="count-cualificados" contenteditable="true">—</div>
+            </div>
+            <div class="pipeline-item" style="margin-bottom:20px">
+              <div class="pipeline-dot" style="background:var(--muted)"></div>
+              <div class="pipeline-name">En proceso</div>
+              <div class="pipeline-bar-track"><div class="pipeline-bar" id="bar-en-proceso" style="width:0%;background:var(--muted)"></div></div>
+              <div class="pipeline-count" id="count-en-proceso" contenteditable="true">—</div>
+            </div>
+
+            <div class="section-divider">Objetivo mensual</div>
+            <div class="progress-wrap">
+              <div class="progress-header">
+                <div class="progress-label">Exclusivas firmadas</div>
+                <div class="progress-nums"><span id="excl-num">—</span> / 8</div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" id="bar-excl-progress" style="width:0%;background:var(--orange)"></div></div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-header">
+                <div class="progress-label">Ingresos</div>
+                <div class="progress-nums"><span>37.500€</span> / 100.000€</div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:37.5%;background:var(--accent)"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title">Facebook & Instagram Ads</div>
+
+            <div class="section-divider">Diego Sánchez — Marca Personal</div>
+            <div class="ads-grid">
+              <div class="ads-metric">
+                <div class="ads-label">Coste por lead</div>
+                <div class="ads-value warn" contenteditable="true">18€</div>
+                <div class="ads-target">objetivo &lt;15€</div>
+              </div>
+              <div class="ads-metric">
+                <div class="ads-label">CTR</div>
+                <div class="ads-value good" contenteditable="true">1.8%</div>
+                <div class="ads-target">objetivo &gt;1.5%</div>
+              </div>
+              <div class="ads-metric">
+                <div class="ads-label">Leads generados</div>
+                <div class="ads-value" contenteditable="true">14</div>
+                <div class="ads-target">este mes</div>
+              </div>
+              <div class="ads-metric">
+                <div class="ads-label">Gasto</div>
+                <div class="ads-value" contenteditable="true">252€</div>
+                <div class="ads-target">de 500€ presupuesto</div>
+              </div>
+            </div>
+            <div class="progress-wrap" style="margin-bottom:20px">
+              <div class="progress-header">
+                <div class="progress-label">Presupuesto usado</div>
+                <div class="progress-nums"><span>252€</span> / 500€</div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--accent)"></div></div>
+            </div>
+
+            <div class="section-divider">KDF Realty</div>
+            <div class="ads-grid">
+              <div class="ads-metric">
+                <div class="ads-label">Coste por lead</div>
+                <div class="ads-value good" contenteditable="true">12€</div>
+                <div class="ads-target">objetivo &lt;15€</div>
+              </div>
+              <div class="ads-metric">
+                <div class="ads-label">CTR</div>
+                <div class="ads-value good" contenteditable="true">2.1%</div>
+                <div class="ads-target">objetivo &gt;1.5%</div>
+              </div>
+              <div class="ads-metric">
+                <div class="ads-label">Leads generados</div>
+                <div class="ads-value" contenteditable="true">21</div>
+                <div class="ads-target">este mes</div>
+              </div>
+              <div class="ads-metric">
+                <div class="ads-label">Gasto</div>
+                <div class="ads-value" contenteditable="true">248€</div>
+                <div class="ads-target">de 500€ presupuesto</div>
+              </div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-header">
+                <div class="progress-label">Presupuesto usado</div>
+                <div class="progress-nums"><span>248€</span> / 500€</div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:49.6%;background:var(--green)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title">Calendario de Publicaciones — Marzo 2026</div>
+            <div class="cal-grid">
+              <div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">X</div><div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div><div class="cal-header">D</div>
+              <div class="cal-day past">3</div>
+              <div class="cal-day past has-content">4<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day past has-content">5<div class="cal-dots"><div class="cal-dot ig"></div></div></div>
+              <div class="cal-day past">6</div>
+              <div class="cal-day past has-content">7<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day past">8</div>
+              <div class="cal-day past">9</div>
+              <div class="cal-day past has-content">10<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day past has-content">11<div class="cal-dots"><div class="cal-dot ig"></div></div></div>
+              <div class="cal-day past has-content">12<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day past has-content">13<div class="cal-dots"><div class="cal-dot ig"></div></div></div>
+              <div class="cal-day past has-content">14<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day past">15</div>
+              <div class="cal-day past">16</div>
+              <div class="cal-day today has-content">17<div class="cal-dots"><div class="cal-dot white"></div></div></div>
+              <div class="cal-day has-content">18<div class="cal-dots"><div class="cal-dot ig"></div></div></div>
+              <div class="cal-day has-content">19<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day">20</div>
+              <div class="cal-day has-content">21<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day">22</div>
+              <div class="cal-day">23</div>
+              <div class="cal-day has-content">24<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day has-content">25<div class="cal-dots"><div class="cal-dot ig"></div></div></div>
+              <div class="cal-day has-content">26<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day">27</div>
+              <div class="cal-day has-content">28<div class="cal-dots"><div class="cal-dot yt"></div></div></div>
+              <div class="cal-day">29</div>
+              <div class="cal-day">30</div>
+              <div class="cal-day">31</div>
+            </div>
+            <div class="cal-legend">
+              <div class="legend-item"><div class="cal-dot yt"></div> YouTube</div>
+              <div class="legend-item"><div class="cal-dot ig"></div> Instagram</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title">Estado del Contenido</div>
+            <div class="metricas-row">
+              <div class="metrica-mini">
+                <div class="metrica-mini-label">Instagram</div>
+                <div class="metrica-mini-value" contenteditable="true">4.820</div>
+                <div class="metrica-mini-sub">seguidores</div>
+              </div>
+              <div class="metrica-mini">
+                <div class="metrica-mini-label">YouTube</div>
+                <div class="metrica-mini-value" contenteditable="true">1.240</div>
+                <div class="metrica-mini-sub">suscriptores</div>
+              </div>
+              <div class="metrica-mini">
+                <div class="metrica-mini-label">Publicados</div>
+                <div class="metrica-mini-value" contenteditable="true">11</div>
+                <div class="metrica-mini-sub">vídeos este mes</div>
+              </div>
+            </div>
+            <div id="contenido-list">
+              <div class="contenido-item" style="opacity:0.4;pointer-events:none">
+                <div class="plat-icon" style="background:rgba(0,0,0,0.05);color:var(--muted)">◉</div>
+                <div class="contenido-titulo">Cargando contenido desde Notion…</div>
+                <div class="estado-chip idea">—</div>
+                <div class="contenido-fecha">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ VISTA LEADS ══════════════ -->
+  <div id="view-leads" class="view">
+
+    <!-- Stats rápidas -->
+    <div class="leads-stats">
+      <div class="lead-stat">
+        <div class="lead-stat-num" id="stat-total">—</div>
+        <div class="lead-stat-label">Total propietarios</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num alta" id="stat-alta">—</div>
+        <div class="lead-stat-label">Alta prioridad</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num media" id="stat-media">—</div>
+        <div class="lead-stat-label">Media prioridad</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num baja" id="stat-baja">—</div>
+        <div class="lead-stat-label">Baja prioridad</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="leads-toolbar">
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="all" onclick="applyFilter('all', this)">Todos</button>
+        <button class="filter-chip" data-filter="Alta" onclick="applyFilter('Alta', this)">🔴 Alta</button>
+        <button class="filter-chip" data-filter="Media" onclick="applyFilter('Media', this)">🟠 Media</button>
+        <button class="filter-chip" data-filter="Baja" onclick="applyFilter('Baja', this)">🔵 Baja</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="btn-refresh" id="btn-refresh" title="Actualizar desde Notion" onclick="loadLeads(true)">↻</button>
+        <button class="btn-add" onclick="openAddModal()">
+          <span style="font-size:16px;line-height:1">+</span> Añadir lead
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de leads -->
+    <div class="leads-list-container" id="leads-list">
+      <div class="leads-empty">
+        <div class="leads-empty-icon">⏳</div>
+        <div class="leads-empty-title">Cargando leads…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ VISTA CONTENIDO ══════════════ -->
+  <div id="view-contenido" class="view">
+
+    <!-- Stats -->
+    <div class="cont-stats">
+      <div class="lead-stat">
+        <div class="lead-stat-num" id="cstat-total">—</div>
+        <div class="lead-stat-label">Total piezas</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num" style="color:var(--red)" id="cstat-yt">—</div>
+        <div class="lead-stat-label">YouTube</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num" style="color:#9333ea" id="cstat-ig">—</div>
+        <div class="lead-stat-label">Instagram</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num" style="color:var(--green)" id="cstat-pub">—</div>
+        <div class="lead-stat-label">Publicados</div>
+      </div>
+    </div>
+
+    <!-- Toolbar: filtro estado + acciones -->
+    <div class="cont-toolbar-v2">
+      <div class="filter-row" id="frow-estado">
+        <button class="filter-chip active" data-est="all"         onclick="cApplyEstado('all',this)">Todos</button>
+        <button class="filter-chip"        data-est="Idea"        onclick="cApplyEstado('Idea',this)">Idea</button>
+        <button class="filter-chip"        data-est="Guionizado"  onclick="cApplyEstado('Guionizado',this)">Guionizado</button>
+        <button class="filter-chip"        data-est="En creación" onclick="cApplyEstado('En creación',this)">En creación</button>
+        <button class="filter-chip"        data-est="Programado"  onclick="cApplyEstado('Programado',this)">Programado</button>
+        <button class="filter-chip"        data-est="Publicado"   onclick="cApplyEstado('Publicado',this)">Publicado</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+        <button class="btn-refresh" id="btn-refresh-cont" title="Actualizar desde Notion" onclick="loadContenido(true)">↻</button>
+        <button class="btn-add" onclick="openAddContenidoModal()">
+          <span style="font-size:16px;line-height:1">+</span> Añadir
+        </button>
+      </div>
+    </div>
+
+    <!-- ▶ YouTube -->
+    <div class="cont-section" id="yt-section">
+      <div class="cont-section-header yt-header">
+        <span class="section-plat-icon">▶</span>
+        <span class="section-title-text">YouTube</span>
+        <span class="section-count-badge" id="yt-count">0 vídeos</span>
+        <span class="section-spacer"></span>
+        <div class="view-toggle">
+          <button class="toggle-btn active" id="yt-btn-list"    onclick="setYTView('list')">≡ Lista</button>
+          <button class="toggle-btn"        id="yt-btn-gallery" onclick="setYTView('gallery')">⊞ Galería</button>
+        </div>
+      </div>
+      <div id="yt-container"></div>
+    </div>
+
+    <!-- ◈ Instagram -->
+    <div class="cont-section" id="ig-section">
+      <div class="cont-section-header ig-header">
+        <span class="section-plat-icon">◈</span>
+        <span class="section-title-text">Instagram</span>
+        <span class="section-count-badge" id="ig-count">0 reels</span>
+      </div>
+      <div id="ig-container"></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ VISTA INGRESOS ══════════════ -->
+  <div id="view-ingresos" class="view">
+
+    <div class="ing-top">
+      <!-- Resumen del mes -->
+      <div class="ing-resumen">
+        <div class="ing-resumen-title">Resumen — <span id="ing-mes-label">este mes</span></div>
+        <div class="ing-amounts">
+          <div class="ing-amount-row">
+            <span class="ing-amount-label">Diego Sánchez</span>
+            <span class="ing-amount-value diego" id="ing-total-diego">—</span>
+          </div>
+          <div class="ing-amount-row">
+            <span class="ing-amount-label">KDF Realty</span>
+            <span class="ing-amount-value kdf" id="ing-total-kdf">—</span>
+          </div>
+          <div class="ing-sep"></div>
+          <div class="ing-amount-row">
+            <span class="ing-amount-label" style="font-weight:600;color:var(--text)">Total del mes</span>
+            <span class="ing-amount-value total" id="ing-total-mes">—</span>
+          </div>
+        </div>
+        <div class="ing-goal-section">
+          <div class="ing-goal-header">
+            <span class="ing-goal-label">Progreso hacia 100.000€</span>
+            <span class="ing-goal-pct" id="ing-pct">0%</span>
+          </div>
+          <div class="ing-goal-track">
+            <div class="ing-goal-fill" id="ing-goal-bar" style="width:0%"></div>
+          </div>
+          <div class="ing-projection" id="ing-proyeccion">
+            Cargando datos desde Notion…
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico de barras -->
+      <div class="ing-chart-card">
+        <div class="ing-chart-title">Ingresos por mes — últimos 6 meses</div>
+        <div class="ing-bar-chart" id="ing-chart"></div>
+        <div class="ing-chart-legend">
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)">
+            <div class="ing-legend-dot" style="background:var(--accent)"></div> Diego Sánchez
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)">
+            <div class="ing-legend-dot" style="background:#9333ea"></div> KDF Realty
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de operaciones -->
+    <div class="ing-list-card">
+      <div class="ing-list-header">
+        <div class="ing-list-title">Todas las operaciones</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="btn-refresh" id="btn-refresh-ops" title="Actualizar" onclick="loadOperaciones(true)">↻</button>
+          <button class="btn-add" onclick="openAddOpModal()">
+            <span style="font-size:16px;line-height:1">+</span> Añadir operación
+          </button>
+        </div>
+      </div>
+      <div id="ops-list">
+        <div class="ops-empty">
+          <div class="ops-empty-icon">⏳</div>
+          <div class="ops-empty-title">Cargando operaciones…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ══════════════ SIDE PANEL ══════════════ -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
+<div class="side-panel" id="side-panel">
+  <div class="sp-header">
+    <div class="sp-header-info">
+      <div class="sp-name" id="sp-name">—</div>
+      <div class="sp-priority" id="sp-priority"></div>
+    </div>
+    <button class="sp-close" onclick="closePanel()">×</button>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+  <div class="sp-footer">
+    <a class="sp-notion-btn" id="sp-notion-link" href="#" target="_blank">
+      ↗ Abrir en Notion
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════ ADD LEAD MODAL ══════════════ -->
+<div class="modal-overlay" id="add-modal" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Añadir lead propietario</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre completo <span class="form-required">*</span></label>
+        <input type="text" class="form-input" id="f-nombre" placeholder="Ej. María García López">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input type="tel" class="form-input" id="f-telefono" placeholder="+34 600 000 000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Cuándo quiere vender?</label>
+        <select class="form-select" id="f-plazo">
+          <option value="">— Sin especificar —</option>
+          <option value="Alta">Menos de 3 meses (Alta prioridad)</option>
+          <option value="Media">Entre 3 y 6 meses (Media prioridad)</option>
+          <option value="Baja">Sin plazo definido (Baja prioridad)</option>
+        </select>
+        <div class="form-hint">La prioridad se asigna automáticamente según el plazo.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Origen del lead</label>
+        <select class="form-select" id="f-origen">
+          <option value="">— Seleccionar —</option>
+          <option>Instagram</option>
+          <option>YouTube</option>
+          <option>Facebook Ads</option>
+          <option>Referido</option>
+          <option>Llamada fría</option>
+          <option>Portal inmobiliario</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas iniciales</label>
+        <textarea class="form-textarea" id="f-notas" placeholder="Contexto del lead, situación de la propiedad, urgencia…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" id="btn-save" onclick="saveLead()">
+        <span class="save-text">Guardar en Notion</span>
+        <span class="save-spinner">Guardando…</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CONTENT SIDE PANEL ══════════════ -->
+<div class="panel-overlay" id="cpanel-overlay" onclick="closeCPanel()"></div>
+<div class="csp-panel" id="csp-panel">
+  <div class="sp-header">
+    <div class="sp-header-info">
+      <div class="sp-name" id="csp-titulo"
+        contenteditable="true" spellcheck="false"
+        style="font-size:17px;line-height:1.3;outline:none;cursor:text;border-radius:6px;padding:2px 4px;margin:-2px -4px;transition:background 0.15s"
+        onmouseenter="this.style.background='rgba(0,0,0,0.04)'"
+        onmouseleave="if(document.activeElement!==this)this.style.background=''"
+        onfocus="this.style.background='rgba(37,99,235,0.06)';this.style.boxShadow='0 0 0 2px rgba(37,99,235,0.2)'"
+        onblur="this.style.background='';this.style.boxShadow='';saveTitulo()"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
+      >—</div>
+      <div id="csp-badges" style="margin-top:6px;display:flex;gap:6px;align-items:center">
+        <span id="csp-save-indicator" style="font-size:11px;color:var(--green);opacity:0;transition:opacity 0.3s">✓ Guardado</span>
+      </div>
+    </div>
+    <button class="sp-close" onclick="closeCPanel()">×</button>
+  </div>
+  <div class="sp-body" id="csp-body"></div>
+  <div class="sp-footer">
+    <a class="sp-notion-btn" id="csp-notion-link" href="#" target="_blank">↗ Abrir en Notion</a>
+  </div>
+</div>
+
+<!-- ══════════════ ADD CONTENIDO MODAL ══════════════ -->
+<div class="modal-overlay" id="add-cont-modal" style="display:none" onclick="closeContModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Añadir pieza de contenido</div>
+      <button class="modal-close" onclick="closeContModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título <span class="form-required">*</span></label>
+        <input type="text" class="form-input" id="cf-titulo" placeholder="Ej. Por qué el 90% de los propietarios venden mal">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Plataforma</label>
+          <select class="form-select" id="cf-plataforma">
+            <option value="">— Seleccionar —</option>
+            <option>YouTube</option>
+            <option>Instagram</option>
+            <option>TikTok</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de vídeo</label>
+          <select class="form-select" id="cf-tipo-video">
+            <option value="">— Seleccionar —</option>
+            <option>Expertise</option>
+            <option>Mercado</option>
+            <option>Lifestyle</option>
+            <option>Testimonio</option>
+            <option>Llamada de Ventas</option>
+            <option>Negociación</option>
+            <option>Documentación</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Tipo de contenido</label>
+          <select class="form-select" id="cf-tipo-cont">
+            <option value="">— Seleccionar —</option>
+            <option>TOF</option>
+            <option>MOF</option>
+            <option>BOF</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de grabación</label>
+          <input type="date" class="form-input" id="cf-fecha">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeContModal()">Cancelar</button>
+      <button class="btn-save" id="btn-save-cont" onclick="saveContenido()">
+        <span class="save-text">Guardar en Notion</span>
+        <span class="save-spinner">Guardando…</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ADD OPERACIÓN MODAL ══════════════ -->
+<div class="modal-overlay" id="add-op-modal" style="display:none" onclick="closeOpModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Añadir operación</div>
+      <button class="modal-close" onclick="closeOpModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Propiedad / Cliente <span class="form-required">*</span></label>
+        <input type="text" class="form-input" id="op-propiedad" placeholder="Ej. Villa Las Palmas — Martínez García">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Tipo</label>
+          <select class="form-select" id="op-tipo">
+            <option value="">— Seleccionar —</option>
+            <option>Diego Sánchez</option>
+            <option>KDF Realty</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="op-estado">
+            <option value="">— Seleccionar —</option>
+            <option>En negociación</option>
+            <option>Arras firmadas</option>
+            <option>Escritura</option>
+            <option>Cobrado</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Valor de venta (€)</label>
+          <input type="number" class="form-input" id="op-valor" placeholder="500000" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comisión Diego (€)</label>
+          <input type="number" class="form-input" id="op-com-diego" placeholder="12500" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comisión KDF (€)</label>
+          <input type="number" class="form-input" id="op-com-kdf" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha de cierre</label>
+        <input type="date" class="form-input" id="op-fecha">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-textarea" id="op-notas" placeholder="Detalles de la operación…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeOpModal()">Cancelar</button>
+      <button class="btn-save" id="btn-save-op" onclick="saveOperacion()">
+        <span class="save-text">Guardar en Notion</span>
+        <span class="save-spinner">Guardando…</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-text">Diego Sánchez — Panel Operativo v2.0</div>
+  <div class="footer-text" id="last-update"></div>
+</footer>
+
+<script>
+// ── FECHA ────────────────────────────────────────────
+const now = new Date();
+const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+document.getElementById('fecha-actual').textContent = now.toLocaleDateString('es-ES', opts);
+document.getElementById('last-update').textContent = 'Actualizado ' + now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+// ── VISTA ────────────────────────────────────────────
+let leadsLoaded = false;
+let contenidoLoaded = false;
+let ingresosLoaded = false;
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelector(`[data-view="${name}"]`).classList.add('active');
+  if (name === 'leads' && !leadsLoaded) loadLeads();
+  if (name === 'contenido' && !contenidoLoaded) loadContenido();
+  if (name === 'ingresos' && !ingresosLoaded) loadOperaciones();
+}
+
+// ── DATOS.JSON (Resumen) ──────────────────────────────
+function platIcon(plat) {
+  if (plat === 'YouTube') return '<div class="plat-icon yt">▶</div>';
+  if (plat === 'Instagram') return '<div class="plat-icon ig">◈</div>';
+  return '<div class="plat-icon" style="background:rgba(0,0,0,0.05);color:var(--muted)">◉</div>';
+}
+function estadoChip(estado) {
+  const map = { 'Publicado':'publicado','Programado':'programado','Grabado':'grabado','Guionizado':'guionizado','Idea':'idea' };
+  return `<div class="estado-chip ${map[estado]||'idea'}">${estado||'Idea'}</div>`;
+}
+function fmtFecha(f) {
+  if (!f) return '';
+  return new Date(f + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+}
+
+fetch('datos.json')
+  .then(r => r.json())
+  .then(datos => {
+    const p = datos.crm_propietarios.por_prioridad;
+    const excl = datos.crm_propietarios.exclusivas_conseguidas || 0;
+    const maxP = Math.max(p.Alta||0, p.Media||0, p.Baja||0, 1);
+
+    document.getElementById('count-caliente').textContent = p.Alta||0;
+    document.getElementById('count-templado').textContent = p.Media||0;
+    document.getElementById('count-frio').textContent = p.Baja||0;
+    document.getElementById('count-exclusivas').textContent = excl;
+
+    setTimeout(() => {
+      document.getElementById('bar-caliente').style.width = ((p.Alta||0)/maxP*100)+'%';
+      document.getElementById('bar-templado').style.width = ((p.Media||0)/maxP*100)+'%';
+      document.getElementById('bar-frio').style.width = ((p.Baja||0)/maxP*100)+'%';
+      document.getElementById('bar-exclusivas-prop').style.width = excl>0?'100%':'0%';
+    }, 200);
+
+    const c = datos.crm_compradores.por_estado;
+    const cualificados = (c['Visita agendada']||0)+(c['Negociación']||0)+(c['Cerrado']||0);
+    const enProceso = (c['Primer contacto']||0)+(c['En seguimiento']||0);
+    const maxC = Math.max(cualificados, enProceso, 1);
+
+    document.getElementById('count-cualificados').textContent = cualificados;
+    document.getElementById('count-en-proceso').textContent = enProceso;
+
+    setTimeout(() => {
+      document.getElementById('bar-cualificados').style.width = (cualificados/maxC*100)+'%';
+      document.getElementById('bar-en-proceso').style.width = (enProceso/maxC*100)+'%';
+    }, 200);
+
+    const exclPct = Math.min(excl/8*100, 100);
+    document.getElementById('excl-num').textContent = excl;
+    setTimeout(() => {
+      const bar = document.getElementById('bar-excl-progress');
+      bar.style.width = exclPct+'%';
+      bar.style.background = exclPct>=75?'var(--green)':exclPct>=37?'var(--orange)':'var(--red)';
+    }, 200);
+
+    const list = document.getElementById('contenido-list');
+    list.innerHTML = datos.contenido_reciente.map(item => `
+      <div class="contenido-item">
+        ${platIcon(item.plataforma)}
+        <div class="contenido-titulo">${item.titulo}</div>
+        ${estadoChip(item.estado)}
+        <div class="contenido-fecha">${fmtFecha(item.fecha)}</div>
+      </div>
+    `).join('');
+
+    if (datos.generado) {
+      const fg = new Date(datos.generado + 'T00:00:00');
+      document.getElementById('last-update').textContent =
+        'Notion · ' + fg.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
+    }
+
+    // Animar barras de ingresos/ads (estáticas)
+    setTimeout(() => {
+      document.querySelectorAll('.progress-fill').forEach(el => {
+        const ids = ['bar-caliente','bar-templado','bar-frio','bar-exclusivas-prop','bar-cualificados','bar-en-proceso','bar-excl-progress'];
+        if (!ids.includes(el.id)) {
+          const w = el.style.width;
+          el.style.width = '0%';
+          setTimeout(() => { el.style.width = w; }, 50);
+        }
+      });
+    }, 300);
+  })
+  .catch(() => {});
+
+// ── LEADS (Notion via server) ────────────────────────
+let allLeads = [];
+let activeFilter = 'all';
+
+function getProp(props, key, type) {
+  const p = props[key];
+  if (!p) return type === 'checkbox' ? false : '';
+  switch(type) {
+    case 'title':    return p.title?.map(t => t.plain_text).join('') || '';
+    case 'phone':    return p.phone_number || '';
+    case 'email':    return p.email || '';
+    case 'select':   return p.select?.name || '';
+    case 'text':     return p.rich_text?.map(t => t.plain_text).join('') || '';
+    case 'date':     return p.date?.start || '';
+    case 'checkbox': return p.checkbox || false;
+    case 'number':   return p.number ?? '';
+    case 'url':      return p.url || '';
+    case 'status':   return p.status?.name || '';
+    default:         return '';
+  }
+}
+
+function parseLead(page) {
+  const props = page.properties;
+  return {
+    id:              page.id,
+    url:             page.url,
+    nombre:          getProp(props, 'Nombre completo', 'title'),
+    telefono:        getProp(props, 'Teléfono', 'phone'),
+    email:           getProp(props, 'Email', 'email'),
+    tipoContacto:    getProp(props, 'Tipo de contacto', 'select'),
+    origen:          getProp(props, 'Origen del contacto', 'select'),
+    estado:          getProp(props, 'Estado del contacto', 'select'),
+    prioridad:       getProp(props, 'Prioridad', 'select'),
+    resultadoLlamada:getProp(props, 'Resultado de llamada', 'select'),
+    proximaAccion:   getProp(props, 'Próxima acción/Seguimiento', 'text'),
+    ultimoContacto:  getProp(props, 'Fecha de último contacto', 'date'),
+    visitaProgramada:getProp(props, 'Visita programada', 'date'),
+    visitaRealizada: getProp(props, 'Visita realizada', 'checkbox'),
+    exclusiva:       getProp(props, 'Exclusiva conseguida', 'checkbox'),
+    zona:            getProp(props, 'Zona/Propiedad de interés', 'text'),
+    notas:           getProp(props, 'Notas', 'text'),
+  };
+}
+
+const prioridadOrder = { 'Alta': 0, 'Media': 1, 'Baja': 2, '': 3 };
+
+function sortLeads(leads) {
+  return [...leads].sort((a, b) => {
+    const pa = prioridadOrder[a.prioridad] ?? 3;
+    const pb = prioridadOrder[b.prioridad] ?? 3;
+    if (pa !== pb) return pa - pb;
+    return a.nombre.localeCompare(b.nombre, 'es');
+  });
+}
+
+function priorDot(p) {
+  const colors = { 'Alta': 'var(--red)', 'Media': 'var(--orange)', 'Baja': '#3b82f6' };
+  return colors[p] || 'var(--muted)';
+}
+
+function renderLeads(leads) {
+  const container = document.getElementById('leads-list');
+  if (!leads.length) {
+    container.innerHTML = `
+      <div class="leads-empty">
+        <div class="leads-empty-icon">🔍</div>
+        <div class="leads-empty-title">No hay leads con este filtro</div>
+        <div class="leads-empty-sub">Prueba con otro filtro de prioridad.</div>
+      </div>`;
+    return;
+  }
+  container.innerHTML = leads.map((lead, i) => {
+    const pClass = lead.prioridad || 'none';
+    const telefono = lead.telefono ? `<span class="lead-meta-item">📞 ${lead.telefono}</span>` : '';
+    const accion = lead.proximaAccion ? `<span class="lead-meta-item" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">→ ${lead.proximaAccion}</span>` : '';
+    const uc = lead.ultimoContacto ? `<span class="lead-meta-item">🗓 ${fmtFecha(lead.ultimoContacto)}</span>` : '';
+    return `
+      <div class="lead-item" style="animation-delay:${i*0.03}s" onclick="openPanel(${i})">
+        <div class="lead-priority-dot" style="background:${priorDot(lead.prioridad)}"></div>
+        <div class="lead-main">
+          <div class="lead-name">${lead.nombre || 'Sin nombre'}</div>
+          <div class="lead-meta">
+            ${telefono}${accion}${uc}
+          </div>
+        </div>
+        <div class="lead-badges">
+          <span class="priority-badge ${pClass}">${lead.prioridad||'—'}</span>
+          ${lead.estado ? `<span class="lead-estado-badge">${lead.estado}</span>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function updateStats(leads) {
+  const alta  = leads.filter(l => l.prioridad === 'Alta').length;
+  const media = leads.filter(l => l.prioridad === 'Media').length;
+  const baja  = leads.filter(l => l.prioridad === 'Baja').length;
+  document.getElementById('stat-total').textContent = leads.length;
+  document.getElementById('stat-alta').textContent  = alta;
+  document.getElementById('stat-media').textContent = media;
+  document.getElementById('stat-baja').textContent  = baja;
+}
+
+function applyFilter(filter, el) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = filter === 'all' ? allLeads : allLeads.filter(l => l.prioridad === filter);
+  renderLeads(filtered);
+}
+
+async function loadLeads(forceRefresh = false) {
+  leadsLoaded = true;
+  const btn = document.getElementById('btn-refresh');
+  btn.classList.add('spinning');
+
+  const container = document.getElementById('leads-list');
+  if (!forceRefresh) {
+    container.innerHTML = `
+      <div class="leads-empty">
+        <div class="leads-empty-icon">⏳</div>
+        <div class="leads-empty-title">Conectando con Notion…</div>
+      </div>`;
+  }
+
+  try {
+    const res = await fetch('/api/propietarios');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: 'Error desconocido' }));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    allLeads = sortLeads((data.results || []).map(parseLead));
+    updateStats(allLeads);
+    const filtered = activeFilter === 'all' ? allLeads : allLeads.filter(l => l.prioridad === activeFilter);
+    renderLeads(filtered);
+  } catch (e) {
+    const isConnErr = e.message.includes('fetch') || e.message.includes('Failed');
+    container.innerHTML = `
+      <div class="leads-empty">
+        <div class="leads-empty-icon">${isConnErr ? '🔌' : '⚠️'}</div>
+        <div class="leads-empty-title">${isConnErr ? 'Servidor no disponible' : 'Error al cargar leads'}</div>
+        <div class="leads-empty-sub">
+          ${isConnErr
+            ? `Lanza el servidor local primero:<br><br>
+               <code>cd ~/diego-sanchez && npm install && npm start</code><br><br>
+               Luego abre <code>http://localhost:3000</code>`
+            : `Error: ${e.message}`
+          }
+        </div>
+      </div>`;
+  } finally {
+    btn.classList.remove('spinning');
+  }
+}
+
+// ── SIDE PANEL ───────────────────────────────────────
+function openPanel(index) {
+  const lead = (activeFilter === 'all' ? allLeads : allLeads.filter(l => l.prioridad === activeFilter))[index];
+  if (!lead) return;
+
+  document.getElementById('sp-name').textContent = lead.nombre || 'Sin nombre';
+  const pClass = lead.prioridad || 'none';
+  document.getElementById('sp-priority').innerHTML =
+    lead.prioridad ? `<span class="priority-badge ${pClass}">${lead.prioridad}</span>` : '';
+  document.getElementById('sp-notion-link').href = lead.url || '#';
+
+  const val = (v, fallback='—') => v || `<span class="empty">${fallback}</span>`;
+  const check = (v) => v
+    ? `<span class="sp-check"><span class="sp-check-dot" style="background:var(--green)"></span> Sí</span>`
+    : `<span class="sp-check"><span class="sp-check-dot" style="background:var(--muted)"></span> No</span>`;
+
+  document.getElementById('sp-body').innerHTML = `
+    <div class="sp-section">
+      <div class="sp-section-title">Contacto</div>
+      <div class="sp-row">
+        <div class="sp-field">
+          <div class="sp-label">Teléfono</div>
+          <div class="sp-value">${lead.telefono ? `<a href="tel:${lead.telefono}">${lead.telefono}</a>` : '<span class="empty">Sin teléfono</span>'}</div>
+        </div>
+        <div class="sp-field">
+          <div class="sp-label">Email</div>
+          <div class="sp-value">${lead.email ? `<a href="mailto:${lead.email}">${lead.email}</a>` : '<span class="empty">Sin email</span>'}</div>
+        </div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field">
+          <div class="sp-label">Tipo</div>
+          <div class="sp-value">${val(lead.tipoContacto)}</div>
+        </div>
+        <div class="sp-field">
+          <div class="sp-label">Origen</div>
+          <div class="sp-value">${val(lead.origen)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title">Pipeline</div>
+      <div class="sp-row">
+        <div class="sp-field">
+          <div class="sp-label">Estado</div>
+          <div class="sp-value">${val(lead.estado)}</div>
+        </div>
+        <div class="sp-field">
+          <div class="sp-label">Resultado llamada</div>
+          <div class="sp-value">${val(lead.resultadoLlamada)}</div>
+        </div>
+      </div>
+      <div class="sp-field">
+        <div class="sp-label">Próxima acción</div>
+        <div class="sp-value">${val(lead.proximaAccion, 'Sin próxima acción')}</div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field">
+          <div class="sp-label">Último contacto</div>
+          <div class="sp-value">${lead.ultimoContacto ? fmtFecha(lead.ultimoContacto) : '<span class="empty">—</span>'}</div>
+        </div>
+        <div class="sp-field">
+          <div class="sp-label">Visita programada</div>
+          <div class="sp-value">${lead.visitaProgramada ? fmtFecha(lead.visitaProgramada) : '<span class="empty">—</span>'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title">Operación</div>
+      <div class="sp-row">
+        <div class="sp-field">
+          <div class="sp-label">Exclusiva</div>
+          <div class="sp-value">${check(lead.exclusiva)}</div>
+        </div>
+        <div class="sp-field">
+          <div class="sp-label">Visita realizada</div>
+          <div class="sp-value">${check(lead.visitaRealizada)}</div>
+        </div>
+      </div>
+      <div class="sp-field">
+        <div class="sp-label">Zona / Propiedad</div>
+        <div class="sp-value">${val(lead.zona, 'Sin zona asignada')}</div>
+      </div>
+    </div>
+
+    ${lead.notas ? `
+    <div class="sp-section">
+      <div class="sp-section-title">Notas</div>
+      <div class="sp-field">
+        <div class="sp-value" style="line-height:1.6;white-space:pre-wrap">${lead.notas}</div>
+      </div>
+    </div>` : ''}
+  `;
+
+  document.getElementById('side-panel').classList.add('open');
+  document.getElementById('panel-overlay').classList.add('visible');
+}
+
+function closePanel() {
+  document.getElementById('side-panel').classList.remove('open');
+  document.getElementById('panel-overlay').classList.remove('visible');
+}
+
+// ── ADD LEAD MODAL ───────────────────────────────────
+function openAddModal() {
+  document.getElementById('f-nombre').value = '';
+  document.getElementById('f-telefono').value = '';
+  document.getElementById('f-plazo').value = '';
+  document.getElementById('f-origen').value = '';
+  document.getElementById('f-notas').value = '';
+  document.getElementById('add-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('f-nombre').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('add-modal').style.display = 'none';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('add-modal')) closeModal();
+}
+
+async function saveLead() {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  if (!nombre) {
+    document.getElementById('f-nombre').focus();
+    document.getElementById('f-nombre').style.borderColor = 'var(--red)';
+    return;
+  }
+  document.getElementById('f-nombre').style.borderColor = '';
+
+  const btn = document.getElementById('btn-save');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    const payload = {
+      nombre,
+      telefono:  document.getElementById('f-telefono').value.trim(),
+      prioridad: document.getElementById('f-plazo').value,
+      origen:    document.getElementById('f-origen').value,
+      notas:     document.getElementById('f-notas').value.trim(),
+    };
+
+    const res = await fetch('/api/propietarios', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: 'Error desconocido' }));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    closeModal();
+    await loadLeads(true);
+  } catch (e) {
+    alert(`Error al guardar: ${e.message}`);
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePanel();   closeModal();
+    closeCPanel();  closeContModal();
+    closeOpModal();
+  }
+});
+
+// ── CONTENIDO ─────────────────────────────────────────
+let allContenido = [];
+let cFilterEstado = 'all';
+let currentContItem = null;
+
+const ESTADO_FLOW = ['Idea','Guionizado','En creación','Programado','Publicado'];
+
+function parseContenido(page) {
+  const props = page.properties;
+  return {
+    id:            page.id,
+    url:           page.url,
+    titulo:        getProp(props, 'Título', 'title') || getProp(props, 'Name', 'title'),
+    plataforma:    getProp(props, 'Plataforma', 'select'),
+    estado:        getProp(props, 'Estado', 'select') || getProp(props, 'Estado', 'status'),
+    tipoVideo:     getProp(props, 'Tipo de Vídeo', 'select'),
+    tipoContenido: getProp(props, 'Tipo de Contenido', 'select'),
+    rating:        getProp(props, 'Rating', 'number'),
+    viewCount:     getProp(props, 'View Count', 'number'),
+    seguidores:    getProp(props, 'Seguidores Ganados', 'number'),
+    fechaGrabacion:getProp(props, 'Fecha de grabación', 'date'),
+    enlace:        getProp(props, 'Enlace', 'url'),
+  };
+}
+
+function cPlatIcon(plat, size = 38) {
+  const s = `width:${size}px;height:${size}px;border-radius:${size > 30 ? 10 : 6}px`;
+  if (plat === 'YouTube')   return `<div class="cont-plat-icon yt"  style="${s}">▶</div>`;
+  if (plat === 'Instagram') return `<div class="cont-plat-icon ig"  style="${s}">◈</div>`;
+  if (plat === 'TikTok')    return `<div class="cont-plat-icon tk"  style="${s}">♪</div>`;
+  return                           `<div class="cont-plat-icon none" style="${s}">◉</div>`;
+}
+
+function cEstadoChip(estado) {
+  const cls = (estado || 'Idea').replace(' ', '\\ ');
+  return `<span class="cont-estado-chip ${cls}">${estado || 'Idea'}</span>`;
+}
+
+// Thumbnail helpers
+function extractYTId(url) {
+  if (!url) return null;
+  const patterns = [
+    /youtube\.com\/watch\?v=([^&\s]+)/,
+    /youtu\.be\/([^?\s]+)/,
+    /youtube\.com\/embed\/([^?\s]+)/,
+    /youtube\.com\/shorts\/([^?\s]+)/,
+  ];
+  for (const p of patterns) { const m = url.match(p); if (m) return m[1]; }
+  return null;
+}
+function getYTThumb(url) {
+  const id = extractYTId(url);
+  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
+}
+
+let ytViewMode = 'list';
+
+function setYTView(mode) {
+  ytViewMode = mode;
+  document.getElementById('yt-btn-list').classList.toggle('active', mode === 'list');
+  document.getElementById('yt-btn-gallery').classList.toggle('active', mode === 'gallery');
+  renderContenidoSections();
+}
+
+function getYTItems() {
+  return allContenido.filter(c => c.plataforma === 'YouTube' &&
+    (cFilterEstado === 'all' || c.estado === cFilterEstado));
+}
+function getIGItems() {
+  return allContenido.filter(c => c.plataforma === 'Instagram' &&
+    (cFilterEstado === 'all' || c.estado === cFilterEstado));
+}
+
+function renderYTSection(items) {
+  const n = allContenido.filter(c => c.plataforma === 'YouTube').length;
+  document.getElementById('yt-count').textContent = `${n} vídeo${n !== 1 ? 's' : ''}`;
+  const container = document.getElementById('yt-container');
+
+  if (!items.length) {
+    container.innerHTML = `<div class="section-empty">Sin vídeos con el filtro seleccionado</div>`;
+    return;
+  }
+
+  if (ytViewMode === 'gallery') {
+    container.innerHTML = `<div class="gallery-grid">${items.map((item, i) => {
+      const thumb = getYTThumb(item.enlace);
+      const views = item.viewCount !== '' ? `👁 ${Number(item.viewCount).toLocaleString('es')}` : '';
+      const fecha = item.fechaGrabacion ? fmtFecha(item.fechaGrabacion) : '';
+      const thumbHTML = thumb
+        ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.classList.add('error');this.nextElementSibling.style.display='flex'">`
+        + `<div class="gallery-placeholder" style="display:none"><div class="gallery-placeholder-icon">▶</div><div class="gallery-placeholder-text">${item.titulo||'Sin título'}</div></div>`
+        : `<div class="gallery-placeholder"><div class="gallery-placeholder-icon">▶</div><div class="gallery-placeholder-text">${item.titulo||'Sin título'}</div></div>`;
+      return `
+        <div class="gallery-card" style="animation-delay:${i*0.04}s" onclick="openCPanelById('${item.id}')">
+          <div class="gallery-thumb">${thumbHTML}</div>
+          <div class="gallery-info">
+            <div class="gallery-title">${item.titulo||'Sin título'}</div>
+            <div class="gallery-meta">
+              ${cEstadoChip(item.estado)}
+              <span class="gallery-stats">${[views, fecha].filter(Boolean).join(' · ')}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('')}</div>`;
+  } else {
+    container.innerHTML = items.map((item, i) => {
+      const views = item.viewCount !== '' ? `👁 ${Number(item.viewCount).toLocaleString('es')}` : '';
+      const fecha = item.fechaGrabacion ? `📅 ${fmtFecha(item.fechaGrabacion)}` : '';
+      const meta  = [item.tipoVideo, fecha, views].filter(Boolean).join('  ·  ');
+      return `
+        <div class="cont-item" style="animation-delay:${i*0.025}s" onclick="openCPanelById('${item.id}')">
+          ${cPlatIcon(item.plataforma)}
+          <div class="cont-main">
+            <div class="cont-titulo">${item.titulo||'Sin título'}</div>
+            <div class="cont-meta">${meta||'—'}</div>
+          </div>
+          <div class="cont-badges">${cEstadoChip(item.estado)}</div>
+        </div>`;
+    }).join('');
+  }
+}
+
+function renderIGSection(items) {
+  const n = allContenido.filter(c => c.plataforma === 'Instagram').length;
+  document.getElementById('ig-count').textContent = `${n} reel${n !== 1 ? 's' : ''}`;
+  const container = document.getElementById('ig-container');
+
+  if (!items.length) {
+    container.innerHTML = `<div class="section-empty">Sin reels con el filtro seleccionado</div>`;
+    return;
+  }
+  container.innerHTML = items.map((item, i) => {
+    const seg  = item.seguidores !== '' ? `+${Number(item.seguidores).toLocaleString('es')} seg.` : '';
+    const fecha = item.fechaGrabacion ? `📅 ${fmtFecha(item.fechaGrabacion)}` : '';
+    const meta  = [item.tipoVideo, fecha, seg].filter(Boolean).join('  ·  ');
+    return `
+      <div class="cont-item ig-cont-item" style="animation-delay:${i*0.025}s" onclick="openCPanelById('${item.id}')">
+        ${cPlatIcon(item.plataforma)}
+        <div class="cont-main">
+          <div class="cont-titulo">${item.titulo||'Sin título'}</div>
+          <div class="cont-meta">${meta||'—'}</div>
+        </div>
+        <div class="cont-badges">${cEstadoChip(item.estado)}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderContenidoSections() {
+  renderYTSection(getYTItems());
+  renderIGSection(getIGItems());
+}
+
+function updateContStats() {
+  const yt  = allContenido.filter(c => c.plataforma === 'YouTube').length;
+  const ig  = allContenido.filter(c => c.plataforma === 'Instagram').length;
+  const pub = allContenido.filter(c => c.estado === 'Publicado').length;
+  document.getElementById('cstat-total').textContent = allContenido.length;
+  document.getElementById('cstat-yt').textContent    = yt;
+  document.getElementById('cstat-ig').textContent    = ig;
+  document.getElementById('cstat-pub').textContent   = pub;
+}
+
+function cApplyEstado(val, el) {
+  cFilterEstado = val;
+  document.querySelectorAll('#frow-estado .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderContenidoSections();
+}
+
+async function loadContenido(forceRefresh = false) {
+  contenidoLoaded = true;
+  const btn = document.getElementById('btn-refresh-cont');
+  btn.classList.add('spinning');
+  if (!forceRefresh) {
+    document.getElementById('yt-container').innerHTML = `<div class="section-empty" style="opacity:0.5">Conectando con Notion…</div>`;
+    document.getElementById('ig-container').innerHTML = '';
+  }
+  try {
+    const res = await fetch('/api/contenido');
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||`HTTP ${res.status}`); }
+    const data = await res.json();
+    allContenido = (data.results || []).map(parseContenido);
+    updateContStats();
+    renderContenidoSections();
+  } catch(e) {
+    const isConn = e.message.includes('fetch') || e.message.includes('Failed');
+    const msg = isConn
+      ? `<code>cd ~/diego-sanchez && npm start</code>`
+      : e.message;
+    const errHTML = `<div class="section-empty">${isConn?'🔌 Servidor no disponible — ':''} ${msg}</div>`;
+    document.getElementById('yt-container').innerHTML = errHTML;
+    document.getElementById('ig-container').innerHTML = '';
+  } finally {
+    btn.classList.remove('spinning');
+  }
+}
+
+// ── CONTENT SIDE PANEL ────────────────────────────────
+function openCPanelById(id) {
+  const item = allContenido.find(c => c.id === id);
+  if (!item) return;
+  currentContItem = item;
+
+  document.getElementById('csp-titulo').textContent = item.titulo || 'Sin título';
+  document.getElementById('csp-notion-link').href = item.url || '#';
+
+  // Badges header (after save-indicator span)
+  document.getElementById('csp-badges').innerHTML =
+    `<span id="csp-save-indicator" style="font-size:11px;color:var(--green);opacity:0;transition:opacity 0.3s">✓ Guardado</span>
+     ${cPlatIcon(item.plataforma, 24)}${cEstadoChip(item.estado)}`;
+
+  // Estado flow
+  const curIdx = ESTADO_FLOW.indexOf(item.estado);
+  const flowHTML = ESTADO_FLOW.map((s, i) => {
+    const cls = i < curIdx ? 'done' : i === curIdx ? 'current' : '';
+    return `<span class="ef-step ${cls}">${s}</span>${i < ESTADO_FLOW.length-1 ? '<span class="ef-arrow">›</span>' : ''}`;
+  }).join('');
+  const nextEstado = curIdx >= 0 && curIdx < ESTADO_FLOW.length - 1 ? ESTADO_FLOW[curIdx+1] : null;
+  const advanceBtn = nextEstado
+    ? `<button class="btn-advance" onclick="advanceEstado('${nextEstado}')">Avanzar a "${nextEstado}" →</button>`
+    : `<button class="btn-advance" disabled>✓ Estado final: ${item.estado}</button>`;
+
+  const val = (v, fallback='—') => (v !== '' && v !== null && v !== undefined) ? v : `<span class="empty">${fallback}</span>`;
+
+  document.getElementById('csp-body').innerHTML = `
+    <div class="sp-section">
+      <div class="sp-section-title">Estado</div>
+      <div class="estado-flow">${flowHTML}</div>
+      ${advanceBtn}
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title">Información</div>
+      <div class="sp-row">
+        <div class="sp-field"><div class="sp-label">Plataforma</div><div class="sp-value">${val(item.plataforma)}</div></div>
+        <div class="sp-field"><div class="sp-label">Tipo de vídeo</div><div class="sp-value">${val(item.tipoVideo)}</div></div>
+      </div>
+      <div class="sp-row">
+        <div class="sp-field"><div class="sp-label">Tipo de contenido</div><div class="sp-value">${val(item.tipoContenido)}</div></div>
+        <div class="sp-field"><div class="sp-label">Fecha grabación</div><div class="sp-value">${item.fechaGrabacion ? fmtFecha(item.fechaGrabacion) : '<span class="empty">—</span>'}</div></div>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title">Publicación</div>
+      <div class="sp-field">
+        <div class="sp-label">Link del vídeo</div>
+        <input class="link-input" id="csp-enlace" type="url"
+          placeholder="https://youtube.com/watch?v=..."
+          value="${item.enlace || ''}">
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-title">Métricas</div>
+      <div class="metrics-grid">
+        <div class="metric-block">
+          <div class="metric-label">Views</div>
+          <input class="metric-input" id="csp-views" type="number" min="0"
+            placeholder="0" value="${item.viewCount !== '' ? item.viewCount : ''}">
+        </div>
+        <div class="metric-block">
+          <div class="metric-label">Seguidores</div>
+          <input class="metric-input" id="csp-seg" type="number" min="0"
+            placeholder="0" value="${item.seguidores !== '' ? item.seguidores : ''}">
+        </div>
+        <div class="metric-block">
+          <div class="metric-label">Rating</div>
+          <input class="metric-input" id="csp-rating" type="number" min="0" max="10" step="0.1"
+            placeholder="—" value="${item.rating !== '' ? item.rating : ''}">
+        </div>
+      </div>
+      <button class="btn-save-metrics" id="csp-save-btn" onclick="saveMetrics()">Guardar métricas</button>
+    </div>
+  `;
+
+  document.getElementById('csp-panel').classList.add('open');
+  document.getElementById('cpanel-overlay').classList.add('visible');
+}
+
+function closeCPanel() {
+  document.getElementById('csp-panel').classList.remove('open');
+  document.getElementById('cpanel-overlay').classList.remove('visible');
+  currentContItem = null;
+}
+
+async function saveTitulo() {
+  if (!currentContItem) return;
+  const el = document.getElementById('csp-titulo');
+  const nuevoTitulo = el.textContent.trim();
+  if (!nuevoTitulo || nuevoTitulo === currentContItem.titulo) return;
+
+  try {
+    const res = await fetch(`/api/contenido/${currentContItem.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ titulo: nuevoTitulo }),
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||'Error'); }
+
+    // Update local cache
+    const idx = allContenido.findIndex(c => c.id === currentContItem.id);
+    if (idx !== -1) allContenido[idx].titulo = nuevoTitulo;
+    currentContItem.titulo = nuevoTitulo;
+    renderContenidoSections();
+
+    // Show feedback
+    const indicator = document.getElementById('csp-save-indicator');
+    if (indicator) {
+      indicator.style.opacity = '1';
+      setTimeout(() => { indicator.style.opacity = '0'; }, 2000);
+    }
+  } catch(e) {
+    // Revert on error
+    el.textContent = currentContItem.titulo;
+    alert(`Error al guardar: ${e.message}`);
+  }
+}
+
+async function advanceEstado(nuevoEstado) {
+  if (!currentContItem) return;
+  const btn = document.querySelector('.btn-advance');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  try {
+    const res = await fetch(`/api/contenido/${currentContItem.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado: nuevoEstado }),
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||'Error'); }
+    currentContItem.estado = nuevoEstado;
+    // Update in allContenido
+    const idx = allContenido.findIndex(c => c.id === currentContItem.id);
+    if (idx !== -1) allContenido[idx].estado = nuevoEstado;
+    updateContStats();
+    renderContenidoSections();
+    openCPanelById(currentContItem.id);
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = `Avanzar a "${nuevoEstado}" →`;
+    alert(`Error: ${e.message}`);
+  }
+}
+
+async function saveMetrics() {
+  if (!currentContItem) return;
+  const btn = document.getElementById('csp-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  try {
+    const payload = {
+      viewCount: document.getElementById('csp-views').value,
+      seguidores: document.getElementById('csp-seg').value,
+      rating: document.getElementById('csp-rating').value,
+      enlace: document.getElementById('csp-enlace').value.trim(),
+    };
+    const res = await fetch(`/api/contenido/${currentContItem.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||'Error'); }
+    // Update local cache
+    const idx = allContenido.findIndex(c => c.id === currentContItem.id);
+    if (idx !== -1) {
+      if (payload.viewCount !== '') allContenido[idx].viewCount  = Number(payload.viewCount);
+      if (payload.seguidores !== '') allContenido[idx].seguidores = Number(payload.seguidores);
+      if (payload.rating !== '')    allContenido[idx].rating     = Number(payload.rating);
+      allContenido[idx].enlace = payload.enlace;
+      currentContItem = allContenido[idx];
+    }
+    btn.textContent = '✓ Guardado';
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Guardar métricas'; }, 2000);
+    renderContenidoSections();
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Guardar métricas';
+    alert(`Error: ${e.message}`);
+  }
+}
+
+// ── INGRESOS ──────────────────────────────────────────
+let allOperaciones = [];
+
+function parseOperacion(page) {
+  const props = page.properties;
+  return {
+    id:           page.id,
+    url:          page.url,
+    propiedad:    getProp(props, 'Propiedad', 'title'),
+    valorVenta:   getProp(props, 'Valor de venta', 'number'),
+    comDiego:     getProp(props, 'Comisión neta Diego', 'number'),
+    comKDF:       getProp(props, 'Comisión KDF Realty', 'number'),
+    fechaCierre:  getProp(props, 'Fecha de cierre', 'date'),
+    estado:       getProp(props, 'Estado', 'select'),
+    tipo:         getProp(props, 'Tipo', 'select'),
+    notas:        getProp(props, 'Notas', 'text'),
+  };
+}
+
+function fmtEur(n) {
+  if (n === '' || n === null || n === undefined) return '—';
+  return Number(n).toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+}
+
+function opEstadoDot(estado) {
+  const m = { 'En negociación': '#ca8a04', 'Arras firmadas': 'var(--orange)', 'Escritura': 'var(--accent)', 'Cobrado': 'var(--green)' };
+  return m[estado] || 'var(--muted)';
+}
+
+function opEstadoCls(estado) {
+  const m = { 'En negociación': 'negociacion', 'Arras firmadas': 'arras', 'Escritura': 'escritura', 'Cobrado': 'cobrado' };
+  return m[estado] || 'negociacion';
+}
+
+function getMesLabel() {
+  return new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+}
+
+function getMesKey(fecha) {
+  if (!fecha) return null;
+  return fecha.substring(0, 7); // YYYY-MM
+}
+
+function calcIngresosMes(ops, mesKey) {
+  return ops.filter(o => getMesKey(o.fechaCierre) === mesKey);
+}
+
+function renderIngresos() {
+  const now = new Date();
+  const mesKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+  document.getElementById('ing-mes-label').textContent = getMesLabel();
+
+  const mesOps = calcIngresosMes(allOperaciones, mesKey);
+  const totalDiego = mesOps.reduce((s, o) => s + (o.comDiego || 0), 0);
+  const totalKDF   = mesOps.reduce((s, o) => s + (o.comKDF || 0), 0);
+  const totalMes   = totalDiego + totalKDF;
+
+  document.getElementById('ing-total-diego').textContent = fmtEur(totalDiego);
+  document.getElementById('ing-total-kdf').textContent   = fmtEur(totalKDF);
+  document.getElementById('ing-total-mes').textContent   = fmtEur(totalMes);
+
+  const pct = Math.min(totalMes / 100000 * 100, 100);
+  document.getElementById('ing-pct').textContent = pct.toFixed(1) + '%';
+  setTimeout(() => {
+    document.getElementById('ing-goal-bar').style.width = pct + '%';
+  }, 150);
+
+  // Proyección
+  const diaActual = now.getDate();
+  const diasMes = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  const proyEl = document.getElementById('ing-proyeccion');
+  if (mesOps.length === 0) {
+    proyEl.innerHTML = `Sin operaciones registradas este mes. Añade la primera para ver la proyección.`;
+  } else {
+    const ritmo = totalMes / diaActual;
+    const proyeccion = Math.round(ritmo * diasMes);
+    const diferencia = proyeccion - 100000;
+    const alcanza = proyeccion >= 100000;
+    proyEl.innerHTML = alcanza
+      ? `Al ritmo actual (<strong>${fmtEur(Math.round(ritmo))}/día</strong>) llegarás a <strong>${fmtEur(proyeccion)}</strong> este mes — <strong style="color:var(--green)">+${fmtEur(diferencia)} sobre el objetivo</strong>.`
+      : `Al ritmo actual (<strong>${fmtEur(Math.round(ritmo))}/día</strong>) proyección: <strong>${fmtEur(proyeccion)}</strong> — <strong style="color:var(--orange)">faltan ${fmtEur(Math.abs(diferencia))} para el objetivo</strong>.`;
+  }
+
+  // Gráfico de los últimos 6 meses
+  renderBarChart(now);
+
+  // Lista
+  renderOpsList();
+}
+
+function renderBarChart(now) {
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label = d.toLocaleDateString('es-ES', { month: 'short' });
+    const ops = calcIngresosMes(allOperaciones, key);
+    const diego = ops.reduce((s, o) => s + (o.comDiego || 0), 0);
+    const kdf   = ops.reduce((s, o) => s + (o.comKDF || 0), 0);
+    months.push({ key, label, diego, kdf });
+  }
+
+  const maxVal = Math.max(...months.map(m => m.diego + m.kdf), 1);
+
+  const chartEl = document.getElementById('ing-chart');
+  chartEl.innerHTML = months.map(m => {
+    const total = m.diego + m.kdf;
+    const diegoPct = (m.diego / maxVal * 100).toFixed(1);
+    const kdfPct   = (m.kdf   / maxVal * 100).toFixed(1);
+    const valLabel = total > 0 ? fmtEur(total).replace(' €','€').replace('.000','K') : '';
+    return `
+      <div class="ing-bar-col">
+        <div class="ing-bar-val">${valLabel}</div>
+        <div class="ing-bar-wrap" style="max-height:100px;width:100%;display:flex;align-items:flex-end;gap:3px;flex:1">
+          <div class="ing-bar diego" style="height:0%" data-target="${diegoPct}%" title="Diego: ${fmtEur(m.diego)}"></div>
+          ${m.kdf > 0 ? `<div class="ing-bar kdf" style="height:0%" data-target="${kdfPct}%" title="KDF: ${fmtEur(m.kdf)}"></div>` : ''}
+        </div>
+        <div class="ing-bar-label">${m.label}</div>
+      </div>`;
+  }).join('');
+
+  setTimeout(() => {
+    chartEl.querySelectorAll('.ing-bar').forEach(bar => {
+      bar.style.height = bar.dataset.target;
+    });
+  }, 200);
+}
+
+function renderOpsList() {
+  const container = document.getElementById('ops-list');
+  if (!allOperaciones.length) {
+    container.innerHTML = `
+      <div class="ops-empty">
+        <div class="ops-empty-icon">📋</div>
+        <div class="ops-empty-title">Sin operaciones aún</div>
+        <div style="font-size:13px;color:var(--muted)">Añade tu primera operación con el botón de arriba.</div>
+      </div>`;
+    return;
+  }
+  container.innerHTML = allOperaciones.map((op, i) => {
+    const comision = (op.comDiego || 0) + (op.comKDF || 0);
+    const tipo = op.tipo ? `<span style="font-size:10px;background:rgba(0,0,0,0.05);padding:1px 7px;border-radius:100px">${op.tipo}</span>` : '';
+    return `
+      <div class="op-item" style="animation-delay:${i*0.03}s">
+        <div class="op-estado-dot" style="background:${opEstadoDot(op.estado)}"></div>
+        <div class="op-main">
+          <div class="op-nombre">${op.propiedad || 'Sin nombre'}</div>
+          <div class="op-meta">${tipo} ${op.valorVenta ? '· Venta: ' + fmtEur(op.valorVenta) : ''}</div>
+        </div>
+        <div class="op-comision">${comision > 0 ? fmtEur(comision) : '—'}</div>
+        <div class="op-fecha">${op.fechaCierre ? fmtFecha(op.fechaCierre) : '—'}</div>
+        <div class="op-estado-chip ${opEstadoCls(op.estado)}">${op.estado || '—'}</div>
+      </div>`;
+  }).join('');
+}
+
+async function loadOperaciones(forceRefresh = false) {
+  ingresosLoaded = true;
+  const btn = document.getElementById('btn-refresh-ops');
+  if (btn) btn.classList.add('spinning');
+  if (!forceRefresh) {
+    document.getElementById('ops-list').innerHTML = `
+      <div class="ops-empty"><div class="ops-empty-icon">⏳</div><div class="ops-empty-title">Conectando con Notion…</div></div>`;
+  }
+  try {
+    const res = await fetch('/api/operaciones');
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||`HTTP ${res.status}`); }
+    const data = await res.json();
+    allOperaciones = (data.results || []).map(parseOperacion);
+    renderIngresos();
+  } catch(e) {
+    const isConn = e.message.includes('fetch') || e.message.includes('Failed');
+    document.getElementById('ops-list').innerHTML = `
+      <div class="ops-empty">
+        <div class="ops-empty-icon">${isConn ? '🔌' : '⚠️'}</div>
+        <div class="ops-empty-title">${isConn ? 'Servidor no disponible' : 'Error al cargar'}</div>
+        <div style="font-size:13px;color:var(--muted)">${isConn ? 'Lanza <code>npm start</code> y abre localhost:3000' : e.message}</div>
+      </div>`;
+  } finally {
+    if (btn) btn.classList.remove('spinning');
+  }
+}
+
+// ADD OPERACIÓN MODAL
+function openAddOpModal() {
+  ['op-propiedad','op-notas'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['op-tipo','op-estado'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['op-valor','op-com-diego','op-com-kdf'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('op-fecha').value = '';
+  document.getElementById('add-op-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('op-propiedad').focus(), 100);
+}
+
+function closeOpModal() {
+  document.getElementById('add-op-modal').style.display = 'none';
+}
+
+function closeOpModalOutside(e) {
+  if (e.target === document.getElementById('add-op-modal')) closeOpModal();
+}
+
+async function saveOperacion() {
+  const propiedad = document.getElementById('op-propiedad').value.trim();
+  if (!propiedad) {
+    document.getElementById('op-propiedad').style.borderColor = 'var(--red)';
+    document.getElementById('op-propiedad').focus();
+    return;
+  }
+  document.getElementById('op-propiedad').style.borderColor = '';
+  const btn = document.getElementById('btn-save-op');
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    const payload = {
+      propiedad,
+      tipo:       document.getElementById('op-tipo').value,
+      estado:     document.getElementById('op-estado').value,
+      valorVenta: document.getElementById('op-valor').value,
+      comisionDiego: document.getElementById('op-com-diego').value,
+      comisionKDF:   document.getElementById('op-com-kdf').value,
+      fechaCierre:   document.getElementById('op-fecha').value,
+      notas:         document.getElementById('op-notas').value.trim(),
+    };
+    const res = await fetch('/api/operaciones', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||`HTTP ${res.status}`); }
+    closeOpModal();
+    await loadOperaciones(true);
+  } catch(e) {
+    alert(`Error al guardar: ${e.message}`);
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+
+// ── ADD CONTENIDO MODAL ───────────────────────────────
+function openAddContenidoModal() {
+  ['cf-titulo','cf-fecha'].forEach(id => document.getElementById(id).value = '');
+  ['cf-plataforma','cf-tipo-video','cf-tipo-cont'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('add-cont-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('cf-titulo').focus(), 100);
+}
+
+function closeContModal() {
+  document.getElementById('add-cont-modal').style.display = 'none';
+}
+
+function closeContModalOutside(e) {
+  if (e.target === document.getElementById('add-cont-modal')) closeContModal();
+}
+
+async function saveContenido() {
+  const titulo = document.getElementById('cf-titulo').value.trim();
+  if (!titulo) {
+    document.getElementById('cf-titulo').style.borderColor = 'var(--red)';
+    document.getElementById('cf-titulo').focus();
+    return;
+  }
+  document.getElementById('cf-titulo').style.borderColor = '';
+
+  const btn = document.getElementById('btn-save-cont');
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    const payload = {
+      titulo,
+      plataforma:    document.getElementById('cf-plataforma').value,
+      tipoVideo:     document.getElementById('cf-tipo-video').value,
+      tipoContenido: document.getElementById('cf-tipo-cont').value,
+      fechaGrabacion:document.getElementById('cf-fecha').value,
+    };
+    const res = await fetch('/api/contenido', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error||`HTTP ${res.status}`); }
+    closeContModal();
+    await loadContenido(true);
+  } catch(e) {
+    alert(`Error al guardar: ${e.message}`);
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
