@@ -18,6 +18,8 @@ const DB_OPERACIONES  = process.env.DB_OPERACIONES  || '327c81f1-045a-814d-beab-
 app.use(express.json());
 app.use(express.static(__dirname));
 
+app.get('/', (req, res) => res.redirect('/dashboard.html'));
+
 // Helper: call Notion API
 async function notionRequest(method, endpoint, body) {
   const res = await fetch(`https://api.notion.com/v1${endpoint}`, {
