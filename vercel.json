@@ -5,7 +5,7 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["dashboard.html", "datos.json"]
+        "includeFiles": ["index.html", "dashboard.html", "datos.json"]
       }
     }
   ],
