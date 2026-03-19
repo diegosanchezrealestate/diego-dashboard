@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diego Sánchez — Panel Operativo</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F5F5F7;
@@ -59,7 +58,7 @@
     margin: 0 auto;
   }
   .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-text { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); }
+  .logo-text { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 20px; color: var(--text); }
   .logo-badge { background: var(--text); color: white; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; }
   .header-right { display: flex; align-items: center; gap: 10px; }
   .date-pill { background: rgba(0,0,0,0.05); padding: 6px 14px; border-radius: 100px; font-size: 11px; color: var(--text-mid); font-variant-numeric: tabular-nums; }
@@ -101,15 +100,17 @@
   .hero-card { background: var(--surface); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255,255,255,0.72); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); }
   .hero-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: rgba(255,255,255,0.92); }
   .hero-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; }
-  .hero-value { font-family: 'Instrument Serif', serif; font-size: 44px; line-height: 1; color: var(--text); margin-bottom: 12px; outline: none; }
+  .hero-value { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 44px; line-height: 1; color: var(--text); margin-bottom: 12px; outline: none; }
   .hero-value:focus { color: var(--accent); }
-  .hero-value.good { color: var(--green); }
-  .hero-value.warn { color: var(--orange); }
+  .hero-value.good { color: var(--text); }
+  .hero-value.good::after { content:''; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green);  margin-left:10px; vertical-align:middle; position:relative; top:-4px; }
+  .hero-value.warn { color: var(--text); }
+  .hero-value.warn::after { content:''; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--orange); margin-left:10px; vertical-align:middle; position:relative; top:-4px; }
   .hero-value.accent { color: var(--accent); }
   .hero-sub { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
   .chip { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
-  .chip.up { background: var(--green-light); color: var(--green); }
-  .chip.warn { background: var(--orange-light); color: var(--orange); }
+  .chip.up { background: var(--green-light); color: var(--text-mid); }
+  .chip.warn { background: var(--orange-light); color: var(--text-mid); }
   .alertas { display: flex; flex-direction: column; gap: 10px; }
   .alerta { background: var(--surface); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255,255,255,0.72); border-radius: var(--radius-sm); padding: 16px 20px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow); }
   .alerta.danger { border-left: 3px solid var(--red); }
@@ -141,10 +142,10 @@
   .ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
   .ads-metric { background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; }
   .ads-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .ads-value { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; outline: none; }
+  .ads-value { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 28px; line-height: 1; outline: none; }
   .ads-value:focus { color: var(--accent); }
-  .ads-value.good { color: var(--green); }
-  .ads-value.warn { color: var(--orange); }
+  .ads-value.good { color: var(--text); }
+  .ads-value.warn { color: var(--text); }
   .ads-target { font-size: 11px; color: var(--muted); margin-top: 4px; }
   .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 16px; }
   .cal-header { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); text-align: center; padding: 6px 0; }
@@ -163,20 +164,20 @@
   .metricas-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
   .metrica-mini { background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; }
   .metrica-mini-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
-  .metrica-mini-value { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; outline: none; }
+  .metrica-mini-value { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 28px; line-height: 1; outline: none; }
   .metrica-mini-value:focus { color: var(--accent); }
   .metrica-mini-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
   .contenido-item { display: grid; grid-template-columns: 28px 1fr 90px 70px; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--radius-sm); transition: background 0.2s; border: 1px solid transparent; }
   .contenido-item:hover { background: rgba(0,0,0,0.025); border-color: var(--border); }
   .plat-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
-  .plat-icon.yt { background: var(--red-light); color: var(--red); }
-  .plat-icon.ig { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .plat-icon.yt { background: var(--red-light); color: var(--text-mid); }
+  .plat-icon.ig { background: rgba(147,51,234,0.1); color: var(--text-mid); }
   .contenido-titulo { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .estado-chip { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; text-align: center; }
-  .estado-chip.publicado { background: var(--green-light); color: var(--green); }
+  .estado-chip.publicado { background: var(--green-light); color: var(--text-mid); }
   .estado-chip.programado { background: var(--accent-light); color: var(--accent); }
-  .estado-chip.grabado { background: var(--orange-light); color: var(--orange); }
-  .estado-chip.guionizado { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .estado-chip.grabado { background: var(--orange-light); color: var(--text-mid); }
+  .estado-chip.guionizado { background: rgba(147,51,234,0.1); color: var(--text-mid); }
   .estado-chip.idea { background: rgba(0,0,0,0.05); color: var(--muted); }
   .contenido-fecha { font-variant-numeric: tabular-nums; font-size: 11px; color: var(--muted); text-align: right; }
 
@@ -252,10 +253,17 @@
     text-align: center;
     box-shadow: var(--shadow);
   }
-  .lead-stat-num { font-family: 'Instrument Serif', serif; font-size: 32px; line-height: 1; color: var(--text); }
-  .lead-stat-num.alta { color: var(--red); }
-  .lead-stat-num.media { color: var(--orange); }
-  .lead-stat-num.baja { color: var(--accent); }
+  /* ── DOT STATUS INDICATORS ─────────────────────────── */
+  .dot-pos::after  { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green);  margin-left:8px; vertical-align:middle; position:relative; top:-1px; flex-shrink:0; }
+  .dot-neg::after  { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--red);    margin-left:8px; vertical-align:middle; position:relative; top:-1px; flex-shrink:0; }
+  .dot-warn::after { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--orange); margin-left:8px; vertical-align:middle; position:relative; top:-1px; flex-shrink:0; }
+
+  .lead-stat-num { font-size: 32px; line-height: 1; color: var(--text); }
+  .lead-stat-num.alta  { color: var(--text); }
+  .lead-stat-num.alta::after  { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--red);    margin-left:8px; vertical-align:middle; position:relative; top:-3px; }
+  .lead-stat-num.media { color: var(--text); }
+  .lead-stat-num.media::after { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--orange); margin-left:8px; vertical-align:middle; position:relative; top:-3px; }
+  .lead-stat-num.baja  { color: var(--accent); }
   .lead-stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
   .leads-list-container { display: flex; flex-direction: column; gap: 8px; }
@@ -290,8 +298,8 @@
     padding: 3px 10px;
     border-radius: 100px;
   }
-  .priority-badge.Alta { background: var(--red-light); color: var(--red); }
-  .priority-badge.Media { background: var(--orange-light); color: var(--orange); }
+  .priority-badge.Alta { background: var(--red-light); color: var(--text-mid); }
+  .priority-badge.Media { background: var(--orange-light); color: var(--text-mid); }
   .priority-badge.Baja { background: var(--accent-light); color: var(--accent); }
   .priority-badge.none { background: rgba(0,0,0,0.05); color: var(--muted); }
   .lead-estado-badge {
@@ -310,7 +318,7 @@
     color: var(--muted);
   }
   .leads-empty-icon { font-size: 40px; margin-bottom: 14px; }
-  .leads-empty-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); margin-bottom: 8px; }
+  .leads-empty-title { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 22px; color: var(--text); margin-bottom: 8px; }
   .leads-empty-sub { font-size: 13px; line-height: 1.7; }
   .leads-empty-sub code { font-family: 'SF Mono', SFMono-Regular, ui-monospace, monospace; background: rgba(0,0,0,0.06); padding: 2px 7px; border-radius: 6px; font-size: 12px; }
 
@@ -353,7 +361,7 @@
     flex-shrink: 0;
   }
   .sp-header-info { flex: 1; min-width: 0; }
-  .sp-name { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); line-height: 1.2; }
+  .sp-name { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 22px; color: var(--text); line-height: 1.2; }
   .sp-priority { margin-top: 8px; display: inline-block; }
   .sp-close {
     width: 30px; height: 30px;
@@ -451,7 +459,7 @@
     justify-content: space-between;
     align-items: center;
   }
-  .modal-title { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); }
+  .modal-title { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 20px; color: var(--text); }
   .modal-close {
     width: 28px; height: 28px;
     border-radius: 50%;
@@ -470,7 +478,7 @@
   .modal-body { padding: 22px 26px; }
   .form-group { margin-bottom: 18px; }
   .form-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-mid); margin-bottom: 7px; }
-  .form-required { color: var(--red); }
+  .form-required { color: var(--text-mid); }
   .form-input, .form-select, .form-textarea {
     width: 100%;
     padding: 11px 15px;
@@ -579,8 +587,8 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; font-weight: 700; flex-shrink: 0;
   }
-  .cont-plat-icon.yt  { background: var(--red-light); color: var(--red); }
-  .cont-plat-icon.ig  { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .cont-plat-icon.yt  { background: var(--red-light); color: var(--text-mid); }
+  .cont-plat-icon.ig  { background: rgba(147,51,234,0.1); color: var(--text-mid); }
   .cont-plat-icon.tk  { background: rgba(0,0,0,0.06); color: var(--text-mid); }
   .cont-plat-icon.none { background: rgba(0,0,0,0.04); color: var(--muted); font-size: 18px; }
 
@@ -594,13 +602,13 @@
     text-transform: uppercase; padding: 3px 9px; border-radius: 100px;
   }
   .cont-estado-chip.Idea        { background: rgba(0,0,0,0.05); color: var(--muted); }
-  .cont-estado-chip.Guionizado  { background: rgba(147,51,234,0.1); color: #9333ea; }
-  .cont-estado-chip.En\ creación { background: var(--orange-light); color: var(--orange); }
+  .cont-estado-chip.Guionizado  { background: rgba(147,51,234,0.1); color: var(--text-mid); }
+  .cont-estado-chip.En\ creación { background: var(--orange-light); color: var(--text-mid); }
   .cont-estado-chip.Programado  { background: var(--accent-light); color: var(--accent); }
-  .cont-estado-chip.Publicado   { background: var(--green-light); color: var(--green); }
-  .cont-estado-chip.Cancelado   { background: rgba(220,38,38,0.08); color: var(--red); }
+  .cont-estado-chip.Publicado   { background: var(--green-light); color: var(--text-mid); }
+  .cont-estado-chip.Cancelado   { background: rgba(220,38,38,0.08); color: var(--text-mid); }
 
-  .cont-views { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .cont-views { font-family: ui-monospace, 'SF Mono', SFMono-Regular, monospace; font-size: 11px; color: var(--muted); }
 
   /* Content side panel extras */
   .csp-panel {
@@ -667,7 +675,7 @@
 
   .btn-save-metrics {
     width: 100%; padding: 10px; border-radius: var(--radius-sm);
-    background: var(--green); color: white; border: none;
+    background: var(--accent); color: white; border: none;
     font-size: 13px; font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     cursor: pointer; transition: opacity 0.2s;
@@ -697,17 +705,17 @@
     border-left: 3px solid #9333ea;
   }
   .section-plat-icon { font-size: 18px; font-weight: 700; flex-shrink: 0; }
-  .yt-header  .section-plat-icon { color: #CC0000; }
-  .ig-header  .section-plat-icon { background: linear-gradient(135deg,#9333ea,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .yt-header  .section-plat-icon { color: var(--text-mid); }
+  .ig-header  .section-plat-icon { color: var(--text-mid); }
   .section-title-text { font-size: 15px; font-weight: 700; }
-  .yt-header  .section-title-text { color: #CC0000; }
-  .ig-header  .section-title-text { background: linear-gradient(135deg,#9333ea,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .yt-header  .section-title-text { color: var(--text); }
+  .ig-header  .section-title-text { color: var(--text); }
   .section-count-badge {
     font-size: 11px; font-weight: 600; padding: 2px 9px;
     border-radius: 100px; flex-shrink: 0;
   }
-  .yt-header  .section-count-badge { background: rgba(255,0,0,0.1); color: #CC0000; }
-  .ig-header  .section-count-badge { background: rgba(147,51,234,0.1); color: #9333ea; }
+  .yt-header  .section-count-badge { background: rgba(0,0,0,0.05); color: var(--text-mid); }
+  .ig-header  .section-count-badge { background: rgba(0,0,0,0.05); color: var(--text-mid); }
   .section-spacer { flex: 1; }
 
   /* View toggle (list / gallery) */
@@ -783,7 +791,7 @@
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .gallery-meta { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .gallery-stats { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .gallery-stats { font-size: 11px; color: var(--muted); font-family: ui-monospace, 'SF Mono', SFMono-Regular, monospace; }
 
   /* ── INGRESOS VIEW ─────────────────────────────────── */
   .ing-top { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
@@ -799,9 +807,9 @@
   .ing-amounts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 26px; }
   .ing-amount-row { display: flex; justify-content: space-between; align-items: baseline; }
   .ing-amount-label { font-size: 13px; color: var(--text-mid); }
-  .ing-amount-value { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; }
+  .ing-amount-value { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 28px; line-height: 1; }
   .ing-amount-value.diego { color: var(--accent); }
-  .ing-amount-value.kdf   { color: #9333ea; }
+  .ing-amount-value.kdf   { color: var(--text-mid); }
   .ing-amount-value.total { color: var(--text); font-size: 38px; }
   .ing-sep { height: 1px; background: var(--border); margin: 6px 0; }
   .ing-goal-section { }
@@ -865,20 +873,21 @@
   .op-main { min-width: 0; }
   .op-nombre { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .op-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .op-comision { font-family: 'Instrument Serif', serif; font-size: 18px; color: var(--green); text-align: right; }
+  .op-comision { font-size: 18px; font-weight: 600; color: var(--text); text-align: right; }
+  .op-comision::after { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green); margin-left:7px; vertical-align:middle; position:relative; top:-1px; }
   .op-fecha { font-variant-numeric: tabular-nums; font-size: 11px; color: var(--muted); text-align: right; }
   .op-estado-chip {
     font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
     text-transform: uppercase; padding: 3px 10px; border-radius: 100px; text-align: center;
     white-space: nowrap;
   }
-  .op-estado-chip.negociacion { background: rgba(255,204,0,0.12); color: #b8860b; }
-  .op-estado-chip.arras       { background: var(--orange-light); color: var(--orange); }
+  .op-estado-chip.negociacion { background: rgba(255,204,0,0.12); color: var(--text-mid); }
+  .op-estado-chip.arras       { background: var(--orange-light); color: var(--text-mid); }
   .op-estado-chip.escritura   { background: var(--accent-light); color: var(--accent); }
-  .op-estado-chip.cobrado     { background: var(--green-light); color: var(--green); }
+  .op-estado-chip.cobrado     { background: var(--green-light); color: var(--text-mid); }
   .ops-empty { text-align: center; padding: 48px 24px; color: var(--muted); }
   .ops-empty-icon { font-size: 36px; margin-bottom: 12px; }
-  .ops-empty-title { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); margin-bottom: 4px; }
+  .ops-empty-title { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 20px; color: var(--text); margin-bottom: 4px; }
 
   /* ── ADS VIEW ──────────────────────────────────────── */
   .semaforo-verde   { background: var(--green) !important; }
@@ -912,9 +921,9 @@
   .vis-event-meta { font-size:11px; color:var(--muted); margin-top:2px; }
   .vis-event-tipo { font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; padding:2px 8px; border-radius:100px; flex-shrink:0; }
   .vis-tipo-captacion    { background:rgba(0,113,227,0.1); color:var(--accent); }
-  .vis-tipo-reunion      { background:var(--green-light); color:var(--green); }
-  .vis-tipo-venta        { background:var(--orange-light); color:var(--orange); }
-  .vis-tipo-seguimiento  { background:rgba(147,51,234,0.1); color:#9333ea; }
+  .vis-tipo-reunion      { background:var(--green-light); color:var(--text-mid); }
+  .vis-tipo-venta        { background:var(--orange-light); color:var(--text-mid); }
+  .vis-tipo-seguimiento  { background:rgba(147,51,234,0.1); color:var(--text-mid); }
 
   /* ── FISCALIDAD ───────────────────────────────────── */
   .fisc-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
@@ -929,9 +938,12 @@
   .fisc-result-row:last-child { border-bottom: none; padding-bottom: 0; }
   .fisc-result-label { font-size: 13px; color: var(--text-mid); }
   .fisc-result-value { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); }
-  .fisc-result-value.positive { color: var(--green); }
-  .fisc-result-value.negative { color: var(--red); }
-  .fisc-result-value.neutral  { color: var(--orange); }
+  .fisc-result-value.positive { color: var(--text); }
+  .fisc-result-value.positive::after { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green);  margin-left:7px; vertical-align:middle; position:relative; top:-1px; }
+  .fisc-result-value.negative { color: var(--text); }
+  .fisc-result-value.negative::after { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--red);    margin-left:7px; vertical-align:middle; position:relative; top:-1px; }
+  .fisc-result-value.neutral  { color: var(--text); }
+  .fisc-result-value.neutral::after  { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--orange); margin-left:7px; vertical-align:middle; position:relative; top:-1px; }
   .fisc-tramo-bar { height: 6px; border-radius: 100px; background: var(--border); overflow: hidden; margin-top: 4px; }
   .fisc-tramo-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--green), var(--orange), var(--red)); }
   .fisc-aviso { background: rgba(255,149,0,0.08); border: 1px solid rgba(255,149,0,0.22); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; gap: 12px; align-items: flex-start; }
@@ -940,10 +952,10 @@
   .fisc-aviso-text strong { color: var(--text); font-weight: 600; }
   .fisc-proy-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; }
   .fisc-proy-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
-  .fisc-proy-value { font-family: 'Instrument Serif', serif; font-size: 32px; line-height: 1; color: var(--text); }
+  .fisc-proy-value { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 32px; line-height: 1; color: var(--text); }
   .fisc-proy-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
   .fisc-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 3px 10px; border-radius: 100px; }
-  .fisc-badge.exento { background: var(--green-light); color: var(--green); }
+  .fisc-badge.exento { background: var(--green-light); color: var(--text-mid); }
   .fisc-badge.activo { background: var(--accent-light); color: var(--accent); }
 </style>
 </head>
@@ -1327,15 +1339,15 @@
         <div class="lead-stat-label">Total piezas</div>
       </div>
       <div class="lead-stat">
-        <div class="lead-stat-num" style="color:var(--red)" id="cstat-yt">—</div>
+        <div class="lead-stat-num" id="cstat-yt">—</div>
         <div class="lead-stat-label">YouTube</div>
       </div>
       <div class="lead-stat">
-        <div class="lead-stat-num" style="color:#9333ea" id="cstat-ig">—</div>
+        <div class="lead-stat-num" id="cstat-ig">—</div>
         <div class="lead-stat-label">Instagram</div>
       </div>
       <div class="lead-stat">
-        <div class="lead-stat-num" style="color:var(--green)" id="cstat-pub">—</div>
+        <div class="lead-stat-num" id="cstat-pub">—</div>
         <div class="lead-stat-label">Publicados</div>
       </div>
     </div>
@@ -1467,15 +1479,15 @@
         <div class="lead-stat-label">Leads totales</div>
       </div>
       <div class="lead-stat">
-        <div class="lead-stat-num" id="ads-cpl-global" style="color:var(--green)">—</div>
+        <div class="lead-stat-num" id="ads-cpl-global">—</div>
         <div class="lead-stat-label">CPL global</div>
       </div>
       <div class="lead-stat">
-        <div class="lead-stat-num" id="ads-gasto-total" style="color:var(--text)">—</div>
+        <div class="lead-stat-num" id="ads-gasto-total">—</div>
         <div class="lead-stat-label">Gasto total</div>
       </div>
       <div class="lead-stat">
-        <div class="lead-stat-num" id="ads-presupuesto-pct" style="color:var(--orange)">—</div>
+        <div class="lead-stat-num" id="ads-presupuesto-pct">—</div>
         <div class="lead-stat-label">% presupuesto</div>
       </div>
     </div>
@@ -1611,7 +1623,7 @@
         <div id="cpl-chart-container" style="height:160px;display:flex;align-items:flex-end;gap:8px;position:relative">
           <!-- Línea límite 15€ -->
           <div id="cpl-limit-line" style="position:absolute;left:0;right:0;border-top:1px dashed var(--red);pointer-events:none;z-index:2">
-            <span style="position:absolute;right:0;top:-14px;font-size:10px;color:var(--red);background:var(--bg);padding:0 4px">15€ objetivo</span>
+            <span style="position:absolute;right:0;top:-14px;font-size:10px;color:var(--muted);background:var(--bg);padding:0 4px">15€ objetivo</span>
           </div>
           <div id="cpl-chart" style="flex:1;display:flex;align-items:flex-end;gap:8px;height:100%;position:relative;z-index:1"></div>
         </div>
@@ -1800,7 +1812,7 @@
             </div>
             <div class="fisc-proy-card">
               <div class="fisc-proy-label">Retenciones totales</div>
-              <div class="fisc-proy-value" style="color:var(--orange)" id="fisc-proy-ret">—</div>
+              <div class="fisc-proy-value dot-warn" id="fisc-proy-ret">—</div>
               <div class="fisc-proy-sub">A cuenta del IRPF</div>
             </div>
             <div class="fisc-proy-card">
@@ -1942,7 +1954,7 @@
         onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
       >—</div>
       <div id="csp-badges" style="margin-top:6px;display:flex;gap:6px;align-items:center">
-        <span id="csp-save-indicator" style="font-size:11px;color:var(--green);opacity:0;transition:opacity 0.3s">✓ Guardado</span>
+        <span id="csp-save-indicator" style="font-size:11px;color:var(--text-mid);opacity:0;transition:opacity 0.3s">✓ Guardado</span>
       </div>
     </div>
     <button class="sp-close" onclick="closeCPanel()">×</button>
@@ -2810,7 +2822,7 @@ function openCPanelById(id) {
 
   // Badges header (after save-indicator span)
   document.getElementById('csp-badges').innerHTML =
-    `<span id="csp-save-indicator" style="font-size:11px;color:var(--green);opacity:0;transition:opacity 0.3s">✓ Guardado</span>
+    `<span id="csp-save-indicator" style="font-size:11px;color:var(--text-mid);opacity:0;transition:opacity 0.3s">✓ Guardado</span>
      ${cPlatIcon(item.plataforma, 24)}${cEstadoChip(item.estado)}`;
 
   // Estado flow
@@ -3064,8 +3076,8 @@ function renderIngresos() {
     const diferencia = proyeccion - 100000;
     const alcanza = proyeccion >= 100000;
     proyEl.innerHTML = alcanza
-      ? `Al ritmo actual (<strong>${fmtEur(Math.round(ritmo))}/día</strong>) llegarás a <strong>${fmtEur(proyeccion)}</strong> este mes — <strong style="color:var(--green)">+${fmtEur(diferencia)} sobre el objetivo</strong>.`
-      : `Al ritmo actual (<strong>${fmtEur(Math.round(ritmo))}/día</strong>) proyección: <strong>${fmtEur(proyeccion)}</strong> — <strong style="color:var(--orange)">faltan ${fmtEur(Math.abs(diferencia))} para el objetivo</strong>.`;
+      ? `Al ritmo actual (<strong>${fmtEur(Math.round(ritmo))}/día</strong>) llegarás a <strong>${fmtEur(proyeccion)}</strong> este mes — <strong>+${fmtEur(diferencia)} sobre el objetivo</strong>.`
+      : `Al ritmo actual (<strong>${fmtEur(Math.round(ritmo))}/día</strong>) proyección: <strong>${fmtEur(proyeccion)}</strong> — <strong>faltan ${fmtEur(Math.abs(diferencia))} para el objetivo</strong>.`;
   }
 
   // Gráfico de los últimos 6 meses
@@ -3672,7 +3684,6 @@ function renderFiscalidad() {
   const benAnualEl = document.getElementById('fisc-ben-anual');
   benAnualEl.textContent = fmtEur(benAnual);
   benAnualEl.className = 'fisc-proy-value ' + (benAnual >= 0 ? '' : 'warn');
-  benAnualEl.style.color = benAnual >= 0 ? 'var(--green)' : 'var(--red)';
 
   document.getElementById('fisc-proy-base-imp').textContent = fmtEur(baseImp);
   document.getElementById('fisc-proy-irpf').textContent    = fmtEur(cuotaIRPF);
