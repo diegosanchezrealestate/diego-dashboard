@@ -1230,16 +1230,21 @@
       </div>
     </div>
 
+    <!-- Contenido leads + calendario en dos columnas -->
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+
     <!-- Lista de leads -->
+    <div>
     <div class="leads-list-container" id="leads-list">
       <div class="leads-empty">
         <div class="leads-empty-icon">⏳</div>
         <div class="leads-empty-title">Cargando leads…</div>
       </div>
     </div>
+    </div>
 
     <!-- Calendario de visitas -->
-    <div style="margin-top:28px">
+    <div>
       <div class="card">
         <div class="card-inner">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
@@ -1276,6 +1281,8 @@
         </div>
       </div>
     </div>
+
+    </div><!-- /grid dos columnas -->
 
   </div>
 
@@ -2070,7 +2077,31 @@ function priorDot(p) {
   return colors[p] || 'var(--muted)';
 }
 
+function leadItemHTML(lead, i) {
+  const pClass = lead.prioridad || 'none';
+  const telefono = lead.telefono ? `<span class="lead-meta-item">📞 ${lead.telefono}</span>` : '';
+  const accion = lead.proximaAccion ? `<span class="lead-meta-item" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">→ ${lead.proximaAccion}</span>` : '';
+  const uc = lead.ultimoContacto ? `<span class="lead-meta-item">🗓 ${fmtFecha(lead.ultimoContacto)}</span>` : '';
+  return `
+    <div class="lead-item" style="animation-delay:${i*0.03}s" onclick="openPanel(${i})">
+      <div class="lead-priority-dot" style="background:${priorDot(lead.prioridad)}"></div>
+      <div class="lead-main">
+        <div class="lead-name">${lead.nombre || 'Sin nombre'}</div>
+        <div class="lead-meta">${telefono}${accion}${uc}</div>
+      </div>
+      <div class="lead-badges">
+        <span class="priority-badge ${pClass}">${lead.prioridad||'—'}</span>
+        ${lead.estado ? `<span class="lead-estado-badge">${lead.estado}</span>` : ''}
+      </div>
+    </div>`;
+}
+
+let leadsExpanded = false;
+let _lastLeads = [];
+
 function renderLeads(leads) {
+  _lastLeads = leads;
+  leadsExpanded = false;
   const container = document.getElementById('leads-list');
   if (!leads.length) {
     container.innerHTML = `
@@ -2081,26 +2112,16 @@ function renderLeads(leads) {
       </div>`;
     return;
   }
-  container.innerHTML = leads.map((lead, i) => {
-    const pClass = lead.prioridad || 'none';
-    const telefono = lead.telefono ? `<span class="lead-meta-item">📞 ${lead.telefono}</span>` : '';
-    const accion = lead.proximaAccion ? `<span class="lead-meta-item" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">→ ${lead.proximaAccion}</span>` : '';
-    const uc = lead.ultimoContacto ? `<span class="lead-meta-item">🗓 ${fmtFecha(lead.ultimoContacto)}</span>` : '';
-    return `
-      <div class="lead-item" style="animation-delay:${i*0.03}s" onclick="openPanel(${i})">
-        <div class="lead-priority-dot" style="background:${priorDot(lead.prioridad)}"></div>
-        <div class="lead-main">
-          <div class="lead-name">${lead.nombre || 'Sin nombre'}</div>
-          <div class="lead-meta">
-            ${telefono}${accion}${uc}
-          </div>
-        </div>
-        <div class="lead-badges">
-          <span class="priority-badge ${pClass}">${lead.prioridad||'—'}</span>
-          ${lead.estado ? `<span class="lead-estado-badge">${lead.estado}</span>` : ''}
-        </div>
-      </div>`;
-  }).join('');
+  const visible = leads.slice(0, 5);
+  const rest = leads.slice(5);
+  const btn = rest.length ? `<button onclick="expandLeads()" style="width:100%;margin-top:4px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--accent);cursor:pointer;font-weight:500">Ver todos (${leads.length})</button>` : '';
+  container.innerHTML = visible.map((lead, i) => leadItemHTML(lead, i)).join('') + btn;
+}
+
+function expandLeads() {
+  leadsExpanded = true;
+  const container = document.getElementById('leads-list');
+  container.innerHTML = _lastLeads.map((lead, i) => leadItemHTML(lead, i)).join('');
 }
 
 function updateStats(leads) {
