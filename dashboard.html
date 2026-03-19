@@ -1920,6 +1920,8 @@ function showView(name) {
   if (name === 'leads' && !leadsLoaded) loadLeads();
   if (name === 'contenido' && !contenidoLoaded) loadContenido();
   if (name === 'ingresos' && !ingresosLoaded) loadOperaciones();
+  if (name === 'ads') { loadAdsInputs(); renderCplChart(); }
+  if (name === 'leads') { setTimeout(renderVisCal, 50); }
 }
 
 // ── DATOS.JSON (Resumen) ──────────────────────────────
@@ -3301,14 +3303,6 @@ function renderCplChart() {
   labels.innerHTML = cplHistory.map(w =>
     `<div class="cpl-week-label" style="flex:1;text-align:center">${w.label}</div>`
   ).join('');
-}
-
-// Patch showView to init ads + calendar
-const _origShowViewFn = showView;
-function showView(name) {
-  _origShowViewFn(name);
-  if (name === 'ads') { loadAdsInputs(); renderCplChart(); }
-  if (name === 'leads') { setTimeout(renderVisCal, 50); }
 }
 
 // Init on load
