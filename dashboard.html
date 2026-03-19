@@ -58,6 +58,7 @@
     margin: 0 auto;
   }
   .logo { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(0,0,0,0.08); flex-shrink: 0; }
   .logo-text { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; font-size: 20px; color: var(--text); }
   .logo-badge { background: var(--text); color: white; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; }
   .header-right { display: flex; align-items: center; gap: 10px; }
@@ -1036,6 +1037,7 @@
 <header>
   <div class="header-inner">
     <div class="logo">
+      <img src="avatar.jpg" alt="Diego Sánchez" class="avatar">
       <div class="logo-text">Diego Sánchez</div>
       <div class="logo-badge">Operativo</div>
     </div>
@@ -3808,7 +3810,7 @@ function calcOperacion() {
 }
 
 /* ── AUTH ──────────────────────────────────────────────── */
-const PWD_HASH = '4e58d36c23ada078a6d87d73c45dec5098cce41b08d9b9d798650346c0bf9082';
+const PWD_HASH = 'aef4b874bfdfbcc9dc2e7429cfdd664c03449a7a0a8d9a6b818c2f6d761e365c';
 const SESSION_KEY = 'ds_session_v1';
 
 async function sha256(str) {
