@@ -1,13 +1,8 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "server.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "datos.json", "use": "@vercel/static" }
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.js" }
   ],
-  "routes": [
-    { "src": "/", "dest": "/dashboard.html" },
-    { "src": "/api/(.*)", "dest": "/server.js" },
-    { "src": "/(.*\\.html)", "dest": "/$1" }
+  "redirects": [
+    { "source": "/", "destination": "/dashboard.html", "permanent": false }
   ]
 }
