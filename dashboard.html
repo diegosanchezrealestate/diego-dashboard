@@ -879,6 +879,42 @@
   .ops-empty { text-align: center; padding: 48px 24px; color: var(--muted); }
   .ops-empty-icon { font-size: 36px; margin-bottom: 12px; }
   .ops-empty-title { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); margin-bottom: 4px; }
+
+  /* ── ADS VIEW ──────────────────────────────────────── */
+  .semaforo-verde   { background: var(--green) !important; }
+  .semaforo-naranja { background: var(--orange) !important; }
+  .semaforo-rojo    { background: var(--red) !important; }
+  .ads-metric { display:flex; flex-direction:column; gap:4px; }
+  .ads-label  { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+  .ads-target { font-size:10px; color:var(--muted); }
+  .metric-input { width:100%; border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 10px; font-size:14px; font-weight:600; color:var(--text); background:rgba(0,0,0,0.02); outline:none; transition:border-color 0.2s; }
+  .metric-input:focus { border-color:var(--accent); background:#fff; }
+  .cpl-bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+  .cpl-bar-pair { width:100%; display:flex; gap:3px; align-items:flex-end; flex:1; justify-content:center; }
+  .cpl-bar { flex:1; border-radius:5px 5px 0 0; min-height:3px; transition:height 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .cpl-bar.diego { background:var(--accent); opacity:0.85; }
+  .cpl-bar.kdf   { background:#9333ea; opacity:0.75; }
+  .cpl-bar:hover { opacity:1; }
+  .cpl-week-label { font-size:10px; color:var(--muted); text-align:center; }
+
+  /* ── VIS CALENDAR ──────────────────────────────────── */
+  .vis-day-event { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .vis-event-item {
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px; border-radius:var(--radius-sm);
+    background:rgba(0,0,0,0.02); border:1px solid var(--border);
+    margin-bottom:7px; cursor:pointer; transition:all 0.2s;
+  }
+  .vis-event-item:hover { background:rgba(0,0,0,0.04); border-color:var(--border-strong); }
+  .vis-event-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .vis-event-main { flex:1; min-width:0; }
+  .vis-event-lead { font-size:13px; font-weight:600; color:var(--text); }
+  .vis-event-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+  .vis-event-tipo { font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; padding:2px 8px; border-radius:100px; flex-shrink:0; }
+  .vis-tipo-captacion    { background:rgba(0,113,227,0.1); color:var(--accent); }
+  .vis-tipo-reunion      { background:var(--green-light); color:var(--green); }
+  .vis-tipo-venta        { background:var(--orange-light); color:var(--orange); }
+  .vis-tipo-seguimiento  { background:rgba(147,51,234,0.1); color:#9333ea; }
 </style>
 </head>
 <body>
@@ -894,6 +930,7 @@
       <button class="nav-tab" data-view="leads" onclick="showView('leads')">Leads</button>
       <button class="nav-tab" data-view="contenido" onclick="showView('contenido')">Contenido</button>
       <button class="nav-tab" data-view="ingresos" onclick="showView('ingresos')">Ingresos</button>
+      <button class="nav-tab" data-view="ads" onclick="showView('ads')">Ads</button>
     </nav>
     <div class="header-right">
       <div class="date-pill" id="fecha-actual"></div>
@@ -1201,6 +1238,45 @@
       </div>
     </div>
 
+    <!-- Calendario de visitas -->
+    <div style="margin-top:28px">
+      <div class="card">
+        <div class="card-inner">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div class="card-title" style="margin-bottom:0">Calendario de Visitas</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn-refresh" onclick="visCalPrev()" title="Mes anterior" style="font-size:14px">‹</button>
+              <span id="vis-cal-label" style="font-size:13px;font-weight:600;color:var(--text);min-width:120px;text-align:center"></span>
+              <button class="btn-refresh" onclick="visCalNext()" title="Mes siguiente" style="font-size:14px">›</button>
+              <button class="btn-add" onclick="openAddVisitaModal()" style="margin-left:4px">
+                <span style="font-size:16px;line-height:1">+</span> Nueva visita
+              </button>
+            </div>
+          </div>
+
+          <!-- Leyenda tipos -->
+          <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid)"><div style="width:10px;height:10px;border-radius:50%;background:#0071e3;flex-shrink:0"></div>Captación</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid)"><div style="width:10px;height:10px;border-radius:50%;background:#34c759;flex-shrink:0"></div>Reunión</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid)"><div style="width:10px;height:10px;border-radius:50%;background:#ff9500;flex-shrink:0"></div>Visita de venta</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid)"><div style="width:10px;height:10px;border-radius:50%;background:#9333ea;flex-shrink:0"></div>Seguimiento</div>
+          </div>
+
+          <!-- Grid calendario -->
+          <div class="cal-grid" id="vis-cal-headers">
+            <div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">X</div><div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div><div class="cal-header">D</div>
+          </div>
+          <div id="vis-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:20px"></div>
+
+          <!-- Lista próximas visitas esta semana -->
+          <div style="border-top:1px solid var(--border);padding-top:18px">
+            <div class="card-title" style="margin-bottom:14px">Próximas visitas esta semana</div>
+            <div id="vis-semana-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ══════════════ VISTA CONTENIDO ══════════════ -->
@@ -1339,6 +1415,194 @@
           <div class="ops-empty-title">Cargando operaciones…</div>
         </div>
       </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ VISTA ADS ══════════════ -->
+  <div id="view-ads" class="view">
+
+    <!-- Stats rápidas -->
+    <div class="leads-stats" style="grid-template-columns:repeat(4,1fr)">
+      <div class="lead-stat">
+        <div class="lead-stat-num" id="ads-total-leads" style="color:var(--accent)">—</div>
+        <div class="lead-stat-label">Leads totales</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num" id="ads-cpl-global" style="color:var(--green)">—</div>
+        <div class="lead-stat-label">CPL global</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num" id="ads-gasto-total" style="color:var(--text)">—</div>
+        <div class="lead-stat-label">Gasto total</div>
+      </div>
+      <div class="lead-stat">
+        <div class="lead-stat-num" id="ads-presupuesto-pct" style="color:var(--orange)">—</div>
+        <div class="lead-stat-label">% presupuesto</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+
+      <!-- Diego Sánchez -->
+      <div class="card">
+        <div class="card-inner">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div class="card-title" style="margin-bottom:0">Diego Sánchez — Marca Personal</div>
+            <button class="btn-add" style="font-size:12px;padding:7px 14px" onclick="saveAdsData('diego')">Guardar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+            <div class="ads-metric">
+              <div class="ads-label">CPL</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div id="ads-d-cpl-semaforo" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+                <input type="number" class="metric-input" id="ads-d-cpl" placeholder="0" oninput="updateAdsSemaforos()">
+              </div>
+              <div class="ads-target">objetivo &lt;15€</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">CTR</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div id="ads-d-ctr-semaforo" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+                <input type="number" step="0.1" class="metric-input" id="ads-d-ctr" placeholder="0.0" oninput="updateAdsSemaforos()">
+              </div>
+              <div class="ads-target">objetivo &gt;1.5%</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Leads generados</div>
+              <input type="number" class="metric-input" id="ads-d-leads" placeholder="0" oninput="updateAdsStats()">
+              <div class="ads-target">este mes</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Gasto (€)</div>
+              <input type="number" class="metric-input" id="ads-d-gasto" placeholder="0" oninput="updateAdsStats()">
+              <div class="ads-target">de 500€ presupuesto</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Impresiones</div>
+              <input type="number" class="metric-input" id="ads-d-imp" placeholder="0">
+              <div class="ads-target">este mes</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Alcance</div>
+              <input type="number" class="metric-input" id="ads-d-alcance" placeholder="0">
+              <div class="ads-target">personas únicas</div>
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px">
+              <span>Presupuesto usado</span>
+              <span id="ads-d-pres-label">0 / 500€</span>
+            </div>
+            <div style="height:6px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden">
+              <div id="ads-d-pres-bar" style="height:100%;border-radius:100px;background:var(--accent);transition:width 0.8s cubic-bezier(0.4,0,0.2,1);width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KDF Realty -->
+      <div class="card">
+        <div class="card-inner">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div class="card-title" style="margin-bottom:0">KDF Realty</div>
+            <button class="btn-add" style="font-size:12px;padding:7px 14px" onclick="saveAdsData('kdf')">Guardar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+            <div class="ads-metric">
+              <div class="ads-label">CPL</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div id="ads-k-cpl-semaforo" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+                <input type="number" class="metric-input" id="ads-k-cpl" placeholder="0" oninput="updateAdsSemaforos()">
+              </div>
+              <div class="ads-target">objetivo &lt;15€</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">CTR</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div id="ads-k-ctr-semaforo" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+                <input type="number" step="0.1" class="metric-input" id="ads-k-ctr" placeholder="0.0" oninput="updateAdsSemaforos()">
+              </div>
+              <div class="ads-target">objetivo &gt;1.5%</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Leads generados</div>
+              <input type="number" class="metric-input" id="ads-k-leads" placeholder="0" oninput="updateAdsStats()">
+              <div class="ads-target">este mes</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Gasto (€)</div>
+              <input type="number" class="metric-input" id="ads-k-gasto" placeholder="0" oninput="updateAdsStats()">
+              <div class="ads-target">de 500€ presupuesto</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Impresiones</div>
+              <input type="number" class="metric-input" id="ads-k-imp" placeholder="0">
+              <div class="ads-target">este mes</div>
+            </div>
+            <div class="ads-metric">
+              <div class="ads-label">Alcance</div>
+              <input type="number" class="metric-input" id="ads-k-alcance" placeholder="0">
+              <div class="ads-target">personas únicas</div>
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px">
+              <span>Presupuesto usado</span>
+              <span id="ads-k-pres-label">0 / 500€</span>
+            </div>
+            <div style="height:6px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden">
+              <div id="ads-k-pres-bar" style="height:100%;border-radius:100px;background:#9333ea;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico CPL por semana -->
+    <div class="card">
+      <div class="card-inner">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div class="card-title" style="margin-bottom:0">Evolución del CPL por semana</div>
+          <div style="display:flex;gap:14px">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:4px;background:var(--accent)"></div>Diego</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:4px;background:#9333ea"></div>KDF</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:3px;border-radius:100px;background:var(--red)"></div>Límite</div>
+          </div>
+        </div>
+        <div id="cpl-chart-container" style="height:160px;display:flex;align-items:flex-end;gap:8px;position:relative">
+          <!-- Línea límite 15€ -->
+          <div id="cpl-limit-line" style="position:absolute;left:0;right:0;border-top:1px dashed var(--red);pointer-events:none;z-index:2">
+            <span style="position:absolute;right:0;top:-14px;font-size:10px;color:var(--red);background:var(--bg);padding:0 4px">15€ objetivo</span>
+          </div>
+          <div id="cpl-chart" style="flex:1;display:flex;align-items:flex-end;gap:8px;height:100%;position:relative;z-index:1"></div>
+        </div>
+        <div id="cpl-chart-labels" style="display:flex;gap:8px;margin-top:6px;padding-left:0"></div>
+        <!-- Editor de semanas -->
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:18px">
+          <div class="card-title" style="margin-bottom:12px">Añadir datos de semana</div>
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:1;min-width:100px">
+              <div class="form-label" style="margin-bottom:5px">Semana</div>
+              <input type="text" class="form-input" id="cpl-week-label" placeholder="Ej. S12">
+            </div>
+            <div style="flex:1;min-width:80px">
+              <div class="form-label" style="margin-bottom:5px">CPL Diego (€)</div>
+              <input type="number" class="form-input" id="cpl-week-diego" placeholder="0">
+            </div>
+            <div style="flex:1;min-width:80px">
+              <div class="form-label" style="margin-bottom:5px">CPL KDF (€)</div>
+              <input type="number" class="form-input" id="cpl-week-kdf" placeholder="0">
+            </div>
+            <button class="btn-add" onclick="addCplWeek()" style="flex-shrink:0">Añadir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nota futura -->
+    <div style="text-align:center;padding:14px;font-size:11px;color:var(--muted)">
+      Preparado para conectar con Facebook Ads API — los datos se actualizarán automáticamente cuando se active la integración.
     </div>
 
   </div>
@@ -1499,6 +1763,68 @@
       <button class="btn-cancel" onclick="closeContModal()">Cancelar</button>
       <button class="btn-save" id="btn-save-cont" onclick="saveContenido()">
         <span class="save-text">Guardar en Notion</span>
+        <span class="save-spinner">Guardando…</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ADD VISITA MODAL ══════════════ -->
+<div class="modal-overlay" id="add-visita-modal" style="display:none" onclick="closeVisitaModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nueva visita</div>
+      <button class="modal-close" onclick="closeVisitaModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Lead / Propiedad <span class="form-required">*</span></label>
+        <input type="text" class="form-input" id="vis-lead" placeholder="Ej. María García — Calle Mayor 12">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Tipo de visita <span class="form-required">*</span></label>
+          <select class="form-select" id="vis-tipo">
+            <option value="">— Seleccionar —</option>
+            <option>Captación</option>
+            <option>Reunión</option>
+            <option>Visita de venta</option>
+            <option>Seguimiento</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha <span class="form-required">*</span></label>
+          <input type="date" class="form-input" id="vis-fecha">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Hora</label>
+          <input type="time" class="form-input" id="vis-hora" placeholder="10:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duración estimada</label>
+          <select class="form-select" id="vis-duracion">
+            <option value="30">30 minutos</option>
+            <option value="60" selected>1 hora</option>
+            <option value="90">1,5 horas</option>
+            <option value="120">2 horas</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dirección / Ubicación</label>
+        <input type="text" class="form-input" id="vis-lugar" placeholder="Ej. Calle Mayor 12, Santa Cruz de Tenerife">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-textarea" id="vis-notas" placeholder="Detalles relevantes, qué preparar…" style="min-height:60px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeVisitaModal()">Cancelar</button>
+      <button class="btn-save" id="btn-save-visita" onclick="saveVisita()">
+        <span class="save-text">Guardar visita</span>
         <span class="save-spinner">Guardando…</span>
       </button>
     </div>
@@ -2682,6 +3008,312 @@ async function saveContenido() {
     btn.classList.remove('loading'); btn.disabled = false;
   }
 }
+
+// ── VISITAS CALENDARIO ────────────────────────────────
+const VISIT_COLORS = {
+  'Captación':      '#0071e3',
+  'Reunión':        '#34c759',
+  'Visita de venta':'#ff9500',
+  'Seguimiento':    '#9333ea',
+};
+const VISIT_TIPO_CLASS = {
+  'Captación':      'vis-tipo-captacion',
+  'Reunión':        'vis-tipo-reunion',
+  'Visita de venta':'vis-tipo-venta',
+  'Seguimiento':    'vis-tipo-seguimiento',
+};
+
+let visitas = JSON.parse(localStorage.getItem('visitas') || '[]');
+let visCalYear = new Date().getFullYear();
+let visCalMonth = new Date().getMonth();
+
+function saveVisitas() { localStorage.setItem('visitas', JSON.stringify(visitas)); }
+
+function renderVisCal() {
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('vis-cal-label').textContent = monthNames[visCalMonth] + ' ' + visCalYear;
+
+  const firstDay = new Date(visCalYear, visCalMonth, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(visCalYear, visCalMonth + 1, 0).getDate();
+  const offset = firstDay === 0 ? 6 : firstDay - 1; // Mon-first
+  const today = new Date();
+
+  const grid = document.getElementById('vis-cal-grid');
+  grid.innerHTML = '';
+
+  // Empty cells before first day
+  for (let i = 0; i < offset; i++) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'aspect-ratio:1';
+    grid.appendChild(empty);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = visCalYear + '-' + String(visCalMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const dayVisitas = visitas.filter(v => v.fecha === dateStr);
+    const isToday = today.getFullYear()===visCalYear && today.getMonth()===visCalMonth && today.getDate()===d;
+    const isPast = new Date(dateStr) < new Date(today.toDateString());
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (isToday?' today':'') + (dayVisitas.length?' has-content':'') + (isPast&&!isToday?' past':'');
+    cell.style.cssText = 'position:relative;cursor:' + (dayVisitas.length?'pointer':'default');
+
+    if (dayVisitas.length) {
+      const dots = dayVisitas.slice(0,3).map(v => `<div class="vis-day-event" style="background:${VISIT_COLORS[v.tipo]||'var(--muted)'}"></div>`).join('');
+      cell.innerHTML = d + `<div class="cal-dots">${dots}</div>`;
+      cell.onclick = () => showDayVisitas(dateStr);
+    } else {
+      cell.textContent = d;
+    }
+    grid.appendChild(cell);
+  }
+
+  renderVisSemana();
+}
+
+function renderVisSemana() {
+  const today = new Date();
+  const dayOfWeek = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const monday = new Date(today); monday.setDate(today.getDate() - dayOfWeek);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+
+  const toStr = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const mondayStr = toStr(monday), sundayStr = toStr(sunday);
+
+  const semanaVisitas = visitas
+    .filter(v => v.fecha >= mondayStr && v.fecha <= sundayStr)
+    .sort((a,b) => (a.fecha+a.hora) > (b.fecha+b.hora) ? 1 : -1);
+
+  const container = document.getElementById('vis-semana-list');
+  if (!semanaVisitas.length) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Sin visitas programadas esta semana</div>';
+    return;
+  }
+  container.innerHTML = semanaVisitas.map((v,i) => {
+    const fecha = new Date(v.fecha+'T00:00:00');
+    const fechaLabel = fecha.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+    return `<div class="vis-event-item" onclick="showVisitaDetail(${i})">
+      <div class="vis-event-dot" style="background:${VISIT_COLORS[v.tipo]||'var(--muted)'}"></div>
+      <div class="vis-event-main">
+        <div class="vis-event-lead">${v.lead}</div>
+        <div class="vis-event-meta">${fechaLabel}${v.hora?' · '+v.hora:''}${v.lugar?' · '+v.lugar:''}</div>
+      </div>
+      <div class="vis-event-tipo ${VISIT_TIPO_CLASS[v.tipo]||''}">${v.tipo}</div>
+    </div>`;
+  }).join('');
+}
+
+function showDayVisitas(dateStr) {
+  const dayVis = visitas.filter(v => v.fecha === dateStr);
+  if (!dayVis.length) return;
+  const fecha = new Date(dateStr+'T00:00:00');
+  const label = fecha.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  alert(label + '\n\n' + dayVis.map(v => `• ${v.tipo}: ${v.lead}${v.hora?' ('+v.hora+')':''}${v.notas?'\n  '+v.notas:''}`).join('\n\n'));
+}
+
+function showVisitaDetail(idx) {
+  const v = visitas.filter(vis => {
+    const today = new Date();
+    const dayOfWeek = today.getDay() === 0 ? 6 : today.getDay() - 1;
+    const monday = new Date(today); monday.setDate(today.getDate() - dayOfWeek);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+    const toStr = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    return vis.fecha >= toStr(monday) && vis.fecha <= toStr(sunday);
+  }).sort((a,b) => (a.fecha+a.hora) > (b.fecha+b.hora) ? 1 : -1)[idx];
+  if (!v) return;
+  const fecha = new Date(v.fecha+'T00:00:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  alert(`${v.tipo}: ${v.lead}\n${fecha}${v.hora?' · '+v.hora:''}${v.lugar?'\n'+v.lugar:''}${v.notas?'\n\n'+v.notas:''}`);
+}
+
+function visCalPrev() { visCalMonth--; if (visCalMonth < 0) { visCalMonth = 11; visCalYear--; } renderVisCal(); }
+function visCalNext() { visCalMonth++; if (visCalMonth > 11) { visCalMonth = 0; visCalYear++; } renderVisCal(); }
+
+function openAddVisitaModal() {
+  document.getElementById('vis-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('add-visita-modal').style.display = 'flex';
+}
+function closeVisitaModal() { document.getElementById('add-visita-modal').style.display = 'none'; }
+function closeVisitaModalOutside(e) { if (e.target.id === 'add-visita-modal') closeVisitaModal(); }
+
+function saveVisita() {
+  const lead = document.getElementById('vis-lead').value.trim();
+  const tipo = document.getElementById('vis-tipo').value;
+  const fecha = document.getElementById('vis-fecha').value;
+  if (!lead || !tipo || !fecha) { alert('Completa los campos obligatorios'); return; }
+  const visita = {
+    lead, tipo, fecha,
+    hora: document.getElementById('vis-hora').value,
+    duracion: document.getElementById('vis-duracion').value,
+    lugar: document.getElementById('vis-lugar').value.trim(),
+    notas: document.getElementById('vis-notas').value.trim(),
+    id: Date.now()
+  };
+  visitas.push(visita);
+  saveVisitas();
+  closeVisitaModal();
+  renderVisCal();
+  // Reset form
+  ['vis-lead','vis-hora','vis-lugar','vis-notas'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('vis-tipo').value = '';
+  document.getElementById('vis-duracion').value = '60';
+}
+
+// Init calendar when leads view is shown
+const _origShowView = showView;
+// Patch: also init calendar on leads tab
+document.querySelector('[data-view="leads"]').addEventListener('click', () => {
+  setTimeout(renderVisCal, 50);
+});
+
+// ── ADS DATA ──────────────────────────────────────────
+let adsData = JSON.parse(localStorage.getItem('adsData') || JSON.stringify({
+  diego: { cpl:18, ctr:1.8, leads:14, gasto:252, imp:0, alcance:0 },
+  kdf:   { cpl:12, ctr:2.1, leads:21, gasto:248, imp:0, alcance:0 },
+}));
+
+let cplHistory = JSON.parse(localStorage.getItem('cplHistory') || JSON.stringify([
+  { label:'S10', diego:20, kdf:14 },
+  { label:'S11', diego:18, kdf:13 },
+  { label:'S12', diego:19, kdf:12 },
+  { label:'S13', diego:18, kdf:12 },
+]));
+
+function saveAdsData(who) {
+  const prefix = 'ads-' + who[0] + '-';
+  adsData[who] = {
+    cpl:     parseFloat(document.getElementById(prefix+'cpl').value) || 0,
+    ctr:     parseFloat(document.getElementById(prefix+'ctr').value) || 0,
+    leads:   parseInt(document.getElementById(prefix+'leads').value) || 0,
+    gasto:   parseFloat(document.getElementById(prefix+'gasto').value) || 0,
+    imp:     parseInt(document.getElementById(prefix+'imp').value) || 0,
+    alcance: parseInt(document.getElementById(prefix+'alcance').value) || 0,
+  };
+  localStorage.setItem('adsData', JSON.stringify(adsData));
+  updateAdsSemaforos();
+  updateAdsStats();
+  // Flash confirmation
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Guardado';
+  btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1500);
+}
+
+function loadAdsInputs() {
+  ['diego','kdf'].forEach(who => {
+    const p = who[0];
+    const d = adsData[who];
+    document.getElementById(`ads-${p}-cpl`).value  = d.cpl  || '';
+    document.getElementById(`ads-${p}-ctr`).value  = d.ctr  || '';
+    document.getElementById(`ads-${p}-leads`).value = d.leads || '';
+    document.getElementById(`ads-${p}-gasto`).value = d.gasto || '';
+    document.getElementById(`ads-${p}-imp`).value   = d.imp  || '';
+    document.getElementById(`ads-${p}-alcance`).value = d.alcance || '';
+  });
+  updateAdsSemaforos();
+  updateAdsStats();
+  renderCplChart();
+}
+
+function updateAdsSemaforos() {
+  function semaforo(id, value, objetivo, invertido) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const v = parseFloat(value) || 0;
+    if (invertido) {
+      // lower is better (CPL)
+      if (v <= objetivo) el.className = 'semaforo-verde';
+      else if (v <= objetivo * 1.2) el.className = 'semaforo-naranja';
+      else el.className = 'semaforo-rojo';
+    } else {
+      // higher is better (CTR)
+      if (v >= objetivo) el.className = 'semaforo-verde';
+      else if (v >= objetivo * 0.8) el.className = 'semaforo-naranja';
+      else el.className = 'semaforo-rojo';
+    }
+    el.style.width = '8px'; el.style.height = '8px'; el.style.borderRadius = '50%';
+  }
+  semaforo('ads-d-cpl-semaforo', document.getElementById('ads-d-cpl').value, 15, true);
+  semaforo('ads-k-cpl-semaforo', document.getElementById('ads-k-cpl').value, 15, true);
+  semaforo('ads-d-ctr-semaforo', document.getElementById('ads-d-ctr').value, 1.5, false);
+  semaforo('ads-k-ctr-semaforo', document.getElementById('ads-k-ctr').value, 1.5, false);
+}
+
+function updateAdsStats() {
+  const dGasto = parseFloat(document.getElementById('ads-d-gasto').value) || 0;
+  const kGasto = parseFloat(document.getElementById('ads-k-gasto').value) || 0;
+  const dLeads = parseInt(document.getElementById('ads-d-leads').value) || 0;
+  const kLeads = parseInt(document.getElementById('ads-k-leads').value) || 0;
+  const totalLeads = dLeads + kLeads;
+  const totalGasto = dGasto + kGasto;
+  const globalCPL = totalLeads > 0 ? (totalGasto / totalLeads).toFixed(1) : '—';
+  const presPct = Math.round((totalGasto / 1000) * 100);
+
+  document.getElementById('ads-total-leads').textContent = totalLeads;
+  document.getElementById('ads-cpl-global').textContent = globalCPL + (totalLeads>0?'€':'');
+  document.getElementById('ads-gasto-total').textContent = totalGasto + '€';
+  document.getElementById('ads-presupuesto-pct').textContent = presPct + '%';
+
+  // Presupuesto bars
+  const dPct = Math.min((dGasto/500)*100, 100);
+  const kPct = Math.min((kGasto/500)*100, 100);
+  document.getElementById('ads-d-pres-bar').style.width = dPct + '%';
+  document.getElementById('ads-k-pres-bar').style.width = kPct + '%';
+  document.getElementById('ads-d-pres-label').textContent = dGasto + '€ / 500€';
+  document.getElementById('ads-k-pres-label').textContent = kGasto + '€ / 500€';
+}
+
+function addCplWeek() {
+  const label = document.getElementById('cpl-week-label').value.trim();
+  const diego = parseFloat(document.getElementById('cpl-week-diego').value) || 0;
+  const kdf   = parseFloat(document.getElementById('cpl-week-kdf').value) || 0;
+  if (!label) { alert('Indica el nombre de la semana'); return; }
+  cplHistory.push({ label, diego, kdf });
+  if (cplHistory.length > 12) cplHistory = cplHistory.slice(-12);
+  localStorage.setItem('cplHistory', JSON.stringify(cplHistory));
+  document.getElementById('cpl-week-label').value = '';
+  document.getElementById('cpl-week-diego').value = '';
+  document.getElementById('cpl-week-kdf').value = '';
+  renderCplChart();
+}
+
+function renderCplChart() {
+  const chart = document.getElementById('cpl-chart');
+  const labels = document.getElementById('cpl-chart-labels');
+  if (!chart || !cplHistory.length) return;
+
+  const maxVal = Math.max(...cplHistory.flatMap(w => [w.diego, w.kdf]), 20);
+  const chartH = 130; // px available for bars
+  const limitPct = (15 / maxVal) * 100;
+  document.getElementById('cpl-limit-line').style.bottom = limitPct + '%';
+
+  chart.innerHTML = cplHistory.map(w => {
+    const dH = Math.round((w.diego / maxVal) * chartH);
+    const kH = Math.round((w.kdf   / maxVal) * chartH);
+    return `<div class="cpl-bar-col">
+      <div class="cpl-bar-pair">
+        <div class="cpl-bar diego" style="height:${dH}px" title="Diego: ${w.diego}€"></div>
+        <div class="cpl-bar kdf"   style="height:${kH}px" title="KDF: ${w.kdf}€"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  labels.innerHTML = cplHistory.map(w =>
+    `<div class="cpl-week-label" style="flex:1;text-align:center">${w.label}</div>`
+  ).join('');
+}
+
+// Patch showView to init ads + calendar
+const _origShowViewFn = showView;
+function showView(name) {
+  _origShowViewFn(name);
+  if (name === 'ads') { loadAdsInputs(); renderCplChart(); }
+  if (name === 'leads') { setTimeout(renderVisCal, 50); }
+}
+
+// Init on load
+setTimeout(renderVisCal, 100);
+
 </script>
 </body>
 </html>
