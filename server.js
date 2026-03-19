@@ -12,6 +12,7 @@ try { localConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'notion-conf
 
 const NOTION_TOKEN    = process.env.NOTION_TOKEN    || localConfig.token;
 const DB_PROPIETARIOS = process.env.DB_PROPIETARIOS || localConfig.propietarios_db;
+const DB_COMPRADORES  = process.env.DB_COMPRADORES  || '269c81f1-045a-80a8-b456-ede635b77e69';
 const DB_CONTENIDO    = process.env.DB_CONTENIDO    || '289c81f1-045a-80ab-b82b-f5378561c45a';
 const DB_OPERACIONES  = process.env.DB_OPERACIONES  || '327c81f1-045a-814d-beab-dabdef80c863';
 
@@ -77,6 +78,37 @@ app.post('/api/propietarios', async (req, res) => {
     res.json(page);
   } catch (e) {
     console.error('Error Notion:', e);
+    res.status(e.status || 500).json({ error: e.message });
+  }
+});
+
+// ── LEAD LANDING ──────────────────────────────────────
+// POST /api/lead — desde la landing page, enruta a propietarios o compradores
+app.post('/api/lead', async (req, res) => {
+  try {
+    const { nombre, telefono, tipo } = req.body;
+    if (!nombre || !telefono) return res.status(400).json({ error: 'Nombre y teléfono son obligatorios' });
+
+    const esVendedor = tipo === 'vender';
+    const dbId = esVendedor ? DB_PROPIETARIOS : DB_COMPRADORES;
+
+    const properties = {
+      'Nombre completo': { title: [{ text: { content: nombre.trim() } }] },
+      'Teléfono':        { phone_number: telefono.trim() },
+      'Origen del contacto': { select: { name: 'Landing' } },
+      'Estado del contacto': { status: { name: 'Nuevo' } },
+    };
+    if (esVendedor) {
+      properties['Prioridad'] = { select: { name: 'Alta' } };
+    }
+
+    const page = await notionRequest('POST', '/pages', {
+      parent: { database_id: dbId },
+      properties,
+    });
+    res.json({ ok: true, id: page.id });
+  } catch (e) {
+    console.error('Error Notion /api/lead:', e);
     res.status(e.status || 500).json({ error: e.message });
   }
 });
