@@ -3,3 +3,4 @@ node_modules/
 notion-config.json
 telegram-bot/
 .DS_Store
+.vercel
