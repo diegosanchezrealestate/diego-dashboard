@@ -915,6 +915,36 @@
   .vis-tipo-reunion      { background:var(--green-light); color:var(--green); }
   .vis-tipo-venta        { background:var(--orange-light); color:var(--orange); }
   .vis-tipo-seguimiento  { background:rgba(147,51,234,0.1); color:#9333ea; }
+
+  /* ── FISCALIDAD ───────────────────────────────────── */
+  .fisc-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+  .fisc-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .fisc-row-proy { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .fisc-input-group { margin-bottom: 14px; }
+  .fisc-input-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .fisc-input { width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: rgba(255,255,255,0.9); font-size: 15px; font-family: inherit; color: var(--text); outline: none; transition: border-color 0.2s; }
+  .fisc-input:focus { border-color: var(--accent); }
+  .fisc-input-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .fisc-result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .fisc-result-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .fisc-result-label { font-size: 13px; color: var(--text-mid); }
+  .fisc-result-value { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); }
+  .fisc-result-value.positive { color: var(--green); }
+  .fisc-result-value.negative { color: var(--red); }
+  .fisc-result-value.neutral  { color: var(--orange); }
+  .fisc-tramo-bar { height: 6px; border-radius: 100px; background: var(--border); overflow: hidden; margin-top: 4px; }
+  .fisc-tramo-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--green), var(--orange), var(--red)); }
+  .fisc-aviso { background: rgba(255,149,0,0.08); border: 1px solid rgba(255,149,0,0.22); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; gap: 12px; align-items: flex-start; }
+  .fisc-aviso-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .fisc-aviso-text { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+  .fisc-aviso-text strong { color: var(--text); font-weight: 600; }
+  .fisc-proy-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; }
+  .fisc-proy-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+  .fisc-proy-value { font-family: 'Instrument Serif', serif; font-size: 32px; line-height: 1; color: var(--text); }
+  .fisc-proy-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .fisc-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 3px 10px; border-radius: 100px; }
+  .fisc-badge.exento { background: var(--green-light); color: var(--green); }
+  .fisc-badge.activo { background: var(--accent-light); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -931,6 +961,7 @@
       <button class="nav-tab" data-view="contenido" onclick="showView('contenido')">Contenido</button>
       <button class="nav-tab" data-view="ingresos" onclick="showView('ingresos')">Ingresos</button>
       <button class="nav-tab" data-view="ads" onclick="showView('ads')">Ads</button>
+      <button class="nav-tab" data-view="fiscalidad" onclick="showView('fiscalidad')">Fiscalidad</button>
     </nav>
     <div class="header-right">
       <div class="date-pill" id="fecha-actual"></div>
@@ -1614,6 +1645,214 @@
 
   </div>
 
+  <!-- ══════════════ VISTA FISCALIDAD ══════════════ -->
+  <div id="view-fiscalidad" class="view">
+
+    <!-- Cabecera régimen -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap">
+      <div style="font-family:'Instrument Serif',serif;font-size:22px;color:var(--text)">Fiscalidad Autónomo</div>
+      <span class="fisc-badge activo">Estimación directa simplificada</span>
+      <span class="fisc-badge activo" style="color:var(--accent)">Retención 7%</span>
+      <span class="fisc-badge exento">IGIC exento</span>
+    </div>
+
+    <!-- ① Resumen mes actual -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-inner">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
+          <div class="card-title" style="margin-bottom:0">Resumen — <span id="fisc-mes-label" style="text-transform:none;letter-spacing:0">este mes</span></div>
+          <button class="btn-refresh" onclick="renderFiscalidad()" title="Recalcular" style="font-size:14px">↻</button>
+        </div>
+
+        <!-- 4 stat cards -->
+        <div class="fisc-row">
+          <div class="hero-card" style="padding:22px">
+            <div class="hero-label">Ingresos brutos</div>
+            <div class="hero-value" id="fisc-ing-bruto">—</div>
+            <div class="hero-sub">Comisiones facturadas</div>
+          </div>
+          <div class="hero-card" style="padding:22px">
+            <div class="hero-label">Retención IRPF 7%</div>
+            <div class="hero-value warn" id="fisc-ret-mes">—</div>
+            <div class="hero-sub">Retenida por el pagador</div>
+          </div>
+          <div class="hero-card" style="padding:22px">
+            <div class="hero-label">Ingresos netos cobrados</div>
+            <div class="hero-value accent" id="fisc-ing-neto">—</div>
+            <div class="hero-sub">Lo que ingresa en cuenta</div>
+          </div>
+          <div class="hero-card" style="padding:22px">
+            <div class="hero-label">Beneficio neto real</div>
+            <div class="hero-value" id="fisc-ben-neto">—</div>
+            <div class="hero-sub">Tras cuota y gastos</div>
+          </div>
+        </div>
+
+        <!-- Ajustes editables -->
+        <div class="fisc-row-2col">
+          <!-- Cuota + gastos -->
+          <div>
+            <div class="section-divider" style="margin-bottom:16px">Gastos deducibles del mes</div>
+            <div class="fisc-input-group">
+              <div class="fisc-input-label">Cuota autónomo</div>
+              <input type="number" class="fisc-input" id="fisc-cuota-input" value="320" oninput="fiscSaveAndRender()">
+              <div class="fisc-input-hint">Base mínima 2025: 320€/mes</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="fisc-input-group">
+                <div class="fisc-input-label">Publicidad</div>
+                <input type="number" class="fisc-input" id="fisc-pub-input" placeholder="0" oninput="fiscSaveAndRender()">
+              </div>
+              <div class="fisc-input-group">
+                <div class="fisc-input-label">Kilometraje</div>
+                <input type="number" class="fisc-input" id="fisc-km-input" placeholder="0" oninput="fiscSaveAndRender()">
+              </div>
+              <div class="fisc-input-group">
+                <div class="fisc-input-label">Material</div>
+                <input type="number" class="fisc-input" id="fisc-mat-input" placeholder="0" oninput="fiscSaveAndRender()">
+              </div>
+              <div class="fisc-input-group">
+                <div class="fisc-input-label">Otros</div>
+                <input type="number" class="fisc-input" id="fisc-otros-input" placeholder="0" oninput="fiscSaveAndRender()">
+              </div>
+            </div>
+          </div>
+          <!-- Desglose del mes -->
+          <div>
+            <div class="section-divider" style="margin-bottom:16px">Desglose del mes</div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">Ingresos brutos</span>
+              <span class="fisc-result-value" id="fisc-d-bruto">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">— Retención 7%</span>
+              <span class="fisc-result-value negative" id="fisc-d-ret">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">= Ingresos netos</span>
+              <span class="fisc-result-value" id="fisc-d-neto">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">— Cuota autónomo</span>
+              <span class="fisc-result-value negative" id="fisc-d-cuota">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">— Gastos deducibles</span>
+              <span class="fisc-result-value negative" id="fisc-d-gastos">—</span>
+            </div>
+            <div class="fisc-result-row" style="border-top:2px solid var(--border-strong);margin-top:4px;padding-top:12px">
+              <span class="fisc-result-label" style="font-weight:600;color:var(--text)">= Beneficio neto</span>
+              <span class="fisc-result-value" id="fisc-d-beneficio">—</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ② Calculadora por operación + ③ Proyección (lado a lado) -->
+    <div class="fisc-row-2col">
+
+      <!-- ② Calculadora por operación -->
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-title">Calculadora por operación</div>
+          <div class="fisc-input-group">
+            <div class="fisc-input-label">Comisión bruta de la operación</div>
+            <input type="number" class="fisc-input" id="fisc-op-bruto" placeholder="12500" oninput="calcOperacion()" style="font-size:20px;font-weight:600">
+          </div>
+          <div style="margin-top:6px">
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">Retención IRPF 7%</span>
+              <span class="fisc-result-value negative" id="fisc-op-ret">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">Ingreso neto cobrado</span>
+              <span class="fisc-result-value positive" id="fisc-op-neto">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">Bruto anual si mantienes este ritmo mensual</span>
+              <span class="fisc-result-value" id="fisc-op-anual" style="color:var(--accent)">—</span>
+            </div>
+            <div class="fisc-result-row">
+              <span class="fisc-result-label">Neto anual estimado (tras retenciones)</span>
+              <span class="fisc-result-value" id="fisc-op-neto-anual">—</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:12px 14px;background:var(--accent-light);border-radius:var(--radius-sm);font-size:12px;color:var(--accent)">
+            Con retención 7% el cliente te retiene <strong id="fisc-op-ret-msg">875€</strong> por cada 12.500€. Esa cantidad se imputa en tu declaración de la renta.
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ Proyección anual -->
+      <div class="card">
+        <div class="card-inner">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
+            <div class="card-title" style="margin-bottom:0">Proyección anual</div>
+            <span style="font-size:11px;color:var(--muted)" id="fisc-proy-base-meses"></span>
+          </div>
+          <div class="fisc-row-proy" style="margin-bottom:18px">
+            <div class="fisc-proy-card">
+              <div class="fisc-proy-label">Brutos anuales</div>
+              <div class="fisc-proy-value" id="fisc-proy-bruto">—</div>
+              <div class="fisc-proy-sub">Extrapolado al año</div>
+            </div>
+            <div class="fisc-proy-card">
+              <div class="fisc-proy-label">Retenciones totales</div>
+              <div class="fisc-proy-value" style="color:var(--orange)" id="fisc-proy-ret">—</div>
+              <div class="fisc-proy-sub">A cuenta del IRPF</div>
+            </div>
+            <div class="fisc-proy-card">
+              <div class="fisc-proy-label">Beneficio neto anual</div>
+              <div class="fisc-proy-value" id="fisc-ben-anual">—</div>
+              <div class="fisc-proy-sub">Tras todos los gastos</div>
+            </div>
+          </div>
+
+          <div class="section-divider" style="margin-bottom:14px">Declaración de la renta estimada</div>
+          <div class="fisc-result-row">
+            <span class="fisc-result-label">Base imponible</span>
+            <span class="fisc-result-value" id="fisc-proy-base-imp">—</span>
+          </div>
+          <div class="fisc-result-row">
+            <span class="fisc-result-label">Mínimo personal</span>
+            <span class="fisc-result-value">5.550€</span>
+          </div>
+          <div class="fisc-result-row">
+            <span class="fisc-result-label">Cuota IRPF total</span>
+            <span class="fisc-result-value neutral" id="fisc-proy-irpf">—</span>
+          </div>
+          <div class="fisc-result-row">
+            <span class="fisc-result-label">— Retenciones ya pagadas</span>
+            <span class="fisc-result-value negative" id="fisc-proy-ret2">—</span>
+          </div>
+          <div class="fisc-result-row" style="border-top:2px solid var(--border-strong);margin-top:4px;padding-top:12px">
+            <span class="fisc-result-label" style="font-weight:600;color:var(--text)">Resultado declaración</span>
+            <span class="fisc-result-value" id="fisc-proy-resultado">—</span>
+          </div>
+
+          <!-- Tramos aplicados -->
+          <div style="margin-top:18px">
+            <div class="section-divider" style="margin-bottom:12px">Tramos IRPF 2025 — Canarias</div>
+            <div id="fisc-tramos-list" style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--text-mid)"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ④ Aviso legal -->
+    <div class="fisc-aviso">
+      <div class="fisc-aviso-icon">⚠</div>
+      <div class="fisc-aviso-text">
+        <strong>Aviso legal:</strong> Este módulo es orientativo. Los cálculos están basados en los tramos IRPF 2025 para la Comunidad Autónoma de Canarias (estimación directa simplificada, retención 7%, sin IGIC). No constituyen asesoramiento fiscal. <strong>Consulta siempre con tu gestor fiscal antes de tomar decisiones.</strong>
+      </div>
+    </div>
+
+  </div>
+
 </main>
 
 <!-- ══════════════ SIDE PANEL ══════════════ -->
@@ -1929,6 +2168,7 @@ function showView(name) {
   if (name === 'ingresos' && !ingresosLoaded) loadOperaciones();
   if (name === 'ads') { loadAdsInputs(); renderCplChart(); }
   if (name === 'leads') { setTimeout(renderVisCal, 50); }
+  if (name === 'fiscalidad') initFiscalidad();
 }
 
 // ── DATOS.JSON (Resumen) ──────────────────────────────
@@ -2915,6 +3155,7 @@ async function loadOperaciones(forceRefresh = false) {
     const data = await res.json();
     allOperaciones = (data.results || []).map(parseOperacion);
     renderIngresos();
+    if (document.getElementById('view-fiscalidad').classList.contains('active')) renderFiscalidad();
   } catch(e) {
     const isConn = e.message.includes('fetch') || e.message.includes('Failed');
     document.getElementById('ops-list').innerHTML = `
@@ -3328,6 +3569,159 @@ function renderCplChart() {
 
 // Init on load
 setTimeout(renderVisCal, 100);
+
+// ── FISCALIDAD ────────────────────────────────────────
+
+const IRPF_TRAMOS = [
+  { desde: 0,       hasta: 12450,    tipo: 0.190, label: '0 – 12.450€' },
+  { desde: 12450,   hasta: 20200,    tipo: 0.240, label: '12.450 – 20.200€' },
+  { desde: 20200,   hasta: 35200,    tipo: 0.300, label: '20.200 – 35.200€' },
+  { desde: 35200,   hasta: 60000,    tipo: 0.370, label: '35.200 – 60.000€' },
+  { desde: 60000,   hasta: 300000,   tipo: 0.450, label: '60.000 – 300.000€' },
+  { desde: 300000,  hasta: Infinity, tipo: 0.475, label: '+ 300.000€' },
+];
+const MINIMO_PERSONAL = 5550;
+const RETENCION       = 0.07;
+
+function calcCuotaIRPF(base) {
+  const baseL = Math.max(0, base - MINIMO_PERSONAL);
+  let cuota = 0, prev = 0;
+  for (const t of IRPF_TRAMOS) {
+    if (baseL <= prev) break;
+    cuota += (Math.min(baseL, t.hasta) - prev) * t.tipo;
+    prev = t.hasta;
+  }
+  return Math.round(cuota);
+}
+
+let fiscData = JSON.parse(localStorage.getItem('fiscData') || 'null') || {
+  cuotaAutonomo: 320,
+  gastos: { publicidad: 0, kilometraje: 0, material: 0, otros: 0 }
+};
+
+function saveFiscData() { localStorage.setItem('fiscData', JSON.stringify(fiscData)); }
+
+function initFiscalidad() {
+  if (!ingresosLoaded) {
+    loadOperaciones().then(() => renderFiscalidad());
+  } else {
+    renderFiscalidad();
+  }
+}
+
+function renderFiscalidad() {
+  const now    = new Date();
+  const mesKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const mesLabel = now.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+  const mesActual = now.getMonth() + 1;
+
+  document.getElementById('fisc-mes-label').textContent = mesLabel;
+
+  // Mes actual
+  const mesOps = allOperaciones.filter(o => getMesKey(o.fechaCierre) === mesKey && (o.comDiego || 0) > 0);
+  const ingBrutoMes   = mesOps.reduce((s, o) => s + (o.comDiego || 0), 0);
+  const retMes        = Math.round(ingBrutoMes * RETENCION);
+  const ingNetoMes    = ingBrutoMes - retMes;
+  const cuotaMes      = Number(fiscData.cuotaAutonomo) || 320;
+  const gastosMes     = Object.values(fiscData.gastos).reduce((s, v) => s + (Number(v)||0), 0);
+  const beneficioMes  = ingNetoMes - cuotaMes - gastosMes;
+
+  // Proyección anual (datos reales del año + extrapolación)
+  const yearOps       = allOperaciones.filter(o => o.fechaCierre && o.fechaCierre.startsWith(String(now.getFullYear())) && (o.comDiego || 0) > 0);
+  const ingBrutoAnio  = yearOps.reduce((s, o) => s + (o.comDiego || 0), 0);
+  const ingProyectado = mesActual > 0 ? Math.round((ingBrutoAnio / mesActual) * 12) : 0;
+  const retProyectada = Math.round(ingProyectado * RETENCION);
+  const cuotaAnual    = cuotaMes * 12;
+  const gastosAnual   = gastosMes * 12;
+  const baseImp       = Math.max(0, ingProyectado - cuotaAnual - gastosAnual);
+  const cuotaIRPF     = calcCuotaIRPF(baseImp);
+  const irpfAPagar    = Math.max(0, cuotaIRPF - retProyectada);
+  const irpfADev      = Math.max(0, retProyectada - cuotaIRPF);
+  const benAnual      = ingProyectado - retProyectada - cuotaAnual - gastosAnual - irpfAPagar;
+
+  // ── Mes actual DOM
+  document.getElementById('fisc-ing-bruto').textContent = fmtEur(ingBrutoMes);
+  document.getElementById('fisc-ret-mes').textContent   = fmtEur(retMes);
+  document.getElementById('fisc-ing-neto').textContent  = fmtEur(ingNetoMes);
+  const benEl = document.getElementById('fisc-ben-neto');
+  benEl.textContent = fmtEur(beneficioMes);
+  benEl.className = 'hero-value ' + (beneficioMes >= 0 ? 'good' : 'warn');
+
+  // Desglose
+  document.getElementById('fisc-d-bruto').textContent   = fmtEur(ingBrutoMes);
+  document.getElementById('fisc-d-ret').textContent     = '− ' + fmtEur(retMes);
+  document.getElementById('fisc-d-neto').textContent    = fmtEur(ingNetoMes);
+  document.getElementById('fisc-d-cuota').textContent   = '− ' + fmtEur(cuotaMes);
+  document.getElementById('fisc-d-gastos').textContent  = '− ' + fmtEur(gastosMes);
+  const benDesEl = document.getElementById('fisc-d-beneficio');
+  benDesEl.textContent = fmtEur(beneficioMes);
+  benDesEl.className = 'fisc-result-value ' + (beneficioMes >= 0 ? 'positive' : 'negative');
+
+  // Inputs
+  document.getElementById('fisc-cuota-input').value = fiscData.cuotaAutonomo;
+  document.getElementById('fisc-pub-input').value   = fiscData.gastos.publicidad || '';
+  document.getElementById('fisc-km-input').value    = fiscData.gastos.kilometraje || '';
+  document.getElementById('fisc-mat-input').value   = fiscData.gastos.material || '';
+  document.getElementById('fisc-otros-input').value = fiscData.gastos.otros || '';
+
+  // ── Proyección DOM
+  document.getElementById('fisc-proy-base-meses').textContent =
+    `Basado en ${mesActual} mes${mesActual !== 1 ? 'es' : ''} de datos`;
+  document.getElementById('fisc-proy-bruto').textContent  = fmtEur(ingProyectado);
+  document.getElementById('fisc-proy-ret').textContent    = fmtEur(retProyectada);
+  const benAnualEl = document.getElementById('fisc-ben-anual');
+  benAnualEl.textContent = fmtEur(benAnual);
+  benAnualEl.className = 'fisc-proy-value ' + (benAnual >= 0 ? '' : 'warn');
+  benAnualEl.style.color = benAnual >= 0 ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('fisc-proy-base-imp').textContent = fmtEur(baseImp);
+  document.getElementById('fisc-proy-irpf').textContent    = fmtEur(cuotaIRPF);
+  document.getElementById('fisc-proy-ret2').textContent    = '− ' + fmtEur(retProyectada);
+  const resEl = document.getElementById('fisc-proy-resultado');
+  if (irpfAPagar > 0) {
+    resEl.textContent = 'A pagar: ' + fmtEur(irpfAPagar);
+    resEl.className = 'fisc-result-value negative';
+  } else {
+    resEl.textContent = 'A devolver: ' + fmtEur(irpfADev);
+    resEl.className = 'fisc-result-value positive';
+  }
+
+  // Tramos
+  const baseL = Math.max(0, baseImp - MINIMO_PERSONAL);
+  const tramosList = document.getElementById('fisc-tramos-list');
+  tramosList.innerHTML = IRPF_TRAMOS.map(t => {
+    const aplicado = Math.max(0, Math.min(baseL, t.hasta) - Math.max(0, t.desde));
+    if (aplicado <= 0) return '';
+    const cuotaT = Math.round(aplicado * t.tipo);
+    return `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+      <span>${t.label} · ${Math.round(t.tipo*100)}%</span>
+      <span style="font-variant-numeric:tabular-nums;font-weight:500;color:var(--text)">${fmtEur(cuotaT)}</span>
+    </div>`;
+  }).join('');
+}
+
+function fiscSaveAndRender() {
+  fiscData.cuotaAutonomo        = Number(document.getElementById('fisc-cuota-input').value) || 320;
+  fiscData.gastos.publicidad    = Number(document.getElementById('fisc-pub-input').value)   || 0;
+  fiscData.gastos.kilometraje   = Number(document.getElementById('fisc-km-input').value)    || 0;
+  fiscData.gastos.material      = Number(document.getElementById('fisc-mat-input').value)   || 0;
+  fiscData.gastos.otros         = Number(document.getElementById('fisc-otros-input').value) || 0;
+  saveFiscData();
+  renderFiscalidad();
+}
+
+function calcOperacion() {
+  const bruto = Number(document.getElementById('fisc-op-bruto').value) || 0;
+  const ret   = Math.round(bruto * RETENCION);
+  const neto  = bruto - ret;
+  const brutoAnual = bruto * 12;
+  const netoAnual  = neto  * 12;
+  document.getElementById('fisc-op-ret').textContent       = bruto > 0 ? '− ' + fmtEur(ret) : '—';
+  document.getElementById('fisc-op-neto').textContent      = bruto > 0 ? fmtEur(neto) : '—';
+  document.getElementById('fisc-op-anual').textContent     = bruto > 0 ? fmtEur(brutoAnual) : '—';
+  document.getElementById('fisc-op-neto-anual').textContent = bruto > 0 ? fmtEur(netoAnual) : '—';
+  document.getElementById('fisc-op-ret-msg').textContent   = bruto > 0 ? fmtEur(ret) : '—';
+}
 
 </script>
 </body>
