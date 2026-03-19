@@ -1447,6 +1447,12 @@
       </div>
     </div>
 
+    <!-- Grid: lista + calendario -->
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+
+    <!-- Columna izquierda: secciones de contenido -->
+    <div>
+
     <!-- ▶ YouTube -->
     <div class="cont-section" id="yt-section">
       <div class="cont-section-header yt-header">
@@ -1471,6 +1477,44 @@
       </div>
       <div id="ig-container"></div>
     </div>
+
+    </div><!-- /columna izquierda -->
+
+    <!-- Columna derecha: calendario de grabación -->
+    <div>
+      <div class="card">
+        <div class="card-inner">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div class="card-title" style="margin-bottom:0">Calendario de Grabación</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn-refresh" onclick="contCalPrev()" title="Mes anterior" style="font-size:14px">‹</button>
+              <span id="cont-cal-label" style="font-size:13px;font-weight:600;color:var(--text);min-width:120px;text-align:center"></span>
+              <button class="btn-refresh" onclick="contCalNext()" title="Mes siguiente" style="font-size:14px">›</button>
+            </div>
+          </div>
+
+          <!-- Leyenda -->
+          <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid)"><div style="width:10px;height:10px;border-radius:50%;background:#ff3b30;flex-shrink:0"></div>YouTube</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid)"><div style="width:10px;height:10px;border-radius:50%;background:#ff2d55;flex-shrink:0"></div>Instagram</div>
+          </div>
+
+          <!-- Grid calendario -->
+          <div class="cal-grid">
+            <div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">X</div><div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div><div class="cal-header">D</div>
+          </div>
+          <div id="cont-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:20px"></div>
+
+          <!-- Próximas grabaciones esta semana -->
+          <div style="border-top:1px solid var(--border);padding-top:18px">
+            <div class="card-title" style="margin-bottom:14px">Esta semana</div>
+            <div id="cont-semana-list"></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /columna derecha -->
+
+    </div><!-- /grid dos columnas -->
 
   </div>
 
@@ -2841,6 +2885,7 @@ function renderIGSection(items) {
 function renderContenidoSections() {
   renderYTSection(getYTItems());
   renderIGSection(getIGItems());
+  renderContCal();
 }
 
 function updateContStats() {
@@ -3481,6 +3526,88 @@ function showVisitaDetail(idx) {
 function visCalPrev() { visCalMonth--; if (visCalMonth < 0) { visCalMonth = 11; visCalYear--; } renderVisCal(); }
 function visCalNext() { visCalMonth++; if (visCalMonth > 11) { visCalMonth = 0; visCalYear++; } renderVisCal(); }
 
+// ── CALENDARIO DE GRABACIÓN (Contenido) ───────────────
+const CONT_PLAT_COLORS = { 'YouTube': '#ff3b30', 'Instagram': '#ff2d55' };
+let contCalYear = new Date().getFullYear();
+let contCalMonth = new Date().getMonth();
+
+function renderContCal() {
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('cont-cal-label').textContent = monthNames[contCalMonth] + ' ' + contCalYear;
+
+  const firstDay = new Date(contCalYear, contCalMonth, 1).getDay();
+  const daysInMonth = new Date(contCalYear, contCalMonth + 1, 0).getDate();
+  const offset = firstDay === 0 ? 6 : firstDay - 1;
+  const today = new Date();
+
+  const grid = document.getElementById('cont-cal-grid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < offset; i++) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'aspect-ratio:1';
+    grid.appendChild(empty);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = contCalYear + '-' + String(contCalMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const dayItems = allContenido.filter(c => c.fechaGrabacion && c.fechaGrabacion.startsWith(dateStr));
+    const isToday = today.getFullYear()===contCalYear && today.getMonth()===contCalMonth && today.getDate()===d;
+    const isPast = new Date(dateStr) < new Date(today.toDateString());
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (isToday?' today':'') + (dayItems.length?' has-content':'') + (isPast&&!isToday?' past':'');
+    cell.style.cssText = 'position:relative;cursor:' + (dayItems.length?'pointer':'default');
+
+    if (dayItems.length) {
+      const dots = dayItems.slice(0,3).map(c => `<div class="vis-day-event" style="background:${CONT_PLAT_COLORS[c.plataforma]||'var(--muted)'}"></div>`).join('');
+      cell.innerHTML = d + `<div class="cal-dots">${dots}</div>`;
+      cell.onclick = () => {
+        const label = new Date(dateStr+'T00:00:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+        alert(label + '\n\n' + dayItems.map(c => `• ${c.plataforma}: ${c.titulo||'Sin título'}\n  ${c.estado||''}`).join('\n\n'));
+      };
+    } else {
+      cell.textContent = d;
+    }
+    grid.appendChild(cell);
+  }
+
+  renderContSemana();
+}
+
+function renderContSemana() {
+  const today = new Date();
+  const dayOfWeek = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const monday = new Date(today); monday.setDate(today.getDate() - dayOfWeek);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+  const toStr = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const mondayStr = toStr(monday), sundayStr = toStr(sunday);
+
+  const semana = allContenido
+    .filter(c => c.fechaGrabacion && c.fechaGrabacion >= mondayStr && c.fechaGrabacion <= sundayStr)
+    .sort((a,b) => a.fechaGrabacion > b.fechaGrabacion ? 1 : -1);
+
+  const container = document.getElementById('cont-semana-list');
+  if (!semana.length) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Sin grabaciones esta semana</div>';
+    return;
+  }
+  container.innerHTML = semana.map(c => {
+    const fecha = new Date(c.fechaGrabacion+'T00:00:00').toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+    return `<div class="vis-event-item" onclick="openCPanelById('${c.id}')">
+      <div class="vis-event-dot" style="background:${CONT_PLAT_COLORS[c.plataforma]||'var(--muted)'}"></div>
+      <div class="vis-event-main">
+        <div class="vis-event-lead">${c.titulo||'Sin título'}</div>
+        <div class="vis-event-meta">${fecha} · ${c.plataforma||'—'}</div>
+      </div>
+      <div class="vis-event-tipo" style="background:rgba(0,0,0,0.05);color:var(--text-mid)">${c.estado||''}</div>
+    </div>`;
+  }).join('');
+}
+
+function contCalPrev() { contCalMonth--; if (contCalMonth < 0) { contCalMonth = 11; contCalYear--; } renderContCal(); }
+function contCalNext() { contCalMonth++; if (contCalMonth > 11) { contCalMonth = 0; contCalYear++; } renderContCal(); }
+
 function openAddVisitaModal() {
   document.getElementById('vis-fecha').value = new Date().toISOString().split('T')[0];
   document.getElementById('add-visita-modal').style.display = 'flex';
@@ -3516,6 +3643,10 @@ const _origShowView = showView;
 // Patch: also init calendar on leads tab
 document.querySelector('[data-view="leads"]').addEventListener('click', () => {
   setTimeout(renderVisCal, 50);
+});
+// Init content calendar when contenido tab is shown
+document.querySelector('[data-view="contenido"]').addEventListener('click', () => {
+  setTimeout(renderContCal, 50);
 });
 
 // ── ADS DATA ──────────────────────────────────────────
