@@ -957,9 +957,81 @@
   .fisc-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 3px 10px; border-radius: 100px; }
   .fisc-badge.exento { background: var(--green-light); color: var(--text-mid); }
   .fisc-badge.activo { background: var(--accent-light); color: var(--accent); }
+  /* ── LOGIN OVERLAY ────────────────────────────── */
+  #login-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 100% 50% at 20% 0%, rgba(0,113,227,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(52,199,89,0.04) 0%, transparent 50%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  #login-overlay.hidden { display: none; }
+  .login-card {
+    background: var(--surface-raised);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.80);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 52px 44px 44px;
+    width: 100%; max-width: 380px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .login-logo-text {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+    font-size: 24px; font-weight: 600; color: var(--text);
+    text-align: center; letter-spacing: -0.3px;
+  }
+  .login-logo-badge {
+    display: inline-block; background: var(--text); color: white;
+    font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 100px; margin-top: 6px;
+  }
+  .login-subtitle { font-size: 13px; color: var(--muted); margin: 6px 0 36px; }
+  .login-input {
+    width: 100%; padding: 13px 18px;
+    background: rgba(0,0,0,0.04);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    font-size: 15px; color: var(--text); outline: none; transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .login-input:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(0,113,227,0.12); }
+  .login-input::placeholder { color: var(--muted); }
+  .login-btn {
+    width: 100%; padding: 14px; background: var(--accent); color: white; border: none;
+    border-radius: var(--radius-sm);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,113,227,0.30); transition: all 0.2s; margin-top: 4px;
+  }
+  .login-btn:hover { background: #0077ed; box-shadow: 0 4px 16px rgba(0,113,227,0.40); transform: translateY(-1px); }
+  .login-btn:active { transform: translateY(0); }
+  .login-error { font-size: 12px; color: var(--red); text-align: center; margin-top: 12px; min-height: 18px; }
+  .btn-logout {
+    background: none; border: 1px solid var(--border-strong); border-radius: 100px;
+    padding: 6px 14px; font-size: 11px; color: var(--text-mid); cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; transition: all 0.2s;
+  }
+  .btn-logout:hover { background: rgba(0,0,0,0.04); color: var(--text); }
 </style>
 </head>
 <body>
+
+<!-- ── LOGIN OVERLAY ──────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo-text">Diego Sánchez</div>
+    <div style="text-align:center"><span class="login-logo-badge">Operativo</span></div>
+    <div class="login-subtitle">Panel privado</div>
+    <input type="password" id="login-pwd" class="login-input" placeholder="Contraseña"
+      autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
 
 <header>
   <div class="header-inner">
@@ -978,6 +1050,7 @@
     <div class="header-right">
       <div class="date-pill" id="fecha-actual"></div>
       <div class="objetivo-pill">Objetivo 100K€/mes</div>
+      <button class="btn-logout" onclick="doLogout()">Cerrar sesión</button>
     </div>
   </div>
 </header>
@@ -3733,6 +3806,45 @@ function calcOperacion() {
   document.getElementById('fisc-op-neto-anual').textContent = bruto > 0 ? fmtEur(netoAnual) : '—';
   document.getElementById('fisc-op-ret-msg').textContent   = bruto > 0 ? fmtEur(ret) : '—';
 }
+
+/* ── AUTH ──────────────────────────────────────────────── */
+const PWD_HASH = '4e58d36c23ada078a6d87d73c45dec5098cce41b08d9b9d798650346c0bf9082';
+const SESSION_KEY = 'ds_session_v1';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const val = document.getElementById('login-pwd').value;
+  const errEl = document.getElementById('login-error');
+  if (!val) { errEl.textContent = 'Introduce la contraseña.'; return; }
+  const hash = await sha256(val);
+  if (hash === PWD_HASH) {
+    localStorage.setItem(SESSION_KEY, '1');
+    document.getElementById('login-overlay').classList.add('hidden');
+    errEl.textContent = '';
+  } else {
+    errEl.textContent = 'Contraseña incorrecta.';
+    document.getElementById('login-pwd').value = '';
+    document.getElementById('login-pwd').focus();
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+// Verificar sesión al cargar
+(function checkSession() {
+  if (localStorage.getItem(SESSION_KEY) === '1') {
+    document.getElementById('login-overlay').classList.add('hidden');
+  } else {
+    setTimeout(() => document.getElementById('login-pwd').focus(), 100);
+  }
+})();
 
 </script>
 </body>
