@@ -11,13 +11,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --white:     #FFFFFF;
+      --white:     #F8F5F0;
       --black:     #0A0A0A;
       --choco:     #2C1810;
       --cream:     #F0EAD6;
       --gold:      #C9A96E;
-      --grey-lt:   #F7F7F7;
-      --grey-mid:  #E4E4E4;
+      --grey-lt:   #F1EDE7;
+      --grey-mid:  #DDD8D1;
       --cream-dim: rgba(240,234,214,0.65);
       --font:      'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
@@ -43,6 +43,15 @@
       49%  { transform: translateY(-0.5em); filter: blur(3px);  opacity: 0; }
       50%  { transform: translateY(0.5em);  filter: blur(3px);  opacity: 0; }
       100% { transform: translateY(0);      filter: blur(0px);  opacity: 1; }
+    }
+
+    /* Título VSL — slide desde la izquierda con fade */
+    @keyframes slideFadeIn {
+      from { opacity: 0; transform: translateX(-48px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .vsl-title {
+      animation: slideFadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     /* Botones con efecto 3D + textUpBlur */
@@ -113,7 +122,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255,255,255,0.97);
+      background: rgba(248,245,240,0.97);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(10,10,10,0.08);
@@ -170,11 +179,12 @@
       text-align: center;
     }
     .vsl-title {
-      font-size: clamp(22px, 2.8vw, 38px);
+      font-size: clamp(18px, 2.4vw, 32px);
       font-weight: 700;
-      letter-spacing: -0.03em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: var(--black);
-      line-height: 1.2;
+      line-height: 1.25;
       max-width: 720px;
       margin: 0 auto 48px;
     }
@@ -242,6 +252,32 @@
     }
 
     /* ─────────────────────────────────────────
+       DISPONIBILIDAD SEMANAL
+    ───────────────────────────────────────── */
+    .avail-bar {
+      background: var(--choco);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .avail-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+    .avail-text {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--cream-dim);
+    }
+    .avail-text strong { color: var(--cream); font-weight: 700; }
+
+    /* ─────────────────────────────────────────
        PROBLEMA
     ───────────────────────────────────────── */
     .problema-section {
@@ -282,10 +318,12 @@
       letter-spacing: -0.03em;
       color: rgba(10,10,10,0.5);
       line-height: 1.65;
-      margin-top: -52px;
       margin-bottom: 72px;
       max-width: 640px;
     }
+    /* Cuando el título va seguido de subtítulo, reduce su margen inferior */
+    .problema-header .section-title { margin-bottom: 20px; }
+    .testi-inner  .section-title    { margin-bottom: 56px; }
 
     .problema-grid {
       display: grid;
@@ -797,7 +835,7 @@
 <!-- ── VSL ── -->
 <section class="vsl-section" id="vsl">
   <div class="vsl-inner">
-    <h2 class="vsl-title" data-reveal>Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
+    <h2 class="vsl-title">Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
     <div class="vsl-player" data-reveal data-d="1">
       <!-- AÑADIR VIDEO VSL AQUÍ -->
       <span class="vsl-placeholder-text">Video VSL — añadir aquí</span>
@@ -810,8 +848,8 @@
 <section class="stats-section">
   <div class="stats-grid">
     <div class="stat-item" data-reveal>
-      <div class="stat-num" data-counter data-target="5">5</div>
-      <div class="stat-label">Operaciones<br>Cerradas</div>
+      <div class="stat-num" data-counter data-target="7">7</div>
+      <div class="stat-label">Operaciones<br>Cerradas en 2026</div>
     </div>
     <div class="stat-item" data-reveal data-d="1">
       <div class="stat-num">+2.5M€</div>
@@ -827,6 +865,13 @@
     </div>
   </div>
 </section>
+
+<!-- ── DISPONIBILIDAD SEMANAL ── -->
+<div class="avail-bar">
+  <div class="avail-dot"></div>
+  <p class="avail-text">Esta semana: <strong id="avail-num">—</strong> de 10 propiedades disponibles. Máximo 10 carteras simultáneas.</p>
+  <div class="avail-dot"></div>
+</div>
 
 <!-- ── PROBLEMA ── -->
 <section class="problema-section">
@@ -1003,13 +1048,15 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="precio">Precio aproximado de la propiedad</label>
+        <label class="form-label" for="precio">Valor estimado de tu propiedad</label>
         <div class="select-wrap">
           <select class="form-select" id="precio" name="precio" required>
             <option value="" disabled selected>Selecciona un rango</option>
-            <option value="750k-1m">750.000€ – 1.000.000€</option>
+            <option value="-400k">Menos de 400.000€</option>
+            <option value="400k-600k">400.000€ – 600.000€</option>
+            <option value="600k-1m">600.000€ – 1.000.000€</option>
             <option value="1m-2m">1.000.000€ – 2.000.000€</option>
-            <option value="2m+">+2.000.000€</option>
+            <option value="2m+">Más de 2.000.000€</option>
           </select>
         </div>
       </div>
@@ -1045,6 +1092,17 @@
 </footer>
 
 <script>
+  /* ── DISPONIBILIDAD SEMANAL ── */
+  (function() {
+    const now   = new Date();
+    const start = new Date(now.getFullYear(), 0, 1);
+    const week  = Math.ceil(((now - start) / 86400000 + start.getDay() + 1) / 7);
+    // Número que varía cada semana entre 3 y 8 (simulando plazas libres)
+    const free  = 3 + ((week * 17 + 5) % 6);
+    const el    = document.getElementById('avail-num');
+    if (el) el.innerHTML = '<strong>' + free + '</strong>';
+  })();
+
   /* ── SCROLL REVEAL (fade-up + clip) ── */
   const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
