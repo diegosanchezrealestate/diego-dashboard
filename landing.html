@@ -3,33 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diego Sánchez — Asesor Inmobiliario Tenerife</title>
-  <meta name="description" content="Vende o compra tu propiedad en Tenerife con el SELL METHOD. Sesión de estrategia gratuita. Solo 3 plazas al mes.">
-  <meta property="og:title" content="Diego Sánchez — Asesor Inmobiliario Tenerife">
-  <meta property="og:description" content="Agenda tu sesión de estrategia gratuita. Sin compromiso.">
+  <title>Diego Sánchez — Luxury Real Estate Tenerife</title>
+  <meta name="description" content="Asesor inmobiliario de lujo en Tenerife. Vende tu propiedad al precio que mereces. Sesión de estrategia privada. Solo 3 clientes al mes.">
+  <meta property="og:title" content="Diego Sánchez — Luxury Real Estate Tenerife">
+  <meta property="og:description" content="Sin rodeos. Sin compromiso. Solo una conversación honesta sobre tu propiedad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --blue:    #0071e3;
-      --blue-d:  #0058b0;
-      --text:    #1d1d1f;
-      --mid:     #424245;
-      --muted:   #6e6e73;
-      --bg:      #ffffff;
-      --bg-alt:  #f5f5f7;
-      --border:  #d2d2d7;
-      --radius:  18px;
-      --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+      --white:     #FFFFFF;
+      --black:     #0A0A0A;
+      --choco:     #2C1810;
+      --cream:     #F0EAD6;
+      --gold:      #C9A96E;
+      --grey-lt:   #F5F5F5;
+      --cream-dim: rgba(240,234,214,0.65);
+      --font-d:    'Bebas Neue', sans-serif;
+      --font-s:    'Cormorant Garamond', Georgia, serif;
+      --font-b:    'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
+      font-family: var(--font-b);
+      background: var(--white);
+      color: var(--black);
       -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.03em;
     }
 
     /* ── HEADER ── */
@@ -37,797 +41,762 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(10,10,10,0.08);
     }
     .header-inner {
-      max-width: 1080px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
-      height: 56px;
+      padding: 0 40px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .logo-name  { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
-    .logo-sub   { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .logo-name {
+      font-family: var(--font-b);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      line-height: 1;
+    }
+    .logo-sub {
+      font-family: var(--font-b);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.4);
+      margin-top: 3px;
+    }
     .header-cta {
-      background: var(--blue);
-      color: #fff;
+      display: inline-block;
+      background: var(--choco);
+      color: var(--cream);
       border: none;
-      border-radius: 980px;
-      padding: 8px 18px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 12px 28px;
+      font-family: var(--font-b);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.2s;
-      white-space: nowrap;
+      transition: background .2s, color .2s;
     }
-    .header-cta:hover { background: var(--blue-d); }
-
-    /* ── SECTIONS ── */
-    section { width: 100%; }
-    .container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .header-cta:hover { background: var(--gold); color: var(--black); }
 
     /* ── HERO ── */
     .hero {
-      background: var(--bg);
-      padding: 100px 0 80px;
-      text-align: center;
+      position: relative;
+      min-height: 100vh;
+      background: var(--choco);
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
     }
-    .hero-eyebrow {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 20px;
+    .hero-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-video-placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--choco);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 96px;
+      width: 100%;
     }
     .hero-title {
-      font-size: clamp(36px, 6vw, 64px);
-      font-weight: 700;
-      letter-spacing: -1.5px;
-      line-height: 1.08;
-      color: var(--text);
-      max-width: 800px;
-      margin: 0 auto 24px;
+      font-family: var(--font-d);
+      font-size: clamp(56px, 8.5vw, 120px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      color: var(--cream);
+      text-transform: uppercase;
+      max-width: 1000px;
+      margin-bottom: 32px;
     }
-    .hero-title span { color: var(--blue); }
+    .hero-title em {
+      font-style: normal;
+      color: var(--gold);
+    }
     .hero-sub {
-      font-size: clamp(17px, 2.5vw, 21px);
-      color: var(--mid);
-      max-width: 600px;
-      margin: 0 auto 44px;
-      line-height: 1.5;
-      font-weight: 400;
+      font-family: var(--font-s);
+      font-size: clamp(18px, 2.2vw, 26px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream-dim);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 48px;
+      letter-spacing: 0;
     }
-    .btn-primary {
+    .hero-cta {
       display: inline-block;
-      background: var(--blue);
-      color: #fff;
+      background: var(--cream);
+      color: var(--choco);
       border: none;
-      border-radius: 980px;
-      padding: 18px 40px;
-      font-size: 17px;
-      font-weight: 600;
+      padding: 18px 52px;
+      font-family: var(--font-b);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.2s, transform 0.1s;
-      line-height: 1;
+      transition: background .2s, color .2s;
     }
-    .btn-primary:hover  { background: var(--blue-d); }
-    .btn-primary:active { transform: scale(0.98); }
-    .hero-disclaimer {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 16px;
+    .hero-cta:hover { background: var(--gold); color: var(--black); }
+    .hero-note {
+      display: block;
+      margin-top: 20px;
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--cream-dim);
+      text-transform: uppercase;
+    }
+
+    /* ── HISTORIA ── */
+    .hist {
+      padding: 96px 0;
+    }
+    .hist-white {
+      background: var(--white);
+      color: var(--black);
+    }
+    .hist-choco {
+      background: var(--choco);
+      color: var(--cream);
+    }
+    .hist-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .hist-heading {
+      font-family: var(--font-b);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 36px;
+    }
+    .hist-white .hist-heading { color: var(--black); }
+    .hist-choco .hist-heading { color: var(--cream); }
+    .hist-p {
+      font-family: var(--font-b);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .hist-white .hist-p { color: rgba(10,10,10,0.7); }
+    .hist-choco .hist-p { color: var(--cream-dim); }
+    .hist-impact {
+      font-family: var(--font-b);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.4;
+      margin-bottom: 32px;
+    }
+    .hist-white .hist-impact { color: var(--black); }
+    .hist-choco .hist-impact { color: var(--cream); }
+    .hist-gold {
+      font-family: var(--font-b);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.4;
+      color: var(--gold);
+      margin-bottom: 32px;
     }
 
     /* ── VSL ── */
     .vsl-section {
-      background: var(--bg-alt);
-      padding: 80px 0;
-      text-align: center;
+      background: var(--grey-lt);
+      padding: 112px 0;
     }
-    .vsl-label {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-    .vsl-headline {
-      font-size: clamp(22px, 3.5vw, 32px);
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      color: var(--text);
-      max-width: 640px;
-      margin: 0 auto 40px;
-      line-height: 1.3;
-    }
-    .vsl-wrapper {
-      max-width: 760px;
+    .vsl-inner {
+      max-width: 880px;
       margin: 0 auto;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.14), 0 8px 24px rgba(0,0,0,0.08);
-      background: #000;
-      aspect-ratio: 16/9;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .vsl-title {
+      font-family: var(--font-b);
+      font-size: clamp(22px, 3.2vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      line-height: 1.2;
+      max-width: 640px;
+      margin: 0 auto 56px;
+    }
+    .vsl-player {
       position: relative;
-    }
-    .vsl-wrapper iframe {
       width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-    .vsl-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1d1d1f 0%, #2d2d2f 100%);
-      color: #fff;
-      gap: 16px;
-    }
-    .vsl-play-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
+      max-width: 800px;
+      aspect-ratio: 16/9;
+      background: var(--black);
+      margin: 0 auto 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
     }
-    .vsl-placeholder-text { font-size: 15px; color: rgba(255,255,255,0.6); }
-
-    /* ── PROBLEMA ── */
-    .problema-section {
-      background: var(--bg);
-      padding: 100px 0;
-    }
-    .section-eyebrow {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
+    .vsl-placeholder-text {
+      font-family: var(--font-b);
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.18);
       text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 14px;
-      text-align: center;
     }
-    .section-title {
-      font-size: clamp(28px, 4vw, 48px);
-      font-weight: 700;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      color: var(--text);
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 60px;
-    }
-    .problema-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-top: 0;
-    }
-    .problema-card {
-      background: var(--bg-alt);
-      border-radius: var(--radius);
-      padding: 40px 32px;
-    }
-    .problema-icon {
-      font-size: 36px;
-      margin-bottom: 20px;
-      display: block;
-    }
-    .problema-title {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text);
-      margin-bottom: 12px;
-      line-height: 1.3;
-    }
-    .problema-desc {
-      font-size: 15px;
-      color: var(--mid);
-      line-height: 1.6;
-    }
-    .problema-cost {
+    .vsl-cta {
       display: inline-block;
-      margin-top: 16px;
+      background: var(--choco);
+      color: var(--cream);
+      border: none;
+      padding: 18px 52px;
+      font-family: var(--font-b);
       font-size: 13px;
-      font-weight: 600;
-      color: #ff3b30;
-      background: rgba(255,59,48,0.08);
-      padding: 5px 12px;
-      border-radius: 100px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s, color .2s;
     }
+    .vsl-cta:hover { background: var(--gold); color: var(--black); }
 
     /* ── SELL METHOD ── */
     .method-section {
-      background: var(--bg-alt);
-      padding: 100px 0;
+      background: var(--white);
+      padding: 112px 0;
+    }
+    .method-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .section-eyebrow {
+      font-family: var(--font-b);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-b);
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 72px;
     }
     .method-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 2px;
-      background: var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-top: 0;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: rgba(10,10,10,0.08);
     }
     .method-step {
-      background: var(--bg);
-      padding: 36px 28px;
-      position: relative;
+      background: var(--white);
+      padding: 48px 28px;
     }
-    .method-num {
-      font-size: 11px;
+    .step-num {
+      font-family: var(--font-b);
+      font-size: 72px;
       font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 14px;
-    }
-    .method-title {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text);
-      margin-bottom: 10px;
-      line-height: 1.3;
-    }
-    .method-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── CREDIBILIDAD ── */
-    .cred-section {
-      background: var(--text);
-      padding: 100px 0;
-      color: #fff;
-    }
-    .cred-eyebrow {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 14px;
-      text-align: center;
-    }
-    .cred-title {
-      font-size: clamp(28px, 4vw, 48px);
-      font-weight: 700;
-      letter-spacing: -1px;
-      text-align: center;
-      color: #fff;
-      max-width: 700px;
-      margin: 0 auto 60px;
-      line-height: 1.1;
-    }
-    .cred-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 2px;
-      background: rgba(255,255,255,0.1);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 60px;
-    }
-    .cred-stat {
-      background: rgba(255,255,255,0.05);
-      padding: 40px 28px;
-      text-align: center;
-    }
-    .cred-stat-num {
-      font-size: clamp(36px, 5vw, 52px);
-      font-weight: 700;
-      letter-spacing: -2px;
-      color: #fff;
+      letter-spacing: -0.05em;
+      color: rgba(10,10,10,0.05);
       line-height: 1;
-      margin-bottom: 8px;
+      margin-bottom: 20px;
     }
-    .cred-stat-label {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.4;
-    }
-    .garantia-box {
-      background: var(--blue);
-      border-radius: var(--radius);
-      padding: 48px 40px;
-      text-align: center;
-      max-width: 680px;
-      margin: 0 auto;
-    }
-    .garantia-box h3 {
-      font-size: clamp(22px, 3vw, 30px);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 16px;
-    }
-    .garantia-box p {
-      font-size: 17px;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.5;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    /* ── OFERTA ── */
-    .oferta-section {
-      background: var(--bg);
-      padding: 100px 0;
-    }
-    .oferta-card {
-      background: var(--bg-alt);
-      border-radius: 28px;
-      padding: 60px 48px;
-      max-width: 720px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .oferta-badge {
-      display: inline-block;
-      background: rgba(0,113,227,0.1);
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 6px 16px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-    }
-    .oferta-title {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 700;
-      letter-spacing: -1px;
-      color: var(--text);
-      margin-bottom: 12px;
-      line-height: 1.1;
-    }
-    .oferta-sub {
-      font-size: 17px;
-      color: var(--mid);
-      margin-bottom: 40px;
-      line-height: 1.5;
-    }
-    .oferta-includes {
-      text-align: left;
-      margin: 0 auto 40px;
-      display: inline-block;
-    }
-    .oferta-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 14px;
+    .step-title {
+      font-family: var(--font-b);
       font-size: 15px;
-      color: var(--mid);
-      line-height: 1.5;
-    }
-    .oferta-item::before {
-      content: '✓';
       font-weight: 700;
-      color: var(--blue);
-      flex-shrink: 0;
-      margin-top: 1px;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 14px;
+      text-transform: uppercase;
     }
-    .escasez-box {
+    .step-desc {
+      font-family: var(--font-b);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: rgba(10,10,10,0.55);
+      line-height: 1.75;
+    }
+    .buyers-banner {
+      margin-top: 1px;
+      background: var(--choco);
+      padding: 40px 48px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: rgba(255,59,48,0.08);
-      border-radius: 12px;
-      padding: 14px 20px;
-      margin-bottom: 32px;
+      gap: 24px;
     }
-    .escasez-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ff3b30;
+    .buyers-dash {
+      width: 32px;
+      height: 2px;
+      background: var(--gold);
       flex-shrink: 0;
-      animation: pulse 1.5s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    .buyers-text {
+      font-family: var(--font-b);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: var(--cream-dim);
+      line-height: 1.5;
     }
-    .escasez-text {
-      font-size: 14px;
-      font-weight: 600;
-      color: #ff3b30;
+    .buyers-text strong {
+      font-weight: 700;
+      color: var(--cream);
     }
 
     /* ── FORMULARIO ── */
     .form-section {
-      background: var(--bg-alt);
-      padding: 100px 0;
+      background: var(--choco);
+      padding: 112px 0;
     }
-    .form-wrap {
-      max-width: 560px;
+    .form-inner {
+      max-width: 600px;
       margin: 0 auto;
+      padding: 0 40px;
     }
     .form-title {
-      font-size: clamp(28px, 4vw, 40px);
+      font-family: var(--font-b);
+      font-size: clamp(52px, 8vw, 96px);
       font-weight: 700;
-      letter-spacing: -0.8px;
-      color: var(--text);
-      text-align: center;
-      margin-bottom: 12px;
-      line-height: 1.15;
+      letter-spacing: -0.04em;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 16px;
     }
     .form-sub {
+      font-family: var(--font-b);
       font-size: 17px;
-      color: var(--muted);
-      text-align: center;
-      margin-bottom: 44px;
-      line-height: 1.5;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      color: var(--cream-dim);
+      line-height: 1.65;
+      margin-bottom: 56px;
     }
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 20px; }
     .form-label {
       display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 8px;
+      font-family: var(--font-b);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
     }
-    .form-input, .form-select {
+    .form-input,
+    .form-select {
       width: 100%;
-      padding: 16px 18px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid rgba(201,169,110,0.25);
+      background: rgba(240,234,214,0.05);
+      font-family: var(--font-b);
       font-size: 16px;
-      font-family: var(--font);
-      color: var(--text);
-      background: #fff;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: var(--cream);
+      outline: none;
+      transition: border-color .2s;
       appearance: none;
       -webkit-appearance: none;
-      outline: none;
     }
-    .form-input:focus, .form-select:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(0,113,227,0.12);
-    }
-    .form-select-wrap { position: relative; }
-    .form-select-wrap::after {
+    .form-input::placeholder { color: rgba(240,234,214,0.25); }
+    .form-input:focus,
+    .form-select:focus { border-color: var(--gold); }
+    .form-select { cursor: pointer; }
+    .form-select option { background: var(--choco); color: var(--cream); }
+    .select-wrap { position: relative; }
+    .select-wrap::after {
       content: '›';
       position: absolute;
       right: 18px;
       top: 50%;
       transform: translateY(-50%) rotate(90deg);
       font-size: 18px;
-      color: var(--muted);
+      color: var(--gold);
       pointer-events: none;
     }
     .btn-submit {
       width: 100%;
-      background: var(--blue);
-      color: #fff;
+      background: var(--cream);
+      color: var(--choco);
       border: none;
-      border-radius: 12px;
-      padding: 18px;
-      font-size: 17px;
+      padding: 20px;
+      font-family: var(--font-b);
+      font-size: 14px;
       font-weight: 700;
-      font-family: var(--font);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       cursor: pointer;
       margin-top: 8px;
-      transition: background 0.2s, transform 0.1s;
+      transition: background .2s, color .2s, transform .1s;
     }
-    .btn-submit:hover  { background: var(--blue-d); }
+    .btn-submit:hover  { background: var(--gold); color: var(--black); }
     .btn-submit:active { transform: scale(0.99); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .form-legal {
-      font-size: 12px;
-      color: var(--muted);
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .form-note {
+      font-family: var(--font-b);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: rgba(240,234,214,0.3);
       text-align: center;
-      margin-top: 16px;
-      line-height: 1.5;
+      margin-top: 20px;
+      text-transform: uppercase;
+    }
+    .form-legal {
+      font-family: var(--font-b);
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: rgba(240,234,214,0.3);
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.65;
+    }
+    .form-error-msg {
+      display: none;
+      background: rgba(255,59,48,0.08);
+      color: #e05555;
+      border: 1px solid rgba(255,59,48,0.2);
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      text-align: center;
     }
     .form-success {
       display: none;
       text-align: center;
-      padding: 60px 40px;
+      padding: 64px 0;
     }
     .form-success-icon {
-      font-size: 56px;
-      margin-bottom: 20px;
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 24px;
+      letter-spacing: -0.05em;
     }
     .form-success h3 {
-      font-size: 28px;
+      font-size: 40px;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 12px;
+      letter-spacing: -0.04em;
+      color: var(--cream);
+      text-transform: uppercase;
+      margin-bottom: 16px;
     }
-    .form-success p { font-size: 17px; color: var(--mid); line-height: 1.5; }
-    .form-error-msg {
-      display: none;
-      background: rgba(255,59,48,0.1);
-      color: #ff3b30;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 12px;
-      text-align: center;
+    .form-success p {
+      font-size: 17px;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      color: var(--cream-dim);
+      line-height: 1.65;
     }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--text);
-      color: rgba(255,255,255,0.6);
-      padding: 48px 0;
-      text-align: center;
+      background: var(--black);
+      padding: 56px 0;
     }
-    .footer-name {
-      font-size: 17px;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 6px;
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+    }
+    .footer-logo-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--cream);
+    }
+    .footer-logo-sub {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(240,234,214,0.3);
+      margin-top: 4px;
     }
     .footer-info {
       font-size: 13px;
-      line-height: 1.8;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: rgba(240,234,214,0.35);
+      text-align: center;
+      line-height: 1.9;
     }
-    .footer-info a { color: rgba(255,255,255,0.6); text-decoration: none; }
-    .footer-info a:hover { color: #fff; }
+    .footer-info a { color: rgba(240,234,214,0.35); text-decoration: none; }
+    .footer-info a:hover { color: var(--gold); }
     .footer-legal {
       font-size: 11px;
-      margin-top: 24px;
-      opacity: 0.4;
+      font-weight: 300;
+      color: rgba(240,234,214,0.2);
+      text-align: right;
+      line-height: 1.7;
     }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 680px) {
-      .header-inner { padding: 0 16px; }
-      .hero { padding: 70px 0 60px; }
-      .container { padding: 0 16px; }
-      .oferta-card { padding: 40px 24px; }
-      .garantia-box { padding: 36px 24px; }
-      .method-grid { grid-template-columns: 1fr; gap: 2px; }
-      .cred-stats { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 960px) {
+      .header-inner,
+      .method-inner,
+      .footer-inner { padding: 0 24px; }
+      .hero-content  { padding: 0 24px 72px; }
+      .hist-inner,
+      .vsl-inner,
+      .form-inner    { padding: 0 24px; }
+      .footer-inner  { flex-direction: column; text-align: center; }
+      .footer-legal  { text-align: center; }
+      .method-grid   { grid-template-columns: 1fr 1fr; }
+      .buyers-banner { padding: 32px 24px; }
+    }
+    @media (max-width: 600px) {
+      .hero-content  { padding: 0 20px 64px; }
+      .method-grid   { grid-template-columns: 1fr; }
+      .hist          { padding: 72px 0; }
+      .vsl-section,
+      .method-section,
+      .form-section  { padding: 80px 0; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── 1. HEADER ── -->
+<!-- ── HEADER ── -->
 <header>
   <div class="header-inner">
     <div>
       <div class="logo-name">Diego Sánchez</div>
-      <div class="logo-sub">Asesor Inmobiliario · Tenerife</div>
+      <div class="logo-sub">Luxury Real Estate · Tenerife</div>
     </div>
-    <a href="#formulario" class="header-cta">Sesión gratuita</a>
+    <a href="#formulario" class="header-cta">Agenda tu sesión</a>
   </div>
 </header>
 
-<!-- ── 2. HERO ── -->
+<!-- ── HERO ── -->
 <section class="hero">
-  <div class="container">
-    <div class="hero-eyebrow">Asesor Inmobiliario en Tenerife</div>
-    <h1 class="hero-title">
-      Tu vivienda puede valer<br>
-      <span>entre 20.000 y 60.000€ más</span><br>
-      de lo que te han dicho
-    </h1>
-    <p class="hero-sub">
-      La mayoría de propietarios en Tenerife dejan dinero sobre la mesa por no tener la estrategia correcta. Agenda una sesión gratuita y descubre el precio real de tu propiedad.
-    </p>
-    <a href="#formulario" class="btn-primary">Agenda tu sesión gratuita →</a>
-    <p class="hero-disclaimer">Sin compromiso · Sin coste · Solo 3 plazas disponibles al mes</p>
+  <div class="hero-video-wrap">
+    <!-- AÑADIR VIDEO: sustituir .hero-video-placeholder por <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover"> con la URL de Cloudinary -->
+    <div class="hero-video-placeholder"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">La comisión más cara<br>es la que pagas<br>cuando <em>vendes mal.</em></h1>
+    <p class="hero-sub">La mayoría de propietarios en Tenerife dejan dinero sobre la mesa por no tener la estrategia correcta.</p>
+    <a href="#formulario" class="hero-cta">Agenda tu sesión privada</a>
+    <span class="hero-note">3 clientes al mes · Sin compromiso · Sin coste</span>
   </div>
 </section>
 
-<!-- ── 3. VSL ── -->
-<section class="vsl-section">
-  <div class="container">
-    <div class="vsl-label">Mira esto primero</div>
-    <h2 class="vsl-headline">Mira este vídeo antes de tomar cualquier decisión sobre tu propiedad</h2>
-    <div class="vsl-wrapper">
-      <!-- Reemplaza el src con la URL del vídeo cuando esté publicado -->
-      <!-- <iframe src="https://www.youtube.com/embed/ID_DEL_VIDEO?rel=0&modestbranding=1" allowfullscreen></iframe> -->
-      <div class="vsl-placeholder">
-        <div class="vsl-play-icon">▶</div>
-        <div class="vsl-placeholder-text">Vídeo próximamente disponible</div>
-      </div>
+<!-- ── MI HISTORIA A — blanco ── -->
+<section class="hist hist-white">
+  <div class="hist-inner">
+    <p class="hist-heading">Voy a ser directo.</p>
+    <p class="hist-p">El colegio nunca fue para mí. Mientras los demás tomaban apuntes, yo miraba por la ventana pensando en otra cosa… Para ser exacto, estaba obsesionado en cómo ganar dinero. En cómo construir algo que fuera mío.</p>
+    <p class="hist-impact">Nunca terminé los estudios. La ESO y punto.</p>
+  </div>
+</section>
+
+<!-- ── MI HISTORIA B — chocolate ── -->
+<section class="hist hist-choco">
+  <div class="hist-inner">
+    <p class="hist-heading">También siete años de fracasos.</p>
+    <p class="hist-p">He ido a la quiebra cuatro veces. He trabajado de repartidor con una bicicleta en Holanda mientras nevaba. De mozo de almacén moviendo cajas a las seis de la mañana. En fábricas. En tiendas. Lo que hiciera falta para pagar las facturas y seguir intentándolo por las noches.</p>
+    <p class="hist-impact">Nunca me funcionó ninguno. No porque no trabajara. Sino porque ninguno me importaba de verdad.</p>
+  </div>
+</section>
+
+<!-- ── MI HISTORIA C — blanco ── -->
+<section class="hist hist-white">
+  <div class="hist-inner">
+    <p class="hist-p">Entonces, a principios de 2025, con mi agencia de contenido, empecé a gestionar las redes sociales de dos asesores inmobiliarios de Tenerife. Por primera vez vi el negocio por dentro. Las visitas. Las negociaciones. Las comisiones — poder ganar 10.000€, 20.000€ o más en una sola operación me voló la cabeza.</p>
+    <p class="hist-p">Y vi algo más: el marketing era un desastre. Las ventas, peores. Nadie sabía construir una marca personal.</p>
+    <p class="hist-impact">Pensé: llevo años haciendo exactamente esto para otros. ¿Y si lo hago para mí?</p>
+  </div>
+</section>
+
+<!-- ── MI HISTORIA D — chocolate ── -->
+<section class="hist hist-choco">
+  <div class="hist-inner">
+    <p class="hist-heading">Estoy en el sector inmobiliario por el dinero.</p>
+    <p class="hist-p">Así de claro. Las comisiones en propiedades de lujo son de las mejores que existen. Y yo quiero ganar dinero. Mucho. No me da vergüenza decirlo.</p>
+    <p class="hist-gold">Porque que yo gane mucho dinero, quiere decir que mis clientes están ganando mucho más.</p>
+    <p class="hist-p">El propietario que tiene una villa de un millón de euros no llegó hasta ahí por casualidad. Cada operación de lujo es una clase magistral sobre cómo piensan las personas que lo están consiguiendo en la vida. Eso no lo encuentras en ningún máster.</p>
+  </div>
+</section>
+
+<!-- ── MI HISTORIA E — blanco ── -->
+<section class="hist hist-white">
+  <div class="hist-inner">
+    <p class="hist-heading">No soy el típico asesor que te dice lo que quieres oír.</p>
+    <p class="hist-p">Que te infla el precio de tu casa para conseguir la exclusiva y luego te pide que lo bajes. Que desaparece después de firmar el contrato.</p>
+    <p class="hist-impact">Digo la verdad aunque no guste.</p>
+    <p class="hist-gold">Porque al final del día, solo cobro cuando el dinero está en tu cuenta. Y eso me obliga a hacer las cosas bien.</p>
+  </div>
+</section>
+
+<!-- ── VSL ── -->
+<section class="vsl-section" id="vsl">
+  <div class="vsl-inner">
+    <h2 class="vsl-title">Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
+    <div class="vsl-player">
+      <!-- AÑADIR VIDEO VSL -->
+      <span class="vsl-placeholder-text">Video VSL — añadir aquí</span>
     </div>
+    <a href="#formulario" class="vsl-cta">Agenda tu sesión privada</a>
   </div>
 </section>
 
-<!-- ── 4. PROBLEMA ── -->
-<section class="problema-section">
-  <div class="container">
-    <div class="section-eyebrow">El problema</div>
-    <h2 class="section-title">Los errores que más cuestan en el mercado inmobiliario de Tenerife</h2>
-    <div class="problema-grid">
-      <div class="problema-card">
-        <span class="problema-icon">💰</span>
-        <div class="problema-title">Precio mal fijado desde el inicio</div>
-        <p class="problema-desc">La mayoría de propietarios ponen el precio basándose en lo que vendió el vecino o en lo que necesitan ganar. El mercado no funciona así. Un precio incorrecto desde el día 1 quema la propiedad.</p>
-        <span class="problema-cost">Coste: 20.000 – 60.000€ menos en la venta</span>
-      </div>
-      <div class="problema-card">
-        <span class="problema-icon">📱</span>
-        <div class="problema-title">Presentación que aleja compradores</div>
-        <p class="problema-desc">Fotos con el móvil, anuncios sin descripción, viviendas que llevan meses en portales sin actualizarse. El primer impacto es el que decide si un comprador llama o sigue adelante.</p>
-        <span class="problema-cost">Coste: meses extra en el mercado, precio a la baja</span>
-      </div>
-      <div class="problema-card">
-        <span class="problema-icon">⚠️</span>
-        <div class="problema-title">Negociación sin preparación</div>
-        <p class="problema-desc">Muchos propietarios negocian solos, sin conocer el margen real del mercado, sin documentación preparada y sin saber cuándo ceder y cuándo mantenerse. Resultado: ceden más de lo necesario.</p>
-        <span class="problema-cost">Coste: 5.000 – 15.000€ en la negociación final</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── 5. SELL METHOD ── -->
-<section class="method-section">
-  <div class="container">
-    <div class="section-eyebrow">El método</div>
-    <h2 class="section-title">El SELL METHOD — las 5 fases para vender al precio máximo</h2>
+<!-- ── CÓMO TRABAJO — SELL METHOD ── -->
+<section class="method-section" id="metodo">
+  <div class="method-inner">
+    <div class="section-eyebrow">Cómo trabajo</div>
+    <h2 class="section-title">El SELL Method</h2>
     <div class="method-grid">
       <div class="method-step">
-        <div class="method-num">Fase 01</div>
-        <div class="method-title">Precio Estratégico</div>
-        <p class="method-desc">Análisis real del mercado. Valoración profesional. El precio exacto que maximiza tu dinero y minimiza el tiempo en el mercado.</p>
+        <div class="step-num">01</div>
+        <div class="step-title">Precio Estratégico</div>
+        <p class="step-desc">No fijamos el precio mirando al vecino. Analizamos el mercado real. El precio del día 1 es el más importante de toda la operación. Si está mal, todo lo demás es ruido.</p>
       </div>
       <div class="method-step">
-        <div class="method-num">Fase 02</div>
-        <div class="method-title">Presentación de Alto Impacto</div>
-        <p class="method-desc">Reportaje fotográfico y vídeo profesional. Edición de color. Contenido específico para redes sociales. Tu vivienda, como merece.</p>
+        <div class="step-num">02</div>
+        <div class="step-title">Presentación de Alto Impacto</div>
+        <p class="step-desc">El 90% de los compradores decide por las fotos antes de llamar. Equipo profesional, edición de color, vídeo. Tu propiedad compite en un mercado global. Tiene que verse como tal.</p>
       </div>
       <div class="method-step">
-        <div class="method-num">Fase 03</div>
-        <div class="method-title">Comercialización Máxima</div>
-        <p class="method-desc">Lanzamiento simultáneo en todos los portales con destacados pagados y estrategia completa en redes sociales.</p>
+        <div class="step-num">03</div>
+        <div class="step-title">Comercialización Máxima</div>
+        <p class="step-desc">Todos los portales. Destacados pagados. Redes sociales con miles de seguidores activos. Algunos compradores acceden antes de que el anuncio salga.</p>
       </div>
       <div class="method-step">
-        <div class="method-num">Fase 04</div>
-        <div class="method-title">Filtrado Inteligente</div>
-        <p class="method-desc">Cualificación de todos los contactos. Cero visitas de curiosos. Solo compradores con intención y capacidad real de compra.</p>
+        <div class="step-num">04</div>
+        <div class="step-title">Filtrado Inteligente</div>
+        <p class="step-desc">Cada contacto pasa por un filtro antes de pisar tu propiedad. Sin precalificación, sin visita. Tu casa no es un escaparate para curiosos.</p>
       </div>
       <div class="method-step">
-        <div class="method-num">Fase 05</div>
-        <div class="method-title">Cierre Blindado</div>
-        <p class="method-desc">Negociación de ofertas, arras con protección legal total, gestión de financiación y coordinación completa hasta notaría.</p>
+        <div class="step-num">05</div>
+        <div class="step-title">Cierre Blindado</div>
+        <p class="step-desc">Negocio la oferta. Redacto las arras con protección legal. Gestiono la financiación. El día que firmas, solo tienes que aparecer.</p>
       </div>
+    </div>
+    <div class="buyers-banner">
+      <div class="buyers-dash"></div>
+      <p class="buyers-text"><strong>Red de compradores internacionales cualificados</strong> — británicos, alemanes y nórdicos con capacidad real de compra.</p>
     </div>
   </div>
 </section>
 
-<!-- ── 6. CREDIBILIDAD ── -->
-<section class="cred-section">
-  <div class="container">
-    <div class="cred-eyebrow">Resultados reales</div>
-    <h2 class="cred-title">Parte del equipo con más operaciones cerradas en Tenerife</h2>
-    <div class="cred-stats">
-      <div class="cred-stat">
-        <div class="cred-stat-num">500+</div>
-        <div class="cred-stat-label">Operaciones cerradas en KDF Realty</div>
-      </div>
-      <div class="cred-stat">
-        <div class="cred-stat-num">6</div>
-        <div class="cred-stat-label">Asesores especializados en Tenerife</div>
-      </div>
-      <div class="cred-stat">
-        <div class="cred-stat-num">2</div>
-        <div class="cred-stat-label">Años de trayectoria ininterrumpida</div>
-      </div>
-      <div class="cred-stat">
-        <div class="cred-stat-num">3</div>
-        <div class="cred-stat-label">Propiedades máximo en paralelo</div>
-      </div>
-    </div>
-    <div class="garantia-box">
-      <h3>Garantía de reserva en 45 días</h3>
-      <p>Si no consigo una reserva para tu propiedad en 45 días desde que firmamos la exclusiva, te pago 1.000€. Sin letras pequeñas.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ── 7. OFERTA ── -->
-<section class="oferta-section" id="oferta">
-  <div class="container">
-    <div class="oferta-card">
-      <div class="oferta-badge">100% gratuita · Sin compromiso</div>
-      <h2 class="oferta-title">La Sesión de<br>Estrategia Gratuita</h2>
-      <p class="oferta-sub">45 minutos en los que saldrás con un plan claro para tu propiedad, lo trabajes conmigo o no.</p>
-      <div class="oferta-includes">
-        <div class="oferta-item">Análisis del valor real de tu propiedad en el mercado actual de Tenerife</div>
-        <div class="oferta-item">Estrategia de precio para maximizar lo que recibes en la venta</div>
-        <div class="oferta-item">Identificación de los errores que más te pueden costar</div>
-        <div class="oferta-item">Plan de acción concreto de los próximos 30 días</div>
-        <div class="oferta-item">Respuesta a todas las dudas sobre el proceso de venta o compra</div>
-      </div>
-      <div class="escasez-box">
-        <div class="escasez-dot"></div>
-        <div class="escasez-text">Solo 3 plazas disponibles al mes — agota las plazas rápido</div>
-      </div>
-      <a href="#formulario" class="btn-primary">Quiero mi sesión gratuita →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ── 8. FORMULARIO ── -->
+<!-- ── FORMULARIO ── -->
 <section class="form-section" id="formulario">
-  <div class="container">
-    <div class="form-wrap">
-      <h2 class="form-title">Agenda tu sesión gratuita ahora</h2>
-      <p class="form-sub">Rellena el formulario y te contacto en menos de 24 horas para confirmar tu plaza.</p>
+  <div class="form-inner">
+    <h2 class="form-title">Hablemos.</h2>
+    <p class="form-sub">Sin compromiso. Sin rodeos. Solo una conversación honesta sobre tu propiedad.</p>
 
-      <div id="form-error" class="form-error-msg"></div>
+    <div id="form-error" class="form-error-msg"></div>
 
-      <form id="lead-form">
-        <div class="form-group">
-          <label class="form-label" for="nombre">Nombre completo</label>
-          <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="telefono">Teléfono</label>
-          <input class="form-input" type="tel" id="telefono" name="telefono" placeholder="+34 600 000 000" autocomplete="tel" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="tipo">¿Qué quieres hacer?</label>
-          <div class="form-select-wrap">
-            <select class="form-select" id="tipo" name="tipo" required>
-              <option value="" disabled selected>Selecciona una opción</option>
-              <option value="vender">Quiero vender mi propiedad</option>
-              <option value="comprar">Quiero comprar una propiedad</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn-submit" type="submit" id="btn-submit">Quiero mi sesión gratuita →</button>
-        <p class="form-legal">Al enviar este formulario aceptas que Diego Sánchez se ponga en contacto contigo para confirmar tu sesión. Sin spam, sin cesión de datos a terceros.</p>
-      </form>
-
-      <div class="form-success" id="form-success">
-        <div class="form-success-icon">✅</div>
-        <h3>¡Solicitud recibida!</h3>
-        <p>Te contactaré en menos de 24 horas para confirmar tu sesión de estrategia gratuita. Revisa tu teléfono.</p>
+    <form id="lead-form">
+      <div class="form-group">
+        <label class="form-label" for="nombre">Nombre completo</label>
+        <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
       </div>
+      <div class="form-group">
+        <label class="form-label" for="telefono">Teléfono</label>
+        <input class="form-input" type="tel" id="telefono" name="telefono" placeholder="+34 600 000 000" autocomplete="tel" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cuando">¿Cuándo quieres vender?</label>
+        <div class="select-wrap">
+          <select class="form-select" id="cuando" name="cuando" required>
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option value="asap">Lo antes posible</option>
+            <option value="3m">En los próximos 3 meses</option>
+            <option value="6m">En los próximos 6 meses</option>
+            <option value="explorando">Todavía explorando opciones</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="precio">Precio aproximado de la propiedad</label>
+        <div class="select-wrap">
+          <select class="form-select" id="precio" name="precio" required>
+            <option value="" disabled selected>Selecciona un rango</option>
+            <option value="750k-1m">750.000€ – 1.000.000€</option>
+            <option value="1m-2m">1.000.000€ – 2.000.000€</option>
+            <option value="2m+">+2.000.000€</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-submit" type="submit" id="btn-submit">Agenda tu sesión</button>
+      <p class="form-note">Máximo 3 clientes al mes.</p>
+      <p class="form-legal">Al enviar aceptas que Diego Sánchez se ponga en contacto contigo. Sin spam, sin cesión de datos a terceros.</p>
+    </form>
+
+    <div class="form-success" id="form-success">
+      <div class="form-success-icon">✓</div>
+      <h3>Recibido</h3>
+      <p>Te contactaré en menos de 24 horas para confirmar tu sesión. Revisa tu teléfono.</p>
     </div>
   </div>
 </section>
 
-<!-- ── 9. FOOTER ── -->
+<!-- ── FOOTER ── -->
 <footer>
-  <div class="container">
-    <div class="footer-name">Diego Sánchez</div>
-    <div class="footer-info">
-      Asesor Inmobiliario · Tenerife<br>
-      KDF Realty · <a href="mailto:diego@kdfrealty.com">diego@kdfrealty.com</a>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo-name">Diego Sánchez</div>
+      <div class="footer-logo-sub">Luxury Real Estate · Tenerife</div>
     </div>
-    <div class="footer-legal">© 2026 Diego Sánchez · Todos los derechos reservados</div>
+    <div class="footer-info">
+      KDF Realty · <a href="mailto:diego@kdfrealty.com">diego@kdfrealty.com</a><br>
+      Tenerife, Islas Canarias
+    </div>
+    <div class="footer-legal">
+      © 2026 Diego Sánchez<br>
+      Todos los derechos reservados
+    </div>
   </div>
 </footer>
 
 <script>
-  const form = document.getElementById('lead-form');
-  const btn  = document.getElementById('btn-submit');
+  const form  = document.getElementById('lead-form');
+  const btn   = document.getElementById('btn-submit');
   const errEl = document.getElementById('form-error');
 
   form.addEventListener('submit', async (e) => {
@@ -836,9 +805,10 @@
 
     const nombre   = document.getElementById('nombre').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
-    const tipo     = document.getElementById('tipo').value;
+    const cuando   = document.getElementById('cuando').value;
+    const precio   = document.getElementById('precio').value;
 
-    if (!nombre || !telefono || !tipo) {
+    if (!nombre || !telefono || !cuando || !precio) {
       errEl.textContent = 'Por favor rellena todos los campos.';
       errEl.style.display = 'block';
       return;
@@ -849,20 +819,22 @@
 
     try {
       const res = await fetch('/api/lead', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, telefono, tipo }),
+        body:    JSON.stringify({ nombre, telefono, cuando, precio })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error al enviar');
 
-      form.style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
-    } catch (err) {
-      errEl.textContent = 'Algo ha fallado. Escríbeme directamente al teléfono o email.';
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      } else {
+        throw new Error();
+      }
+    } catch {
+      errEl.textContent = 'Algo fue mal. Llámame directamente o inténtalo de nuevo.';
       errEl.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'Quiero mi sesión gratuita →';
+      btn.textContent = 'Agenda tu sesión';
     }
   });
 </script>
