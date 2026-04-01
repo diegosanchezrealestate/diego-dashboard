@@ -16,22 +16,99 @@
       --choco:     #2C1810;
       --cream:     #F0EAD6;
       --gold:      #C9A96E;
-      --grey-lt:   #F5F5F5;
+      --grey-lt:   #F7F7F7;
+      --grey-mid:  #E4E4E4;
       --cream-dim: rgba(240,234,214,0.65);
-      --font-b:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font:      'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: var(--font-b);
+      font-family: var(--font);
       background: var(--white);
       color: var(--black);
       -webkit-font-smoothing: antialiased;
       letter-spacing: -0.03em;
+      overflow-x: hidden;
     }
 
-    /* ── HEADER ── */
+    /* ─────────────────────────────────────────
+       ANIMACIONES (MERAKI-INSPIRED)
+    ───────────────────────────────────────── */
+
+    /* textUpBlur — firma de Meraki en CTAs */
+    @keyframes textUpBlur {
+      0%   { transform: translateY(0);      filter: blur(0px);  opacity: 1; }
+      49%  { transform: translateY(-0.5em); filter: blur(3px);  opacity: 0; }
+      50%  { transform: translateY(0.5em);  filter: blur(3px);  opacity: 0; }
+      100% { transform: translateY(0);      filter: blur(0px);  opacity: 1; }
+    }
+
+    /* Botones con efecto 3D + textUpBlur */
+    .btn {
+      display: inline-block;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background 0.2s, color 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      overflow: hidden;
+    }
+    .btn span { display: inline-block; }
+    @media (hover: hover) and (pointer: fine) {
+      .btn:hover { transform: scale(1.03) rotateX(2deg) rotateY(3deg); }
+      .btn:hover span {
+        animation: textUpBlur 0.45s cubic-bezier(0.34, 1.52, 0.64, 1) forwards;
+      }
+    }
+
+    /* Scroll reveal — fade up */
+    [data-reveal]:not([data-reveal="clip"]) {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-reveal]:not([data-reveal="clip"]).is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Scroll reveal — clip path (para tarjetas) */
+    [data-reveal="clip"] {
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-reveal="clip"].is-visible { clip-path: inset(0 0 0% 0); }
+
+    /* Delays compartidos */
+    [data-d="1"] { transition-delay: 0.10s; }
+    [data-d="2"] { transition-delay: 0.20s; }
+    [data-d="3"] { transition-delay: 0.30s; }
+    [data-d="4"] { transition-delay: 0.40s; }
+    [data-d="5"] { transition-delay: 0.50s; }
+
+    /* Línea que crece */
+    .line-reveal {
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .line-reveal.is-visible { transform: scaleX(1); }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal], [data-reveal="clip"] {
+        opacity: 1; transform: none;
+        clip-path: none; transition: none;
+      }
+      .line-reveal { transform: scaleX(1); transition: none; }
+    }
+
+    /* ─────────────────────────────────────────
+       HEADER
+    ───────────────────────────────────────── */
     header {
       position: sticky;
       top: 0;
@@ -51,7 +128,6 @@
       justify-content: space-between;
     }
     .logo-name {
-      font-family: var(--font-b);
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.03em;
@@ -59,7 +135,6 @@
       line-height: 1;
     }
     .logo-sub {
-      font-family: var(--font-b);
       font-size: 11px;
       font-weight: 300;
       letter-spacing: 0.12em;
@@ -68,23 +143,21 @@
       margin-top: 3px;
     }
     .header-cta {
-      display: inline-block;
       background: var(--choco);
       color: var(--cream);
-      border: none;
       padding: 12px 28px;
-      font-family: var(--font-b);
+      font-family: var(--font);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background .2s, color .2s;
+      border: none;
     }
     .header-cta:hover { background: var(--gold); color: var(--black); }
 
-    /* ── VSL HERO ── */
+    /* ─────────────────────────────────────────
+       VSL
+    ───────────────────────────────────────── */
     .vsl-section {
       background: var(--white);
       padding: 80px 0 96px;
@@ -97,8 +170,7 @@
       text-align: center;
     }
     .vsl-title {
-      font-family: var(--font-b);
-      font-size: clamp(20px, 2.8vw, 36px);
+      font-size: clamp(22px, 2.8vw, 38px);
       font-weight: 700;
       letter-spacing: -0.03em;
       color: var(--black);
@@ -116,7 +188,6 @@
       justify-content: center;
     }
     .vsl-placeholder-text {
-      font-family: var(--font-b);
       font-size: 12px;
       font-weight: 300;
       letter-spacing: 0.12em;
@@ -124,34 +195,71 @@
       text-transform: uppercase;
     }
     .vsl-cta {
-      display: inline-block;
       background: var(--choco);
       color: var(--cream);
-      border: none;
       padding: 18px 52px;
-      font-family: var(--font-b);
+      font-family: var(--font);
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background .2s, color .2s;
+      border: none;
     }
     .vsl-cta:hover { background: var(--gold); color: var(--black); }
 
-    /* ── SELL METHOD ── */
-    .method-section {
-      background: var(--white);
-      padding: 112px 0;
+    /* ─────────────────────────────────────────
+       STATS BAR
+    ───────────────────────────────────────── */
+    .stats-section { background: var(--black); }
+    .stats-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
     }
-    .method-inner {
+    .stat-item {
+      background: var(--black);
+      padding: 56px 40px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: clamp(42px, 4.5vw, 68px);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(240,234,214,0.35);
+      line-height: 1.6;
+    }
+
+    /* ─────────────────────────────────────────
+       PROBLEMA
+    ───────────────────────────────────────── */
+    .problema-section {
+      background: var(--white);
+      padding: 120px 0;
+    }
+    .problema-inner {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px;
     }
-    .section-eyebrow {
-      font-family: var(--font-b);
+    .problema-header {
+      max-width: 800px;
+      margin-bottom: 80px;
+    }
+
+    /* ─── etiquetas de sección compartidas ─── */
+    .eyebrow {
       font-size: 11px;
       font-weight: 300;
       letter-spacing: 0.15em;
@@ -160,13 +268,94 @@
       margin-bottom: 16px;
     }
     .section-title {
-      font-family: var(--font-b);
-      font-size: clamp(36px, 5vw, 72px);
+      font-size: clamp(38px, 5vw, 72px);
       font-weight: 700;
       letter-spacing: -0.04em;
       color: var(--black);
-      line-height: 1;
+      line-height: 1.02;
       margin-bottom: 72px;
+    }
+    .section-title-light { color: var(--cream); }
+    .section-sub {
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: rgba(10,10,10,0.5);
+      line-height: 1.65;
+      margin-top: -52px;
+      margin-bottom: 72px;
+      max-width: 640px;
+    }
+
+    .problema-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--grey-mid);
+    }
+    .problema-card {
+      background: var(--grey-lt);
+      padding: 52px 40px;
+      transition: background 0.35s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .problema-card:hover {
+      background: var(--white);
+      transform: translateY(-4px);
+    }
+    .problema-num {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      color: rgba(10,10,10,0.07);
+      line-height: 1;
+      margin-bottom: 28px;
+    }
+    .problema-card-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      margin-bottom: 16px;
+    }
+    .problema-card-text {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: rgba(10,10,10,0.55);
+      line-height: 1.75;
+    }
+    .divider-line {
+      margin-top: 80px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .divider-rule {
+      height: 1px;
+      background: var(--gold);
+      flex: 1;
+    }
+    .divider-label {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ─────────────────────────────────────────
+       SELL METHOD
+    ───────────────────────────────────────── */
+    .method-section {
+      background: var(--white);
+      padding: 112px 0;
+      border-top: 1px solid rgba(10,10,10,0.06);
+    }
+    .method-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
     }
     .method-grid {
       display: grid;
@@ -174,12 +363,16 @@
       gap: 1px;
       background: rgba(10,10,10,0.08);
     }
+    /* Meraki sibling-fade: al hacer hover en un paso, los demás se atenúan */
+    .method-grid:has(.method-step:hover) .method-step:not(:hover) {
+      opacity: 0.3;
+    }
     .method-step {
       background: var(--white);
       padding: 48px 28px;
+      transition: opacity 0.3s;
     }
     .step-num {
-      font-family: var(--font-b);
       font-size: 72px;
       font-weight: 700;
       letter-spacing: -0.05em;
@@ -188,20 +381,18 @@
       margin-bottom: 20px;
     }
     .step-title {
-      font-family: var(--font-b);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
       color: var(--black);
       margin-bottom: 14px;
       text-transform: uppercase;
     }
     .step-desc {
-      font-family: var(--font-b);
       font-size: 14px;
       font-weight: 400;
       letter-spacing: -0.02em;
-      color: rgba(10,10,10,0.55);
+      color: rgba(10,10,10,0.5);
       line-height: 1.75;
     }
     .buyers-banner {
@@ -219,21 +410,154 @@
       flex-shrink: 0;
     }
     .buyers-text {
-      font-family: var(--font-b);
       font-size: 18px;
       font-weight: 400;
       letter-spacing: -0.03em;
       color: var(--cream-dim);
       line-height: 1.5;
     }
-    .buyers-text strong {
+    .buyers-text strong { font-weight: 700; color: var(--cream); }
+
+    /* ─────────────────────────────────────────
+       TESTIMONIOS
+    ───────────────────────────────────────── */
+    .testi-section {
+      background: var(--grey-lt);
+      padding: 120px 0;
+    }
+    .testi-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .testi-card {
+      background: var(--white);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.4s;
+    }
+    .testi-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 48px rgba(10,10,10,0.08);
+    }
+    .testi-stars { display: flex; gap: 4px; }
+    .testi-star {
+      width: 13px;
+      height: 13px;
+      background: var(--gold);
+      clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+    }
+    .testi-quote {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      line-height: 1.75;
+      flex: 1;
+    }
+    .testi-author {
+      border-top: 1px solid var(--grey-mid);
+      padding-top: 20px;
+    }
+    .testi-name {
+      font-size: 14px;
       font-weight: 700;
-      color: var(--cream);
+      letter-spacing: -0.02em;
+      color: var(--black);
+    }
+    .testi-detail {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.38);
+      margin-top: 5px;
     }
 
-    /* ── FORMULARIO ── */
-    .form-section {
+    /* ─────────────────────────────────────────
+       GARANTÍA
+    ───────────────────────────────────────── */
+    .garantia-section {
       background: var(--choco);
+      padding: 120px 0;
+    }
+    .garantia-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .garantia-title {
+      font-size: clamp(48px, 7.5vw, 96px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--cream);
+      line-height: 1.02;
+      margin-bottom: 24px;
+    }
+    .garantia-sub {
+      font-size: 19px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: rgba(240,234,214,0.65);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 72px;
+    }
+    .garantia-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(240,234,214,0.08);
+      margin-bottom: 56px;
+      text-align: left;
+    }
+    .garantia-item {
+      background: var(--choco);
+      padding: 36px 32px;
+    }
+    .garantia-item-label {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .garantia-item-text {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--cream-dim);
+      line-height: 1.7;
+    }
+    .garantia-item-text strong { color: var(--cream); font-weight: 700; }
+    .garantia-cta {
+      background: var(--cream);
+      color: var(--choco);
+      padding: 20px 64px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+    }
+    .garantia-cta:hover { background: var(--gold); color: var(--black); }
+
+    /* ─────────────────────────────────────────
+       FORMULARIO
+    ───────────────────────────────────────── */
+    .form-section {
+      background: var(--black);
       padding: 112px 0;
     }
     .form-inner {
@@ -242,7 +566,6 @@
       padding: 0 40px;
     }
     .form-title {
-      font-family: var(--font-b);
       font-size: clamp(52px, 8vw, 96px);
       font-weight: 700;
       letter-spacing: -0.04em;
@@ -251,7 +574,6 @@
       margin-bottom: 16px;
     }
     .form-sub {
-      font-family: var(--font-b);
       font-size: 17px;
       font-weight: 300;
       letter-spacing: -0.03em;
@@ -262,7 +584,6 @@
     .form-group { margin-bottom: 20px; }
     .form-label {
       display: block;
-      font-family: var(--font-b);
       font-size: 11px;
       font-weight: 300;
       letter-spacing: 0.12em;
@@ -274,9 +595,9 @@
     .form-select {
       width: 100%;
       padding: 18px 20px;
-      border: 1px solid rgba(201,169,110,0.25);
-      background: rgba(240,234,214,0.05);
-      font-family: var(--font-b);
+      border: 1px solid rgba(201,169,110,0.22);
+      background: rgba(240,234,214,0.04);
+      font-family: var(--font);
       font-size: 16px;
       font-weight: 400;
       letter-spacing: -0.03em;
@@ -286,11 +607,11 @@
       appearance: none;
       -webkit-appearance: none;
     }
-    .form-input::placeholder { color: rgba(240,234,214,0.25); }
+    .form-input::placeholder { color: rgba(240,234,214,0.2); }
     .form-input:focus,
     .form-select:focus { border-color: var(--gold); }
     .form-select { cursor: pointer; }
-    .form-select option { background: var(--choco); color: var(--cream); }
+    .form-select option { background: var(--black); color: var(--cream); }
     .select-wrap { position: relative; }
     .select-wrap::after {
       content: '›';
@@ -305,10 +626,10 @@
     .btn-submit {
       width: 100%;
       background: var(--cream);
-      color: var(--choco);
+      color: var(--black);
       border: none;
       padding: 20px;
-      font-family: var(--font-b);
+      font-family: var(--font);
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.05em;
@@ -317,25 +638,23 @@
       margin-top: 8px;
       transition: background .2s, color .2s, transform .1s;
     }
-    .btn-submit:hover  { background: var(--gold); color: var(--black); }
+    .btn-submit:hover  { background: var(--gold); }
     .btn-submit:active { transform: scale(0.99); }
     .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     .form-note {
-      font-family: var(--font-b);
       font-size: 11px;
       font-weight: 300;
       letter-spacing: 0.1em;
-      color: rgba(240,234,214,0.3);
+      color: rgba(240,234,214,0.22);
       text-align: center;
       margin-top: 20px;
       text-transform: uppercase;
     }
     .form-legal {
-      font-family: var(--font-b);
       font-size: 12px;
       font-weight: 300;
       letter-spacing: -0.02em;
-      color: rgba(240,234,214,0.3);
+      color: rgba(240,234,214,0.22);
       text-align: center;
       margin-top: 12px;
       line-height: 1.65;
@@ -347,7 +666,6 @@
       border: 1px solid rgba(255,59,48,0.2);
       padding: 14px 18px;
       font-size: 14px;
-      font-weight: 400;
       letter-spacing: -0.02em;
       margin-bottom: 16px;
       text-align: center;
@@ -362,7 +680,6 @@
       font-weight: 700;
       color: var(--gold);
       margin-bottom: 24px;
-      letter-spacing: -0.05em;
     }
     .form-success h3 {
       font-size: 40px;
@@ -380,9 +697,12 @@
       line-height: 1.65;
     }
 
-    /* ── FOOTER ── */
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
     footer {
       background: var(--black);
+      border-top: 1px solid rgba(255,255,255,0.05);
       padding: 56px 0;
     }
     .footer-inner {
@@ -405,65 +725,59 @@
       font-weight: 300;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(240,234,214,0.3);
+      color: rgba(240,234,214,0.28);
       margin-top: 4px;
     }
     .footer-info {
       font-size: 13px;
       font-weight: 300;
       letter-spacing: -0.02em;
-      color: rgba(240,234,214,0.35);
+      color: rgba(240,234,214,0.32);
       text-align: center;
       line-height: 1.9;
     }
-    .footer-info a { color: rgba(240,234,214,0.35); text-decoration: none; }
+    .footer-info a { color: inherit; text-decoration: none; }
     .footer-info a:hover { color: var(--gold); }
     .footer-legal {
       font-size: 11px;
       font-weight: 300;
-      color: rgba(240,234,214,0.2);
+      color: rgba(240,234,214,0.18);
       text-align: right;
       line-height: 1.7;
     }
 
-    /* ── RESPONSIVE ── */
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
     @media (max-width: 960px) {
       .header-inner,
       .method-inner,
-      .footer-inner { padding: 0 24px; }
+      .footer-inner,
       .vsl-inner,
+      .stats-grid,
+      .problema-inner,
+      .testi-inner,
+      .garantia-inner,
       .form-inner    { padding: 0 24px; }
       .footer-inner  { flex-direction: column; text-align: center; }
       .footer-legal  { text-align: center; }
       .method-grid   { grid-template-columns: 1fr 1fr; }
       .buyers-banner { padding: 32px 24px; }
+      .stats-grid    { grid-template-columns: 1fr 1fr; }
+      .problema-grid { grid-template-columns: 1fr; }
+      .testi-grid    { grid-template-columns: 1fr 1fr; }
+      .garantia-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
-      .method-grid   { grid-template-columns: 1fr; }
+      .method-grid { grid-template-columns: 1fr; }
+      .testi-grid  { grid-template-columns: 1fr; }
       .vsl-section,
       .method-section,
-      .form-section  { padding: 64px 0; }
-    }
-
-    /* ── SCROLL REVEAL ── */
-    [data-reveal] {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    [data-reveal].is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    [data-reveal][data-d="1"] { transition-delay: 0.10s; }
-    [data-reveal][data-d="2"] { transition-delay: 0.20s; }
-    [data-reveal][data-d="3"] { transition-delay: 0.30s; }
-    [data-reveal][data-d="4"] { transition-delay: 0.40s; }
-    [data-reveal][data-d="5"] { transition-delay: 0.50s; }
-
-    @media (prefers-reduced-motion: reduce) {
-      [data-reveal] { opacity: 1; transform: none; transition: none; }
+      .form-section,
+      .problema-section,
+      .testi-section,
+      .garantia-section { padding: 72px 0; }
+      .stats-grid { padding: 0; }
     }
   </style>
 </head>
@@ -476,7 +790,7 @@
       <div class="logo-name">Diego Sánchez</div>
       <div class="logo-sub">Luxury Real Estate · Tenerife</div>
     </div>
-    <a href="#formulario" class="header-cta">Agenda tu sesión</a>
+    <a href="#formulario" class="header-cta btn"><span>Agenda tu sesión</span></a>
   </div>
 </header>
 
@@ -485,17 +799,72 @@
   <div class="vsl-inner">
     <h2 class="vsl-title" data-reveal>Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
     <div class="vsl-player" data-reveal data-d="1">
-      <!-- AÑADIR VIDEO VSL -->
+      <!-- AÑADIR VIDEO VSL AQUÍ -->
       <span class="vsl-placeholder-text">Video VSL — añadir aquí</span>
     </div>
-    <a href="#formulario" class="vsl-cta" data-reveal data-d="2">Agenda tu sesión privada</a>
+    <a href="#formulario" class="vsl-cta btn" data-reveal data-d="2"><span>Agenda tu sesión privada</span></a>
   </div>
 </section>
 
-<!-- ── CÓMO TRABAJO — SELL METHOD ── -->
+<!-- ── STATS ── -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item" data-reveal>
+      <div class="stat-num" data-counter data-target="5">5</div>
+      <div class="stat-label">Operaciones<br>Cerradas</div>
+    </div>
+    <div class="stat-item" data-reveal data-d="1">
+      <div class="stat-num">+2.5M€</div>
+      <div class="stat-label">En Ventas<br>Gestionadas</div>
+    </div>
+    <div class="stat-item" data-reveal data-d="2">
+      <div class="stat-num" data-counter data-target="45" data-suffix=" días">45 días</div>
+      <div class="stat-label">Garantía de<br>Reserva</div>
+    </div>
+    <div class="stat-item" data-reveal data-d="3">
+      <div class="stat-num" data-counter data-target="3">3</div>
+      <div class="stat-label">Clientes<br>Máximo al Mes</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROBLEMA ── -->
+<section class="problema-section">
+  <div class="problema-inner">
+    <div class="problema-header">
+      <div class="eyebrow" data-reveal>El problema</div>
+      <h2 class="section-title" data-reveal data-d="1">Vender bien no es<br>vender rápido.</h2>
+      <p class="section-sub" data-reveal data-d="2">La mayoría de propietarios en Tenerife cometen errores que les cuestan decenas de miles de euros. No por falta de buenas intenciones. Por falta del sistema adecuado.</p>
+    </div>
+    <div class="problema-grid">
+      <div class="problema-card" data-reveal="clip">
+        <div class="problema-num">01</div>
+        <div class="problema-card-title">El precio del primer día</div>
+        <p class="problema-card-text">El precio con el que salgas al mercado el día 1 determina el resultado final. Un error del 5% sobre 700.000€ son 35.000€ menos en tu cuenta. Sin posibilidad de corrección.</p>
+      </div>
+      <div class="problema-card" data-reveal="clip" data-d="1">
+        <div class="problema-num">02</div>
+        <div class="problema-card-title">Compradores sin cualificación</div>
+        <p class="problema-card-text">Sin un filtro previo, tu propiedad se convierte en un escaparate para curiosos. Meses de visitas sin resultado, desgaste y la sensación de que nadie la quiere al precio que vale.</p>
+      </div>
+      <div class="problema-card" data-reveal="clip" data-d="2">
+        <div class="problema-num">03</div>
+        <div class="problema-card-title">El error en el contrato</div>
+        <p class="problema-card-text">Unas arras mal redactadas o sin la protección legal adecuada pueden costarte más que años de trabajo. La última fase es la más crítica y la más descuidada.</p>
+      </div>
+    </div>
+    <div class="divider-line">
+      <div class="divider-rule line-reveal"></div>
+      <div class="divider-label">La solución</div>
+      <div class="divider-rule line-reveal"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SELL METHOD ── -->
 <section class="method-section" id="metodo">
   <div class="method-inner">
-    <div class="section-eyebrow" data-reveal>Cómo trabajo</div>
+    <div class="eyebrow" data-reveal>Cómo trabajo</div>
     <h2 class="section-title" data-reveal data-d="1">El SELL Method</h2>
     <div class="method-grid">
       <div class="method-step" data-reveal>
@@ -531,15 +900,88 @@
   </div>
 </section>
 
+<!-- ── TESTIMONIOS ──
+     ⚠️  Sustituir [NOMBRE] y [APELLIDO] por datos reales antes de publicar
+── -->
+<section class="testi-section">
+  <div class="testi-inner">
+    <div class="eyebrow" data-reveal>Clientes</div>
+    <h2 class="section-title" data-reveal data-d="1">Lo que dicen<br>los propietarios</h2>
+    <div class="testi-grid">
+      <div class="testi-card" data-reveal>
+        <div class="testi-stars">
+          <div class="testi-star"></div><div class="testi-star"></div>
+          <div class="testi-star"></div><div class="testi-star"></div>
+          <div class="testi-star"></div>
+        </div>
+        <p class="testi-quote">"Diego gestionó la venta en menos de 30 días al precio exacto que nos propuso desde el primer día. Sin sorpresas, sin regateos. Solo resultados."</p>
+        <div class="testi-author">
+          <div class="testi-name">Familia [APELLIDO]</div>
+          <div class="testi-detail">Villa en Los Cristianos · 850.000€</div>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal data-d="1">
+        <div class="testi-stars">
+          <div class="testi-star"></div><div class="testi-star"></div>
+          <div class="testi-star"></div><div class="testi-star"></div>
+          <div class="testi-star"></div>
+        </div>
+        <p class="testi-quote">"Habíamos intentado vender durante 8 meses con otra agencia sin éxito. Diego firmó la reserva en 3 semanas. La diferencia es el método y la red de compradores que tiene."</p>
+        <div class="testi-author">
+          <div class="testi-name">[NOMBRE]</div>
+          <div class="testi-detail">Apartamento en Costa Adeje · 620.000€</div>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal data-d="2">
+        <div class="testi-stars">
+          <div class="testi-star"></div><div class="testi-star"></div>
+          <div class="testi-star"></div><div class="testi-star"></div>
+          <div class="testi-star"></div>
+        </div>
+        <p class="testi-quote">"La sesión de estrategia me abrió los ojos. Me explicó exactamente por qué no se había vendido. Fue honesto cuando no era lo que yo quería escuchar."</p>
+        <div class="testi-author">
+          <div class="testi-name">[NOMBRE]</div>
+          <div class="testi-detail">Chalet en La Orotava · 1.100.000€</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GARANTÍA ── -->
+<section class="garantia-section">
+  <div class="garantia-inner">
+    <div class="eyebrow" style="color:var(--gold)" data-reveal>La garantía</div>
+    <h2 class="garantia-title" data-reveal data-d="1">Reserva en 45 días.<br>O te pago 1.000€.</h2>
+    <p class="garantia-sub" data-reveal data-d="2">Si en 45 días desde la firma de la exclusiva no tenemos una reserva con señal, te devuelvo 1.000€ de mi bolsillo. Sin condiciones, sin letra pequeña.</p>
+    <div class="garantia-grid" data-reveal data-d="3">
+      <div class="garantia-item">
+        <div class="garantia-item-label">Exclusiva</div>
+        <p class="garantia-item-text">Trabajo con <strong>máximo 3 propiedades simultáneas</strong>. Cuando trabajo contigo, estoy trabajando solo para ti.</p>
+      </div>
+      <div class="garantia-item">
+        <div class="garantia-item-label">Sin coste inicial</div>
+        <p class="garantia-item-text">Fotografía profesional, portales, anuncios. <strong>Todo corre de mi cuenta</strong> hasta el día que firmas.</p>
+      </div>
+      <div class="garantia-item">
+        <div class="garantia-item-label">Solo cobro si vendes</div>
+        <p class="garantia-item-text">Mi comisión se activa cuando el dinero está en tu cuenta. <strong>Riesgo cero para ti</strong>. Todo el riesgo, mío.</p>
+      </div>
+    </div>
+    <a href="#formulario" class="garantia-cta btn" data-reveal data-d="4"><span>Quiero esta garantía</span></a>
+  </div>
+</section>
+
 <!-- ── FORMULARIO ── -->
 <section class="form-section" id="formulario">
   <div class="form-inner">
-    <h2 class="form-title" data-reveal>Hablemos.</h2>
-    <p class="form-sub" data-reveal data-d="1">Sin compromiso. Sin rodeos. Solo una conversación honesta sobre tu propiedad.</p>
+    <div class="eyebrow" style="color:var(--gold)" data-reveal>Sesión privada</div>
+    <h2 class="form-title" data-reveal data-d="1">Hablemos.</h2>
+    <p class="form-sub" data-reveal data-d="2">Sin compromiso. Sin rodeos. Solo una conversación honesta sobre tu propiedad y qué se puede conseguir con ella.</p>
 
     <div id="form-error" class="form-error-msg"></div>
 
-    <form id="lead-form" data-reveal data-d="2">
+    <form id="lead-form" data-reveal data-d="3">
       <div class="form-group">
         <label class="form-label" for="nombre">Nombre completo</label>
         <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
@@ -603,16 +1045,50 @@
 </footer>
 
 <script>
-  /* ── SCROLL REVEAL ── */
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        revealObserver.unobserve(entry.target);
+  /* ── SCROLL REVEAL (fade-up + clip) ── */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+        revealObs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+  }, { threshold: 0.1 });
+  document.querySelectorAll('[data-reveal]').forEach(el => revealObs.observe(el));
+
+  /* ── LINE REVEAL ── */
+  const lineObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+        lineObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.line-reveal').forEach(el => lineObs.observe(el));
+
+  /* ── COUNTER ANIMATION ── */
+  function runCounter(el) {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const dur    = 1500;
+    const t0     = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const v = Math.floor((1 - Math.pow(1 - p, 3)) * target);
+      el.textContent = v + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  const cntObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        runCounter(e.target);
+        cntObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-counter]').forEach(el => cntObs.observe(el));
 
   /* ── FORM ── */
   const form  = document.getElementById('lead-form');
@@ -643,13 +1119,10 @@
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ nombre, telefono, cuando, precio })
       });
-
       if (res.ok) {
         form.style.display = 'none';
         document.getElementById('form-success').style.display = 'block';
-      } else {
-        throw new Error();
-      }
+      } else { throw new Error(); }
     } catch {
       errEl.textContent = 'Algo fue mal. Llámame directamente o inténtalo de nuevo.';
       errEl.style.display = 'block';
