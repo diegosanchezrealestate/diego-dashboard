@@ -91,7 +91,7 @@
       border-bottom: 1px solid rgba(10,10,10,0.06);
     }
     .vsl-inner {
-      max-width: 900px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px;
       text-align: center;
@@ -103,7 +103,7 @@
       letter-spacing: -0.03em;
       color: var(--black);
       line-height: 1.2;
-      max-width: 600px;
+      max-width: 720px;
       margin: 0 auto 48px;
     }
     .vsl-player {
@@ -444,6 +444,27 @@
       .method-section,
       .form-section  { padding: 64px 0; }
     }
+
+    /* ── SCROLL REVEAL ── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-reveal].is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    [data-reveal][data-d="1"] { transition-delay: 0.10s; }
+    [data-reveal][data-d="2"] { transition-delay: 0.20s; }
+    [data-reveal][data-d="3"] { transition-delay: 0.30s; }
+    [data-reveal][data-d="4"] { transition-delay: 0.40s; }
+    [data-reveal][data-d="5"] { transition-delay: 0.50s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal] { opacity: 1; transform: none; transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -462,48 +483,48 @@
 <!-- ── VSL ── -->
 <section class="vsl-section" id="vsl">
   <div class="vsl-inner">
-    <h2 class="vsl-title">Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
-    <div class="vsl-player">
+    <h2 class="vsl-title" data-reveal>Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
+    <div class="vsl-player" data-reveal data-d="1">
       <!-- AÑADIR VIDEO VSL -->
       <span class="vsl-placeholder-text">Video VSL — añadir aquí</span>
     </div>
-    <a href="#formulario" class="vsl-cta">Agenda tu sesión privada</a>
+    <a href="#formulario" class="vsl-cta" data-reveal data-d="2">Agenda tu sesión privada</a>
   </div>
 </section>
 
 <!-- ── CÓMO TRABAJO — SELL METHOD ── -->
 <section class="method-section" id="metodo">
   <div class="method-inner">
-    <div class="section-eyebrow">Cómo trabajo</div>
-    <h2 class="section-title">El SELL Method</h2>
+    <div class="section-eyebrow" data-reveal>Cómo trabajo</div>
+    <h2 class="section-title" data-reveal data-d="1">El SELL Method</h2>
     <div class="method-grid">
-      <div class="method-step">
+      <div class="method-step" data-reveal>
         <div class="step-num">01</div>
         <div class="step-title">Precio Estratégico</div>
         <p class="step-desc">No fijamos el precio mirando al vecino. Analizamos el mercado real. El precio del día 1 es el más importante de toda la operación. Si está mal, todo lo demás es ruido.</p>
       </div>
-      <div class="method-step">
+      <div class="method-step" data-reveal data-d="1">
         <div class="step-num">02</div>
         <div class="step-title">Presentación de Alto Impacto</div>
         <p class="step-desc">El 90% de los compradores decide por las fotos antes de llamar. Equipo profesional, edición de color, vídeo. Tu propiedad compite en un mercado global. Tiene que verse como tal.</p>
       </div>
-      <div class="method-step">
+      <div class="method-step" data-reveal data-d="2">
         <div class="step-num">03</div>
         <div class="step-title">Comercialización Máxima</div>
         <p class="step-desc">Todos los portales. Destacados pagados. Redes sociales con miles de seguidores activos. Algunos compradores acceden antes de que el anuncio salga.</p>
       </div>
-      <div class="method-step">
+      <div class="method-step" data-reveal data-d="3">
         <div class="step-num">04</div>
         <div class="step-title">Filtrado Inteligente</div>
         <p class="step-desc">Cada contacto pasa por un filtro antes de pisar tu propiedad. Sin precalificación, sin visita. Tu casa no es un escaparate para curiosos.</p>
       </div>
-      <div class="method-step">
+      <div class="method-step" data-reveal data-d="4">
         <div class="step-num">05</div>
         <div class="step-title">Cierre Blindado</div>
         <p class="step-desc">Negocio la oferta. Redacto las arras con protección legal. Gestiono la financiación. El día que firmas, solo tienes que aparecer.</p>
       </div>
     </div>
-    <div class="buyers-banner">
+    <div class="buyers-banner" data-reveal>
       <div class="buyers-dash"></div>
       <p class="buyers-text"><strong>Red de compradores internacionales cualificados</strong> — británicos, alemanes y nórdicos con capacidad real de compra.</p>
     </div>
@@ -513,12 +534,12 @@
 <!-- ── FORMULARIO ── -->
 <section class="form-section" id="formulario">
   <div class="form-inner">
-    <h2 class="form-title">Hablemos.</h2>
-    <p class="form-sub">Sin compromiso. Sin rodeos. Solo una conversación honesta sobre tu propiedad.</p>
+    <h2 class="form-title" data-reveal>Hablemos.</h2>
+    <p class="form-sub" data-reveal data-d="1">Sin compromiso. Sin rodeos. Solo una conversación honesta sobre tu propiedad.</p>
 
     <div id="form-error" class="form-error-msg"></div>
 
-    <form id="lead-form">
+    <form id="lead-form" data-reveal data-d="2">
       <div class="form-group">
         <label class="form-label" for="nombre">Nombre completo</label>
         <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
@@ -582,6 +603,18 @@
 </footer>
 
 <script>
+  /* ── SCROLL REVEAL ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+
+  /* ── FORM ── */
   const form  = document.getElementById('lead-form');
   const btn   = document.getElementById('btn-submit');
   const errEl = document.getElementById('form-error');
