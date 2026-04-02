@@ -475,12 +475,51 @@
     }
     .testi-card {
       background: var(--white);
-      padding: 48px 40px;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 0;
+      overflow: hidden;
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
                   box-shadow 0.4s;
+    }
+    .testi-img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--grey-mid);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .testi-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .testi-img-ph {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #aaa;
+    }
+    .testi-img-ph svg { opacity: 0.5; }
+    .testi-img-ph span {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+    .testi-body {
+      padding: 36px 36px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 1;
     }
     .testi-card:hover {
       transform: translateY(-8px);
@@ -954,39 +993,66 @@
     <h2 class="section-title" data-reveal data-d="1">Lo que dicen<br>los propietarios</h2>
     <div class="testi-grid">
       <div class="testi-card" data-reveal>
-        <div class="testi-stars">
-          <div class="testi-star"></div><div class="testi-star"></div>
-          <div class="testi-star"></div><div class="testi-star"></div>
-          <div class="testi-star"></div>
+        <div class="testi-img">
+          <!-- Sustituir por: <img src="foto-propiedad-1.jpg" alt="Villa en Los Cristianos"> -->
+          <div class="testi-img-ph">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Foto de la propiedad</span>
+          </div>
         </div>
-        <p class="testi-quote">"Diego gestionó la venta en menos de 30 días al precio exacto que nos propuso desde el primer día. Sin sorpresas, sin regateos. Solo resultados."</p>
-        <div class="testi-author">
-          <div class="testi-name">Familia [APELLIDO]</div>
-          <div class="testi-detail">Villa en Los Cristianos · 850.000€</div>
+        <div class="testi-body">
+          <div class="testi-stars">
+            <div class="testi-star"></div><div class="testi-star"></div>
+            <div class="testi-star"></div><div class="testi-star"></div>
+            <div class="testi-star"></div>
+          </div>
+          <p class="testi-quote">"Diego gestionó la venta en menos de 30 días al precio exacto que nos propuso desde el primer día. Sin sorpresas, sin regateos. Solo resultados."</p>
+          <div class="testi-author">
+            <div class="testi-name">Familia [APELLIDO]</div>
+            <div class="testi-detail">Villa en Los Cristianos · 850.000€</div>
+          </div>
         </div>
       </div>
       <div class="testi-card" data-reveal data-d="1">
-        <div class="testi-stars">
-          <div class="testi-star"></div><div class="testi-star"></div>
-          <div class="testi-star"></div><div class="testi-star"></div>
-          <div class="testi-star"></div>
+        <div class="testi-img">
+          <!-- Sustituir por: <img src="foto-propiedad-2.jpg" alt="Apartamento en Costa Adeje"> -->
+          <div class="testi-img-ph">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Foto de la propiedad</span>
+          </div>
         </div>
-        <p class="testi-quote">"Habíamos intentado vender durante 8 meses con otra agencia sin éxito. Diego firmó la reserva en 3 semanas. La diferencia es el método y la red de compradores que tiene."</p>
-        <div class="testi-author">
-          <div class="testi-name">[NOMBRE]</div>
-          <div class="testi-detail">Apartamento en Costa Adeje · 620.000€</div>
+        <div class="testi-body">
+          <div class="testi-stars">
+            <div class="testi-star"></div><div class="testi-star"></div>
+            <div class="testi-star"></div><div class="testi-star"></div>
+            <div class="testi-star"></div>
+          </div>
+          <p class="testi-quote">"Habíamos intentado vender durante 8 meses con otra agencia sin éxito. Diego firmó la reserva en 3 semanas. La diferencia es el método y la red de compradores que tiene."</p>
+          <div class="testi-author">
+            <div class="testi-name">[NOMBRE]</div>
+            <div class="testi-detail">Apartamento en Costa Adeje · 620.000€</div>
+          </div>
         </div>
       </div>
       <div class="testi-card" data-reveal data-d="2">
-        <div class="testi-stars">
-          <div class="testi-star"></div><div class="testi-star"></div>
-          <div class="testi-star"></div><div class="testi-star"></div>
-          <div class="testi-star"></div>
+        <div class="testi-img">
+          <!-- Sustituir por: <img src="foto-propiedad-3.jpg" alt="Chalet en La Orotava"> -->
+          <div class="testi-img-ph">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Foto de la propiedad</span>
+          </div>
         </div>
-        <p class="testi-quote">"La sesión de estrategia me abrió los ojos. Me explicó exactamente por qué no se había vendido. Fue honesto cuando no era lo que yo quería escuchar."</p>
-        <div class="testi-author">
-          <div class="testi-name">[NOMBRE]</div>
-          <div class="testi-detail">Chalet en La Orotava · 1.100.000€</div>
+        <div class="testi-body">
+          <div class="testi-stars">
+            <div class="testi-star"></div><div class="testi-star"></div>
+            <div class="testi-star"></div><div class="testi-star"></div>
+            <div class="testi-star"></div>
+          </div>
+          <p class="testi-quote">"La sesión de estrategia me abrió los ojos. Me explicó exactamente por qué no se había vendido. Fue honesto cuando no era lo que yo quería escuchar."</p>
+          <div class="testi-author">
+            <div class="testi-name">[NOMBRE]</div>
+            <div class="testi-detail">Chalet en La Orotava · 1.100.000€</div>
+          </div>
         </div>
       </div>
     </div>
