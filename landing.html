@@ -1041,16 +1041,7 @@
   <div class="vsl-inner">
     <h2 class="vsl-title"><em>No confíes en mí</em> hasta ver este vídeo</h2>
     <div class="vsl-player-wrap" data-reveal data-d="1">
-      <div class="vsl-player">
-        <div id="vsl-yt"></div>
-        <button class="vsl-unmute" id="vslUnmute">
-          <span class="vsl-unmute-icon">🔇</span>
-          <span id="vslUnmuteLabel">Activar sonido</span>
-        </button>
-      </div>
-      <div class="vsl-progress-wrap">
-        <div class="vsl-progress-bar" id="vslProgress"></div>
-      </div>
+      <div class="vsl-player"></div>
     </div>
     <a href="#formulario" class="vsl-cta btn" data-reveal data-d="2"><span>Agenda tu sesión privada</span></a>
   </div>
@@ -1334,84 +1325,6 @@
   </div>
 </footer>
 
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-  /* ── VSL PLAYER ── */
-  var vslPlayer, vslTimer;
-
-  window.onYouTubeIframeAPIReady = function() {
-    vslPlayer = new YT.Player('vsl-yt', {
-      videoId: 's5Pw6C81y1k',
-      playerVars: {
-        autoplay:        1,
-        mute:            1,
-        controls:        0,
-        rel:             0,
-        modestbranding:  1,
-        iv_load_policy:  3,
-        fs:              0,
-        cc_load_policy:  0,
-        disablekb:       1,
-      },
-      events: {
-        onReady:       onVslReady,
-        onStateChange: onVslStateChange
-      }
-    });
-  };
-
-  function onVslReady(e) {
-    e.target.playVideo();
-    startProgressTimer();
-  }
-
-  function onVslStateChange(e) {
-    // YT.PlayerState.PLAYING = 1
-    if (e.data === 1) startProgressTimer();
-    else clearInterval(vslTimer);
-  }
-
-  function startProgressTimer() {
-    clearInterval(vslTimer);
-    vslTimer = setInterval(updateProgress, 500);
-  }
-
-  function updateProgress() {
-    if (!vslPlayer || typeof vslPlayer.getCurrentTime !== 'function') return;
-    var current  = vslPlayer.getCurrentTime();
-    var duration = vslPlayer.getDuration();
-    if (!duration) return;
-
-    // Primeros 30s → 0–85% | resto → 85–100%
-    var pct;
-    if (current <= 30) {
-      pct = (current / 30) * 85;
-    } else {
-      pct = 85 + ((current - 30) / (duration - 30)) * 15;
-    }
-    document.getElementById('vslProgress').style.width = Math.min(pct, 100) + '%';
-  }
-
-  /* ── UNMUTE BUTTON ── */
-  document.addEventListener('DOMContentLoaded', function() {
-    var btn   = document.getElementById('vslUnmute');
-    var label = document.getElementById('vslUnmuteLabel');
-    var muted = true;
-
-    btn.addEventListener('click', function() {
-      if (!vslPlayer) return;
-      if (muted) {
-        vslPlayer.unMute();
-        vslPlayer.setVolume(100);
-        btn.querySelector('.vsl-unmute-icon').textContent = '🔊';
-        label.textContent = 'Sonido activado';
-        setTimeout(function() { btn.classList.add('hidden'); }, 1500);
-      }
-      muted = false;
-    });
-  });
-</script>
 
 <script>
   /* ── DISPONIBILIDAD SEMANAL ── */
