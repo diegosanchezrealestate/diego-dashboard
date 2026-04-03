@@ -311,7 +311,7 @@
     ───────────────────────────────────────── */
     .problema-section {
       background: var(--white);
-      padding: 120px 0;
+      padding: 120px 0 0;
     }
     .problema-inner {
       max-width: 1200px;
@@ -397,66 +397,59 @@
     /* ── PROBLEMA VISUAL ── */
     .problema-visual {
       background: var(--black);
-      padding: 52px 56px 44px;
-      margin: 52px 0 64px;
-    }
-    .pv-eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(248,245,240,0.28);
-      margin-bottom: 44px;
+      padding: 56px 56px 48px;
+      margin: 52px 0 0;
     }
     .pv-items {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 0;
     }
     .pv-item {
-      padding-right: 48px;
+      padding: 0 48px 0 0;
       border-right: 1px solid rgba(248,245,240,0.08);
-      padding-left: 0;
     }
-    .pv-item:not(:first-child) { padding-left: 48px; padding-right: 48px; }
+    .pv-item:not(:first-child) { padding: 0 48px 0 48px; }
     .pv-item:last-child        { border-right: none; padding-right: 0; }
-    .pv-icon {
-      margin-bottom: 24px;
-      opacity: 0.6;
+    .pv-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      margin-bottom: 20px;
     }
     .pv-stat {
-      font-size: clamp(26px, 2.8vw, 38px);
+      font-size: clamp(28px, 3vw, 42px);
       font-weight: 700;
       letter-spacing: -0.04em;
       color: var(--cream);
       line-height: 1;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .pv-title {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      letter-spacing: -0.01em;
-      color: rgba(248,245,240,0.7);
-      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+      color: rgba(248,245,240,0.85);
+      margin-bottom: 12px;
     }
     .pv-text {
       font-size: 13px;
       font-weight: 400;
-      color: rgba(248,245,240,0.35);
-      line-height: 1.7;
-      letter-spacing: -0.01em;
+      color: rgba(248,245,240,0.45);
+      line-height: 1.75;
     }
     .pv-result {
-      margin-top: 40px;
+      margin-top: 44px;
       padding-top: 28px;
       border-top: 1px solid rgba(248,245,240,0.08);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 400;
-      color: rgba(248,245,240,0.35);
-      letter-spacing: -0.01em;
+      color: rgba(248,245,240,0.45);
+      line-height: 1.65;
     }
     .pv-result strong {
       color: var(--cream);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .divider-line {
@@ -1038,53 +1031,27 @@
       <p class="section-sub" data-reveal data-d="2">La mayoría de propietarios en Tenerife cometen errores que les cuestan decenas de miles de euros. No por falta de buenas intenciones. Por falta del sistema adecuado.</p>
     </div>
     <div class="problema-visual" data-reveal data-d="2">
-      <div class="pv-eyebrow">Lo que le pasa a la mayoría de propietarios en Tenerife</div>
       <div class="pv-items">
 
         <div class="pv-item">
-          <div class="pv-icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 28V14L16 4l12 10v14H20v-8h-8v8Z"/>
-              <polyline points="10,22 16,16 22,22" stroke="#C04040" stroke-width="1.5"/>
-              <line x1="16" y1="16" x2="16" y2="28" stroke="#C04040" stroke-width="1.5"/>
-            </svg>
-          </div>
+          <div class="pv-num">01</div>
           <div class="pv-stat">−35.000€</div>
           <div class="pv-title">El precio del primer día</div>
-          <div class="pv-text">Un error del 5% en una propiedad de 700.000€ son 35.000€ menos en tu cuenta. Y una vez publicado, no hay vuelta atrás.</div>
+          <div class="pv-text">Un error del 5% en una propiedad de 700.000€ son 35.000€ menos en tu cuenta. Y una vez publicado, el mercado ya tiene una opinión formada sobre tu propiedad.</div>
         </div>
 
         <div class="pv-item">
-          <div class="pv-icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="5" width="26" height="24" rx="2"/>
-              <line x1="3" y1="12" x2="29" y2="12"/>
-              <line x1="10" y1="2" x2="10" y2="8"/>
-              <line x1="22" y1="2" x2="22" y2="8"/>
-              <line x1="10" y1="19" x2="22" y2="19" stroke="#C04040"/>
-              <line x1="16" y1="14" x2="16" y2="24" stroke="#C04040"/>
-            </svg>
-          </div>
+          <div class="pv-num">02</div>
           <div class="pv-stat">8+ meses</div>
-          <div class="pv-title">Meses de visitas sin resultado</div>
-          <div class="pv-text">Sin cualificación previa, tu propiedad se convierte en un escaparate para curiosos. Desgaste, incertidumbre y ninguna oferta real.</div>
+          <div class="pv-title">Visitas sin resultado</div>
+          <div class="pv-text">Sin un filtro previo, tu propiedad se convierte en un escaparate para curiosos. Meses de desgaste, incertidumbre y la sensación de que nadie la quiere al precio que vale.</div>
         </div>
 
         <div class="pv-item">
-          <div class="pv-icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 4h14l6 6v18H6Z"/>
-              <polyline points="20,4 20,10 26,10"/>
-              <line x1="11" y1="16" x2="21" y2="16"/>
-              <line x1="11" y1="21" x2="17" y2="21"/>
-              <circle cx="22" cy="24" r="5" stroke="#C04040"/>
-              <line x1="20" y1="22" x2="24" y2="26" stroke="#C04040"/>
-              <line x1="24" y1="22" x2="20" y2="26" stroke="#C04040"/>
-            </svg>
-          </div>
-          <div class="pv-stat">Riesgo total</div>
+          <div class="pv-num">03</div>
+          <div class="pv-stat">Riesgo legal</div>
           <div class="pv-title">El error en el contrato</div>
-          <div class="pv-text">Unas arras mal redactadas o sin protección legal adecuada pueden costarte más que años de trabajo. La última fase es la más crítica.</div>
+          <div class="pv-text">Unas arras mal redactadas o sin protección adecuada pueden costarte más que años de trabajo. La última fase es la más crítica y la más descuidada.</div>
         </div>
 
       </div>
