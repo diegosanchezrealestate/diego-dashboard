@@ -297,6 +297,9 @@
             </div>
           </div>
           <div class="field">
+            <input type="email" id="email" placeholder="tu@email.com" autocomplete="email">
+          </div>
+          <div class="field">
             <select id="presupuesto">
               <option value="" disabled selected>Presupuesto de inversión</option>
               <option value="250k">Hasta 250.000€</option>
@@ -337,7 +340,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const success   = document.getElementById('success');
 
-    const ids = ['nombre', 'telefono', 'presupuesto', 'tipo'];
+    const ids = ['nombre', 'telefono', 'email', 'presupuesto', 'tipo'];
 
     function validate() {
       let ok = true;
@@ -373,6 +376,7 @@
             from_name:      'Club de Inversores — diegosanchezrealestate.com',
             nombre:         document.getElementById('nombre').value.trim(),
             telefono:       document.getElementById('telefono').value.trim(),
+            email:          document.getElementById('email').value.trim(),
             presupuesto:    document.getElementById('presupuesto').value,
             tipo_propiedad: document.getElementById('tipo').value,
           })
