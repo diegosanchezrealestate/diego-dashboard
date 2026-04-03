@@ -358,6 +358,9 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1px;
+      background: transparent;
+    }
+    .problema-grid:has(.is-visible) {
       background: var(--grey-mid);
     }
     .problema-card {
@@ -1041,72 +1044,6 @@
       <h2 class="section-title" data-reveal data-d="1">Vender bien no es<br>vender rápido.</h2>
       <p class="section-sub" data-reveal data-d="2">La mayoría de propietarios en Tenerife cometen errores que les cuestan decenas de miles de euros. No por falta de buenas intenciones. Por falta del sistema adecuado.</p>
     </div>
-    <div class="proceso-visual" data-reveal data-d="2">
-      <div class="proceso-steps">
-
-        <div class="proceso-step">
-          <div class="proceso-circle">
-            <!-- Precio: gráfico de barras -->
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round">
-              <rect x="2" y="12" width="4" height="8" rx="1"/>
-              <rect x="9" y="7"  width="4" height="13" rx="1"/>
-              <rect x="16" y="3" width="4" height="17" rx="1"/>
-            </svg>
-          </div>
-          <div class="proceso-label">Precio<br>Estratégico</div>
-        </div>
-
-        <div class="proceso-step">
-          <div class="proceso-circle">
-            <!-- Cámara: presentación -->
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 6.5A2 2 0 0 1 3 4.5h2l1.5-2h7L15 4.5h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2Z"/>
-              <circle cx="11" cy="11" r="3"/>
-            </svg>
-          </div>
-          <div class="proceso-label">Presentación<br>de Impacto</div>
-        </div>
-
-        <div class="proceso-step">
-          <div class="proceso-circle">
-            <!-- Megáfono: comercialización -->
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 3 9 9H5a2 2 0 0 0 0 4h4l10 6V3Z"/>
-              <line x1="5" y1="13" x2="5" y2="17"/>
-            </svg>
-          </div>
-          <div class="proceso-label">Máxima<br>Difusión</div>
-        </div>
-
-        <div class="proceso-step">
-          <div class="proceso-circle">
-            <!-- Filtro: embudo -->
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="2,3 20,3 14,12 14,20 8,17 8,12"/>
-            </svg>
-          </div>
-          <div class="proceso-label">Filtrado<br>Inteligente</div>
-        </div>
-
-        <div class="proceso-step">
-          <div class="proceso-circle">
-            <!-- Firma: documento con pluma -->
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 3 19 8 8 19H3v-5Z"/>
-              <line x1="11" y1="6" x2="16" y2="11"/>
-            </svg>
-          </div>
-          <div class="proceso-label">Cierre<br>Blindado</div>
-        </div>
-
-      </div>
-      <div class="proceso-result">
-        <div class="proceso-result-line"></div>
-        <span class="proceso-result-text">Tu dinero en cuenta. Sin sorpresas.</span>
-        <div class="proceso-result-line"></div>
-      </div>
-    </div>
-
     <div class="problema-grid">
       <div class="problema-card" data-reveal="clip">
         <div class="problema-num">01</div>
