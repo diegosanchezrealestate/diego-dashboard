@@ -1229,6 +1229,8 @@
   const btn   = document.getElementById('btn-submit');
   const errEl = document.getElementById('form-error');
 
+  const WEB3FORMS_KEY = 'b2b70fd5-14e8-4949-8c76-6c66c0d1b605';
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errEl.style.display = 'none';
@@ -1248,12 +1250,18 @@
     btn.textContent = 'Enviando…';
 
     try {
-      const res = await fetch('/api/lead', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ nombre, telefono, cuando, precio })
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject:    'Nuevo lead — diegosanchezrealestate.com',
+          from_name:  'Landing Diego Sánchez',
+          nombre, telefono, cuando, precio
+        })
       });
-      if (res.ok) {
+      const data = await res.json();
+      if (data.success) {
         form.style.display = 'none';
         document.getElementById('form-success').style.display = 'block';
       } else { throw new Error(); }
