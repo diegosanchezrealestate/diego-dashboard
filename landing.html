@@ -7,6 +7,9 @@
   <meta name="description" content="Asesor inmobiliario de lujo en Tenerife. Vende tu propiedad al precio que mereces. Sesión de estrategia privada. Máximo 10 clientes al mes.">
   <meta property="og:title" content="Diego Sánchez — Luxury Real Estate Tenerife">
   <meta property="og:description" content="Sin rodeos. Sin compromiso. Solo una conversación honesta sobre tu propiedad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -52,6 +55,15 @@
     }
     .vsl-title {
       animation: slideFadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Palabras de acento — Playfair Display Bold Italic */
+    h2 em, .vsl-title em, .garantia-title em, .form-title em {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 1em;
+      letter-spacing: -0.02em;
     }
 
     /* Botones con efecto 3D + textUpBlur */
@@ -984,7 +996,7 @@
 <section class="vsl-section" id="vsl">
   <div class="vsl-bg"></div>
   <div class="vsl-inner">
-    <h2 class="vsl-title">Mira esto antes de tomar cualquier decisión sobre tu propiedad</h2>
+    <h2 class="vsl-title">Mira esto antes de tomar cualquier <em>decisión</em> sobre tu propiedad</h2>
     <div class="vsl-player" data-reveal data-d="1">
       <!-- AÑADIR VIDEO VSL AQUÍ -->
       <span class="vsl-placeholder-text">Video VSL — añadir aquí</span>
@@ -1027,7 +1039,7 @@
   <div class="problema-inner">
     <div class="problema-header">
       <div class="eyebrow" data-reveal>El problema</div>
-      <h2 class="section-title" data-reveal data-d="1">Vender bien no es<br>vender rápido.</h2>
+      <h2 class="section-title" data-reveal data-d="1">Vender bien no es<br>vender <em>rápido.</em></h2>
       <p class="section-sub" data-reveal data-d="2">La mayoría de propietarios en Tenerife cometen errores que les cuestan decenas de miles de euros. No por falta de buenas intenciones. Por falta del sistema adecuado.</p>
     </div>
     <div class="problema-visual" data-reveal data-d="2">
@@ -1113,7 +1125,7 @@
 <section class="testi-section">
   <div class="testi-inner">
     <div class="eyebrow" data-reveal>Clientes</div>
-    <h2 class="section-title" data-reveal data-d="1">Lo que dicen<br>los propietarios</h2>
+    <h2 class="section-title" data-reveal data-d="1">Lo que dicen<br>los <em>propietarios</em></h2>
     <div class="testi-grid">
       <div class="testi-card" data-reveal>
         <div class="testi-img">
@@ -1177,7 +1189,7 @@
 <section class="garantia-section">
   <div class="garantia-inner">
     <div class="eyebrow" style="color:var(--gold)" data-reveal>La garantía</div>
-    <h2 class="garantia-title" data-reveal data-d="1">Reserva en 45 días.<br>O te pago 1.000€.</h2>
+    <h2 class="garantia-title" data-reveal data-d="1">Reserva en <em>45 días.</em><br>O te pago 1.000€.</h2>
     <p class="garantia-sub" data-reveal data-d="2">Si en 45 días desde la firma de la exclusiva no tenemos una reserva con señal, te devuelvo 1.000€ de mi bolsillo. Sin condiciones, sin letra pequeña.</p>
     <div class="garantia-grid" data-reveal data-d="3">
       <div class="garantia-item">
@@ -1201,7 +1213,7 @@
 <section class="form-section" id="formulario">
   <div class="form-inner">
     <div class="eyebrow" style="color:var(--gold)" data-reveal>Sesión privada</div>
-    <h2 class="form-title" data-reveal data-d="1">Hablemos.</h2>
+    <h2 class="form-title" data-reveal data-d="1"><em>Hablemos.</em></h2>
     <p class="form-sub" data-reveal data-d="2">Sin compromiso. Sin rodeos. Solo una conversación honesta sobre tu propiedad y qué se puede conseguir con ella.</p>
 
     <div id="form-error" class="form-error-msg"></div>
