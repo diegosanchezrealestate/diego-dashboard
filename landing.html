@@ -242,12 +242,12 @@
       position: relative;
       overflow: hidden;
     }
-    .vsl-player iframe {
+    .vsl-player video {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      border: none;
+      object-fit: cover;
     }
     /* Unmute button */
     .vsl-unmute {
@@ -1041,7 +1041,18 @@
   <div class="vsl-inner">
     <h2 class="vsl-title"><em>No confíes en mí</em> hasta ver este vídeo</h2>
     <div class="vsl-player-wrap" data-reveal data-d="1">
-      <div class="vsl-player"></div>
+      <div class="vsl-player">
+        <video id="vslVideo" autoplay muted playsinline preload="auto"
+          src="https://res.cloudinary.com/dvzlqewjw/video/upload/v1775719785/Secuencia_21_1_wvqhpv.mp4">
+        </video>
+        <button class="vsl-unmute" id="vslUnmute">
+          <span class="vsl-unmute-icon">🔇</span>
+          <span id="vslUnmuteLabel">Activar sonido</span>
+        </button>
+      </div>
+      <div class="vsl-progress-wrap">
+        <div class="vsl-progress-bar" id="vslProgress"></div>
+      </div>
     </div>
     <a href="#formulario" class="vsl-cta btn" data-reveal data-d="2"><span>Agenda tu sesión privada</span></a>
   </div>
@@ -1431,6 +1442,37 @@
       btn.textContent = 'Agenda tu sesión';
     }
   });
+</script>
+
+<script>
+  /* ── VSL NATIVE VIDEO ── */
+  (function() {
+    var video    = document.getElementById('vslVideo');
+    var bar      = document.getElementById('vslProgress');
+    var btn      = document.getElementById('vslUnmute');
+    var label    = document.getElementById('vslUnmuteLabel');
+    if (!video) return;
+
+    // Barra de progreso falsa: 0–30s → 0–85% | resto → 85–100%
+    video.addEventListener('timeupdate', function() {
+      var cur = video.currentTime;
+      var dur = video.duration;
+      if (!dur) return;
+      var pct = cur <= 30
+        ? (cur / 30) * 85
+        : 85 + ((cur - 30) / (dur - 30)) * 15;
+      bar.style.width = Math.min(pct, 100) + '%';
+    });
+
+    // Unmute button
+    btn.addEventListener('click', function() {
+      video.muted = false;
+      video.volume = 1;
+      btn.querySelector('.vsl-unmute-icon').textContent = '🔊';
+      label.textContent = 'Sonido activado';
+      setTimeout(function() { btn.classList.add('hidden'); }, 1500);
+    });
+  })();
 </script>
 
 </body>
