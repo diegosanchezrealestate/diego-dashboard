@@ -1019,6 +1019,34 @@
       .testi-section,
       .garantia-section { padding: 72px 0; }
       .stats-grid { padding: 0; }
+
+      /* Problema — mobile */
+      .problema-visual {
+        padding: 36px 24px 32px;
+        margin: 36px 0 0;
+      }
+      .pv-items {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .pv-item {
+        padding: 0 0 32px 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(248,245,240,0.08);
+        margin-bottom: 32px;
+      }
+      .pv-item:not(:first-child) {
+        padding: 0 0 32px 0;
+      }
+      .pv-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      .pv-result {
+        margin-top: 28px;
+        font-size: 13px;
+      }
     }
   </style>
 </head>
