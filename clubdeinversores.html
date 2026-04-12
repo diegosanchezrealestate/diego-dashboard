@@ -223,6 +223,29 @@
       line-height: 1.6;
       text-align: center;
     }
+    .form-gdpr {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .form-gdpr input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      accent-color: var(--gold);
+      cursor: pointer;
+      margin-top: 3px;
+    }
+    .form-gdpr label {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: rgba(248,245,240,0.35);
+      line-height: 1.65;
+      cursor: pointer;
+    }
+    .form-gdpr.err label { color: rgba(224,92,92,0.75); }
 
     /* ── SUCCESS ── */
     .success {
@@ -318,6 +341,10 @@
               <option value="inversion">Activo de inversión con rentabilidad</option>
             </select>
           </div>
+          <div class="form-gdpr" id="gdpr-wrap">
+            <input type="checkbox" id="gdpr" name="gdpr">
+            <label for="gdpr">He leído y acepto que Diego Sánchez trate mis datos personales para contactarme sobre oportunidades de inversión. Mis datos no serán cedidos a terceros.</label>
+          </div>
           <button type="submit" class="submit-btn" id="submitBtn">Solicitar acceso</button>
           <p class="disclaimer">Datos privados · Solo te contactaré yo personalmente</p>
         </form>
@@ -336,7 +363,7 @@
   </main>
 
   <script>
-    const WEB3FORMS_KEY = 'b2b70fd5-14e8-4949-8c76-6c66c0d1b605';
+    const WEB3FORMS_KEY = '5dcdc925-6dce-4664-806c-dddfcd358261';
     const form      = document.getElementById('form');
     const submitBtn = document.getElementById('submitBtn');
     const success   = document.getElementById('success');
@@ -363,6 +390,14 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!validate()) return;
+
+      const gdprCheck = document.getElementById('gdpr');
+      if (!gdprCheck.checked) {
+        const wrap = document.getElementById('gdpr-wrap');
+        wrap.classList.add('err');
+        gdprCheck.addEventListener('change', () => wrap.classList.remove('err'), { once: true });
+        return;
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando…';

@@ -902,6 +902,29 @@
       margin-top: 12px;
       line-height: 1.65;
     }
+    .form-gdpr {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .form-gdpr input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      accent-color: var(--gold);
+      cursor: pointer;
+      margin-top: 3px;
+    }
+    .form-gdpr label {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: rgba(240,234,214,0.35);
+      line-height: 1.65;
+      cursor: pointer;
+    }
+    .form-gdpr.err label { color: rgba(224,92,92,0.75); }
     .form-error-msg {
       display: none;
       background: rgba(255,59,48,0.08);
@@ -1335,9 +1358,12 @@
           </select>
         </div>
       </div>
+      <div class="form-gdpr" id="gdpr-wrap">
+        <input type="checkbox" id="gdpr" name="gdpr">
+        <label for="gdpr">He leído y acepto que Diego Sánchez trate mis datos personales para contactarme sobre mi propiedad. Mis datos no serán cedidos a terceros ni utilizados con fines publicitarios.</label>
+      </div>
       <button class="btn-submit" type="submit" id="btn-submit">Agenda tu sesión</button>
       <p class="form-note">Máximo 10 clientes al mes.</p>
-      <p class="form-legal">Al enviar aceptas que Diego Sánchez se ponga en contacto contigo. Sin spam, sin cesión de datos a terceros.</p>
     </form>
 
     <div class="form-success" id="form-success">
@@ -1443,6 +1469,16 @@
     if (!nombre || !telefono || !cuando || !precio) {
       errEl.textContent = 'Por favor rellena todos los campos.';
       errEl.style.display = 'block';
+      return;
+    }
+
+    const gdprCheck = document.getElementById('gdpr');
+    if (!gdprCheck.checked) {
+      errEl.textContent = 'Debes aceptar la política de privacidad para continuar.';
+      errEl.style.display = 'block';
+      const wrap = document.getElementById('gdpr-wrap');
+      wrap.classList.add('err');
+      gdprCheck.addEventListener('change', () => wrap.classList.remove('err'), { once: true });
       return;
     }
 
