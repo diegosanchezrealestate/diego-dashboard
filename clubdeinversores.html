@@ -354,8 +354,8 @@
               <option value="" disabled selected>Presupuesto de inversión</option>
               <option value="250k">Hasta 250.000€</option>
               <option value="400k">Hasta 400.000€</option>
-              <option value="500k-1m">500.000€ – 1.000.000€</option>
-              <option value="1m-2m">1.000.000€ – 2.000.000€</option>
+              <option value="500k-1m">500.000€ - 1.000.000€</option>
+              <option value="1m-2m">1.000.000 - 2.000.000€</option>
               <option value="2m+">Más de 2.000.000€</option>
             </select>
           </div>
@@ -389,7 +389,8 @@
   </main>
 
   <script>
-    const WEB3FORMS_KEY = '5dcdc925-6dce-4664-806c-dddfcd358261';
+    const GOOGLE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSfAMFGJmaLrAacSZVyCh-tQVQGNN3ANTw7GaXgxKbvy-L0Y_g/formResponse';
+
     const form      = document.getElementById('form');
     const submitBtn = document.getElementById('submitBtn');
     const success   = document.getElementById('success');
@@ -428,23 +429,18 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando…';
 
+      const presupuestoEl = document.getElementById('presupuesto');
+      const tipoEl        = document.getElementById('tipo');
+
+      const data = new FormData();
+      data.append('entry.934062575',  document.getElementById('nombre').value.trim());
+      data.append('entry.1774252325', document.getElementById('telefono').value.trim());
+      data.append('entry.2113285366', document.getElementById('email').value.trim());
+      data.append('entry.845095687',  presupuestoEl.options[presupuestoEl.selectedIndex].text);
+      data.append('entry.1290324901', tipoEl.options[tipoEl.selectedIndex].text);
+
       try {
-        const res = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key:     WEB3FORMS_KEY,
-            subject:        '🏛️ Nuevo inversor — Club de Inversores Tenerife',
-            from_name:      'Club de Inversores — diegosanchezrealestate.com',
-            nombre:         document.getElementById('nombre').value.trim(),
-            telefono:       document.getElementById('telefono').value.trim(),
-            email:          document.getElementById('email').value.trim(),
-            presupuesto:    document.getElementById('presupuesto').value,
-            tipo_propiedad: document.getElementById('tipo').value,
-          })
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error();
+        await fetch(GOOGLE_FORM, { method: 'POST', mode: 'no-cors', body: data });
         form.style.display = 'none';
         success.classList.add('show');
       } catch {
